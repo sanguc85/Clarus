@@ -1,0 +1,14 @@
+<div class="comment-dialog" style="position:relative;text-align: center;width: 750px;">
+    <form name="currentCommentForm">
+          <textarea class="bordered-textarea"
+                    id="comment-area" 
+                    [(ngModel)]="commentData.Comment"
+                    name="comment">
+          </textarea>
+        <button button mat-raised-button class="custombtn usa-button" aria-label="Save" title="Save"
+        id="btnSave"
+                (click)="saveComment()">
+            Save
+        </button>&nbsp; &nbsp;
+    </form>
+</div>

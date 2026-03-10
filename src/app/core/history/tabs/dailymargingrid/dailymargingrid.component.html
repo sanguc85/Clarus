@@ -1,0 +1,102 @@
+<igx-grid #grid [data]="auditData" [width]="'100%'" [height]="'700px'" [rowHeight]="'20px'" [autoGenerate]="false"
+    [allowFiltering]="true" [displayDensity]="'cosy'">
+    <igx-paginator [perPage]="25">
+        <igx-paginator-content>
+            <igx-page-size></igx-page-size>
+            <div>Total Items:<span class="spanTotalRecords"> {{ auditData.length }}</span></div>
+            <igx-page-nav></igx-page-nav>
+        </igx-paginator-content>
+    </igx-paginator>
+    <igx-column [field]="'Id'" [header]="'ID'" [width]="'5%'"></igx-column>
+    <igx-column [field]="'DataDate'" [header]="'Collateral Date'" [dataType]="'date'" [resizable]="true"
+        [sortable]="true" [filterable]="true" [width]="'8%'"   [pipeArgs]="datePipeArgs"></igx-column>
+    <igx-column [field]="'AsOfDate'" [header]="'As Of Date'" [dataType]="'date'" [resizable]="true" [sortable]="true"
+        [filterable]="true" [width]="'8%'" [pipeArgs]="datePipeArgs"></igx-column>
+    <igx-column [field]="'Counterparty'" [header]="'CP Name'" [dataType]="'string'"></igx-column>
+    <igx-column [field]="'Party'" [header]="'Party'" [width]="'5%'" [dataType]="'string'"></igx-column>
+    <igx-column [field]="'PortCode'" [header]="'Port Code'" [width]="'5%'" [dataType]="'string'"></igx-column>
+    <igx-column [field]="'Portfolio'" [header]="'Portfolio'" [width]="'5%'" [dataType]="'string'"></igx-column>
+    <igx-column [field]="'Exposure'" [header]="'Gross MTM'" [dataType]="'number'">
+        <ng-template igxCell let-cell="cell">
+            {{ cell.value | currency: 'USD' }}
+        </ng-template>
+    </igx-column>
+    <igx-column [field]="'Amount'" [header]="'Threshold'" [width]="'5%'" [dataType]="'number'">
+        <ng-template igxCell let-cell="cell">
+            {{ cell.value | number: '1.2-2' }}
+        </ng-template>
+    </igx-column>
+    <igx-column [field]="'CollateralizedMTM'" [header]="'MTM Collaterized'" [dataType]="'number'">
+        <ng-template igxCell let-cell="cell">
+            {{ cell.value | currency: 'USD' }}
+        </ng-template>
+    </igx-column>
+    <igx-column [field]="'CollateralValue'" [header]="'Collateral Value'" [dataType]="'number'">
+        <ng-template igxCell let-cell="cell">
+            {{ cell.value | currency: 'USD' }}
+        </ng-template>
+    </igx-column>
+    <igx-column [field]="'MarginCalculation'" [header]="'Margin Calc.'" [dataType]="'number'">
+        <ng-template igxCell let-cell="cell">
+            {{ cell.value | number: '1.2-2' }}
+        </ng-template>
+    </igx-column>
+    <igx-column [field]="'MinTransfer'" [header]="'Min Tfr'" [dataType]="'number'">
+        <ng-template igxCell let-cell="cell">
+            {{ cell.value | number: '1.2-2' }}
+        </ng-template>
+    </igx-column>
+    <igx-column [field]="'RoundingAmount'" [header]="'Rnd Amt'" [dataType]="'number'">
+        <ng-template igxCell let-cell="cell">
+            {{ cell.value | number: '1.2-2' }}
+        </ng-template>
+    </igx-column>
+    <igx-column [field]="'TotalMargin'" [header]="'Total Margin'" [dataType]="'number'">
+        <ng-template igxCell let-cell="cell">
+            {{ cell.value | number: '1.2-2' }}
+        </ng-template>
+    </igx-column>
+    <igx-column [field]="'InternalAction'" [header]="'Action'" [width]="'5%'" [dataType]="'string'"></igx-column>
+    <igx-column [field]="'CounterpartyMargin'" [header]="'CP Margin'" [width]="'5%'" [dataType]="'number'">
+        <ng-template igxCell let-cell="cell">
+            {{ cell.value | number: '1.2-2' }}
+        </ng-template>
+    </igx-column>
+    <igx-column [field]="'CounterpartyMatchPercent'" [header]="'CP Match Tol %'" [width]="'8%'" [dataType]="'number'">
+        <ng-template igxCell let-cell="cell">
+            <ng-container *ngIf="cell.value !== null && cell.value !== undefined">
+                {{ cell.value * 100 | number:'1.2-2' }}%
+            </ng-container>
+        </ng-template>
+    </igx-column>
+    <igx-column [field]="'CounterpartyMatchDollar'" [header]="'CP Match Tol $'" [width]="'8%'" [dataType]="'number'">
+        <ng-template igxCell let-cell="cell">
+            {{ cell.value | number: '1.2-2' }}
+        </ng-template>
+    </igx-column>
+    <igx-column [field]="'MarginDifference'" [header]="'CP/SB Diff'" [width]="'6%'" [dataType]="'number'">
+        <ng-template igxCell let-cell="cell">
+            {{ cell.value | number: '1.2-2' }}
+        </ng-template>
+    </igx-column>
+    <igx-column [field]="'CollateralMovementType'" [width]="'10%'" [header]="'Collateral Movement Type'"
+        [dataType]="'string'"></igx-column>
+    <igx-column [field]="'CollateralStatus'" [header]="'Collateral Status'" [dataType]="'string'"
+        [width]="'10%'"></igx-column>
+    <igx-column [field]="'CollateralMovedIn'" [header]="'Incoming Collateral Moved'" [dataType]="'number'">
+        <ng-template igxCell let-cell="cell">
+            {{ cell.value | number: '1.2-2' }}
+        </ng-template>
+    </igx-column>
+    <igx-column [field]="'CollateralMovedOut'" [header]="'Outgoing Collateral Moved'" [dataType]="'number'">
+        <ng-template igxCell let-cell="cell">
+            {{ cell.value | number: '1.2-2' }}
+        </ng-template>
+    </igx-column>
+    <igx-column [field]="'CollateralMovementDate'" [header]="'Movement Date'" [dataType]="'date'" [resizable]="true"
+        [sortable]="true" [filterable]="true" [width]="'8%'" [pipeArgs]="datePipeArgs"></igx-column>
+    <igx-column [field]="'SettlementStatusDate'" [width]="'9%'" [header]="'Settlement Status Date'" [dataType]="'date'" [pipeArgs]="datePipeArgs"></igx-column>
+    <igx-column [field]="'UpdatedTime'" [width]="'10%'" [header]="'Updated Time'" [dataType]="'datetime'"></igx-column>
+    <igx-column [field]="'UpdatedUser'" [width]="'10%'" [header]="'Updated User'" [dataType]="'string'"></igx-column>
+    <igx-column [field]="'Complete'" [header]="'Complete'" [dataType]="'bool'"></igx-column>
+</igx-grid>

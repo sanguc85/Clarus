@@ -1,0 +1,23 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": ["node"],
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true
+  },
+  "files": [
+    "src/polyfills.ts",
+    ".storybook/empty.ts",
+    ".storybook/preview.ts",
+    ".storybook/main.ts"
+  ],
+  "include": [
+    "src/polyfills.ts",
+    "src/**/*.stories.ts",
+    ".storybook/*.ts",
+    "src/**/*.d.ts"
+  ]
+}

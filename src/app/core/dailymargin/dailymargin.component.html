@@ -1,0 +1,1006 @@
+<div class="row">
+  <div class="col-lg-6 col-md-6 col-sm-6">
+    <div class="firstDiv">
+      <label igxLabel>Collateral Date</label>
+      <igx-date-picker class="datePicker" [(ngModel)]="selectedDate" [maxValue]="todayDate" #defaultDate mode="dropdown"
+        inputFormat="yyyy-MM-dd" (closed)="onDateChange()">
+      </igx-date-picker>
+    </div>
+  </div>
+  <div class="col-lg-6 col-md-6 col-sm-6 userGuide">
+    <button mat-raised-button class="custombtn usa-button" aria-label="User Guide" id="btnUserGuide" (click)="downloadUserGuide()">
+      User Guide
+    </button>
+  </div>
+</div>
+<div class="row" class="secondDiv">
+  <div class="col-lg-6 col-md-6 col-sm-6">
+    <button mat-raised-button class="custombtn usa-button" aria-label="Pull Data" title="" (click)="getData(true)" id="btnPullData">
+      Pull Data
+    </button>
+    <button mat-raised-button class="custombtn usa-button" aria-label="Refresh Data" title="" [disabled]="isEmptyOrComplete()"
+      (click)="openCpSelectDialog()" id="btnRefreshData">
+      Refresh Data
+    </button>
+    <button mat-raised-button class="custombtn usa-button" aria-label="Export Top Grid" title="" (click)="exportTop()"
+      id="btnExportTop">
+      Export Top Grid
+    </button>
+    <button mat-raised-button class="custombtn usa-button" aria-label="Export Bottom Grid" title="" (click)="exportBottom()"
+      id="btnExportBottom">
+      Export Bottom Grid
+    </button>
+  </div>
+  <div class="col-lg-6 col-md-6 col-sm-6" style="text-align: right">
+    <button mat-raised-button class="custombtn usa-button" aria-label="Save Unsettled Data" title="" id="btnSaveUnsettled"
+      (click)="saveData('unSettled')">
+      Save Unsettled Data
+    </button>
+    <button mat-raised-button class="custombtn usa-button" aria-label="Save Data" title="" id="btnSave" (click)="saveData('main')">
+      Save Data
+    </button>
+    <button mat-raised-button class="custombtn usa-button" aria-label="Mark Complete" title="" id="btnMarkComplete"
+      [disabled]="isEmptyOrComplete()" (click)="markComplete()">
+      Mark Complete
+    </button>
+    <button mat-raised-button class="custombtn usa-button" aria-label="Reopen" title="" id="btnReopen"
+      [disabled]="!isEmptyOrComplete()" (click)="reOpen()">
+      Reopen
+    </button>
+  </div>
+</div>
+
+<div class="row">
+  <igx-splitter type="vertical" class="custom-splitter" >
+  <igx-splitter-pane>
+    <igx-grid #grid [width]="'100%'" [height]="'100%'" [rowHeight]="'20px'" [data]="mainGridData"
+      [autoGenerate]="false" [groupingExpressions]="group" [allowFiltering]="true" [displayDensity]="'cosy'"[paging]="false">
+      <igx-paginator [perPage]="10">
+        <igx-paginator-content>
+          <igx-page-size></igx-page-size>
+          <div>Total Items:<span class="spanTotalRecords"> {{ mainGridData.length
+              }}</span></div>
+          <igx-page-nav></igx-page-nav>
+        </igx-paginator-content>
+      </igx-paginator>
+      <igx-column [header]="'Collateral Date'" [width]="'9%'" [resizable]="true" [sortable]="true" [field]="'DataDate'"
+        [filterable]="false"  dataType="date" [pipeArgs]="datePipeArgs" [pinned]="true"></igx-column>
+      <igx-column [field]="'AsOfDate'" [header]="'As Of Date'" [resizable]="true" [sortable]="true"
+        [filterable]="false"  dataType="date" [pipeArgs]="datePipeArgs" [pinned]="true"></igx-column>
+      <igx-column [field]="'Counterparty'" [header]="'CP Name'" [resizable]="true" [sortable]="true" [pinned]="true">
+      </igx-column>
+      <igx-column [field]="'Party'" [header]="'Party'" [resizable]="true" [sortable]="true">
+      </igx-column>
+      <igx-column [field]="'PortCode'" [header]="'Port Code'" [resizable]="true" [sortable]="true">
+      </igx-column>
+      <igx-column [field]="'Portfolio'" [header]="'Portfolio'" [resizable]="true" [sortable]="true">
+      </igx-column>
+      <igx-column [field]="'Exposure'" [header]="'Gross MTM'" [cellClasses]="zeroBorderClasses" [resizable]="true"
+        [sortable]="true">
+        <ng-template igxCell let-value let-cell="cell">
+          <a (click)="getTradeDetails(cell, 'daily')" class="falseLink">
+            {{ value | currency }}
+          </a>
+        </ng-template>
+      </igx-column>
+      <igx-column [field]="'Amount'" [header]="'Threshold'" [pipeArgs]="formatOptions" [dataType]="'number'"
+        [resizable]="true" [sortable]="true">
+      </igx-column>
+      <igx-column [field]="'CollateralizedMTM'" [header]="'MTM Collaterized'" [width]="'200px'"
+        [pipeArgs]="formatOptions" [dataType]="'currency'" [resizable]="true" [sortable]="true">
+        <ng-template igxCell let-cell="cell" let-val>
+          {{ val | currency }}
+        </ng-template>
+      </igx-column>
+      <igx-column [field]="'CollateralValue'" [header]="'Collateral Value'" [width]="'200px'" [pipeArgs]="formatOptions"
+        [cellClasses]="zeroBorderClasses" [dataType]="'currency'" [resizable]="true" [sortable]="true">
+        <ng-template igxCell let-value let-cell="cell">
+          <a (click)="getCollateralDetails(cell, 'daily')" class="falseLink">{{
+            value | currency
+            }}</a>
+        </ng-template>
+      </igx-column>
+      <igx-column [field]="'MarginCalculation'" [header]="'Margin Calc.'" [width]="'200px'" [pipeArgs]="formatOptions"
+        [dataType]="'number'" [resizable]="true" [sortable]="true">
+        <ng-template igxCell let-cell="cell" let-val>
+          {{ val | formatNumberTo2dp }}
+        </ng-template>
+      </igx-column>
+      <igx-column [field]="'MinTransfer'" [header]="'Min Tfr'" [pipeArgs]="formatOptions" [dataType]="'number'"
+        [resizable]="true" [sortable]="true">
+      </igx-column>
+      <igx-column [field]="'RoundingAmount'" [header]="'Rnd Amt'" [pipeArgs]="formatOptions" [dataType]="'number'"
+        [resizable]="true" [sortable]="true">
+      </igx-column>
+      <igx-column [field]="'TotalMargin'" [header]="'Total Margin'" [width]="'200px'" [pipeArgs]="formatOptions"
+        [dataType]="'number'" [resizable]="true" [sortable]="true" [cellClasses]="totalMarginClasses">
+        <ng-template igxCell let-cell="cell" let-val>
+          {{ val | formatNumberTo2dp }}
+        </ng-template>
+      </igx-column>
+      <igx-column [field]="'InternalAction'" [header]="'Action'" [resizable]="true" [sortable]="true"
+        [cellClasses]="actionClasses">
+      </igx-column>
+      <igx-column [field]="'CounterpartyMargin'" [header]="'CP Margin'" [pipeArgs]="formatOptions" [dataType]="'number'"
+        [resizable]="true" [sortable]="true">
+        <ng-template igxCell let-cell="cell" let-val>
+          {{ val | formatNumberTo2dp }}
+        </ng-template>
+      </igx-column>
+      <igx-column [field]="'CounterpartyMatchPercent'" [header]="'CP Match Tol %'" [width]="'200px'"
+        [pipeArgs]="formatPercentOptions" [dataType]="'percent'" [resizable]="true" [sortable]="true">
+      </igx-column>
+      <igx-column [field]="'CounterpartyMatchDollar'" [header]="'CP Match Tol $'" [width]="'200px'"
+        [pipeArgs]="formatOptions" [dataType]="'number'" [resizable]="true" [sortable]="true">
+      </igx-column>
+      <igx-column [field]="'MarginDifference'" [header]="'CP/SB Diff'" [pipeArgs]="formatOptions" [dataType]="'number'"
+        [resizable]="true" [sortable]="true">
+        <ng-template igxCell let-cell="cell" let-val>
+          {{ val | formatNumberTo2dp }}
+        </ng-template>
+      </igx-column>
+      <igx-column [field]="'cpSbExposureDiff'" [header]="'CP/SB Exposure Diff'" [width]="'220px'"[pipeArgs]="formatOptions" [dataType]="'number'"
+      [resizable]="true" [sortable]="true"[cellClasses]="colorStatusFordifferencePercent">
+      <ng-template igxCell let-cell="cell" let-val>
+        {{ val | formatNumberTo2dp }}
+      </ng-template>
+    </igx-column>
+      <igx-column [field]="'CollateralMovementType'" [header]="'Collateral Movement Type'" [width]="'240px'"
+        [resizable]="true" [sortable]="true">
+        <ng-template igxCell let-value let-cell="cell">
+          <a (click)="getCollateralSubstitutionDetails(cell)" class="falseLink">
+            {{ value }}
+          </a>
+        </ng-template>
+      </igx-column>
+      <igx-column field="CollateralStatus" header="Collateral Status" [editable]="true" [width]="'200px'"
+        [resizable]="true" [sortable]="true" [cellClasses]="editableCellcolor">
+        <ng-template igxCellEditor let-cell="cell" let-value>
+          <igx-select class="cell-select" [disabled]="isEmptyOrComplete()" [(ngModel)]="cell.editValue"
+            [igxFocus]="true">
+            <igx-select-item *ngFor="let statusType of statusTypes" [value]="statusType"
+              (click)="onSelectChange($event, cell)">
+              {{ statusType }}
+            </igx-select-item>
+          </igx-select>
+        </ng-template>
+      </igx-column>
+
+
+      <igx-column [field]="'CollateralMovedIn'" [header]="'Incoming Collateral Moved'" [width]="'200px'" [pipeArgs]="formatOptions"
+        [dataType]="'number'" [resizable]="true" [sortable]="true">
+        <ng-template igxCell let-cell="cell" let-val>
+          {{ val | formatNumberTo2dp }}
+        </ng-template>
+      </igx-column>
+      <igx-column [field]="'CollateralMovedOut'" [header]="'Outgoing Collateral Moved'" [width]="'200px'" [pipeArgs]="formatOptions"
+        [dataType]="'number'" [resizable]="true" [sortable]="true">
+        <ng-template igxCell let-cell="cell" let-val>
+          {{ val | formatNumberTo2dp }}
+        </ng-template>
+      </igx-column>
+      <igx-column [header]="'Movement Date'" [resizable]="true" [width]="'250px'" [sortable]="true"
+        field="CollateralMovementDate" [filterable]="false"  dataType="date" [pipeArgs]="datePipeArgs"></igx-column>
+      <igx-column [field]="'Comment'" [header]="'Comments'" [resizable]="true" [sortable]="true" [editable]="false"
+        [groupable]="true">
+        <ng-template igxCell let-value let-cell="cell">
+          <div *ngIf="value === null">
+            <a (click)="getCommentDetails(cell)" class="falseLink">Add </a>
+          </div>
+          <div *ngIf="value !== null">
+            <a (click)="getCommentDetails(cell)" class="falseLink">Edit/View</a>
+          </div>
+        </ng-template>
+      </igx-column>
+      <igx-column field="SettlementStatusDate" header="Settlement Status Date" [width]="'230px'" [dataType]="'date'"
+        [sortable]="true" [editable]="true" [resizable]="true"[cellClasses]="editableCellcolor"  [pipeArgs]="datePipeArgs"></igx-column>
+    </igx-grid>
+</igx-splitter-pane>
+
+<igx-splitter-pane [size]="60" [minSize]="50">
+  <div class="row row-bottom">
+  <div class="box">
+    <ul class="nav nav-tabs navbar-default navbar-left">
+      <li [ngClass]="{ active: contentTab === 'Incomplete' }" style="width: 100%">
+        <a (click)="setContent('Incomplete')"> Unsettled </a>
+      </li>
+      <li [ngClass]="{ active: contentTab === 'Counterparty' }" style="width: 100%">
+        <a (click)="setContent('Counterparty')"> Counterparty </a>
+      </li>
+    </ul>
+  </div>
+  <div class="bottombox">
+    <div [hidden]="contentTab !== 'Incomplete'" class="incomplete-tab-container">
+      <div class="grid__wrapper">
+        <igx-grid #gridUnSettled class="bottomgrid" [width]="'100%'" [rowHeight]="'20px'"
+          [data]="lastGridData" [autoGenerate]="false" [groupingExpressions]="group" [allowFiltering]="true"
+          [displayDensity]="'cosy'">
+          <igx-paginator [perPage]="10">
+            <igx-paginator-content>
+              <igx-page-size></igx-page-size>
+              <div>Total Items:<span class="spanTotalRecords"> {{ lastGridData.length
+                  }}</span></div>
+              <igx-page-nav></igx-page-nav>
+            </igx-paginator-content>
+          </igx-paginator>
+          <igx-column [header]="'Collateral Date'" [resizable]="true" [width]="'200px'" [sortable]="true"
+            field="DataDate" [filterable]="false"  dataType="date" [pipeArgs]="datePipeArgs"></igx-column>
+          <igx-column [field]="'AsOfDate'" [header]="'As Of Date'" [resizable]="true" [sortable]="true"
+            [filterable]="false"  dataType="date" [pipeArgs]="datePipeArgs"></igx-column>
+          <igx-column [field]="'Counterparty'" [header]="'CP Name'" [resizable]="true" [sortable]="true" >
+          </igx-column>
+          <igx-column [field]="'Party'" [header]="'Party'" [resizable]="true" [sortable]="true">
+          </igx-column>
+          <igx-column [field]="'PortCode'" [header]="'Port Code'" [resizable]="true" [sortable]="true">
+          </igx-column>
+          <igx-column [field]="'Portfolio'" [header]="'Portfolio'" [resizable]="true" [sortable]="true">
+          </igx-column>
+          <igx-column [field]="'Exposure'" [header]="'Gross MTM'" [cellClasses]="zeroBorderClasses" [resizable]="true"
+            [sortable]="true">
+            <ng-template igxCell let-value let-cell="cell">
+              <a (click)="getTradeDetails(cell, 'daily')" class="falseLink">
+                {{ value | currency }}
+              </a>
+            </ng-template>
+          </igx-column>
+          <igx-column [field]="'Amount'" [header]="'Threshold'" [pipeArgs]="formatOptions" [dataType]="'number'"
+            [resizable]="true" [sortable]="true">
+          </igx-column>
+          <igx-column [field]="'CollateralizedMTM'" [header]="'MTM Collaterized'" [width]="'200px'"
+            [pipeArgs]="formatOptions" [dataType]="'currency'" [resizable]="true" [sortable]="true">
+            <ng-template igxCell let-cell="cell" let-val>
+              {{ val | currency }}
+            </ng-template>
+          </igx-column>
+          <igx-column [field]="'CollateralValue'" [header]="'Collateral Value'" [width]="'200px'"
+            [cellClasses]="zeroBorderClasses" [pipeArgs]="formatOptions" [dataType]="'currency'" [resizable]="true"
+            [sortable]="true">
+            <ng-template igxCell let-value let-cell="cell">
+              <a (click)="getCollateralDetails(cell, 'daily')" class="falseLink">
+                {{ value | currency }}
+              </a>
+            </ng-template>
+          </igx-column>
+          <igx-column [field]="'MarginCalculation'" [header]="'Margin Calc.'" [width]="'200px'"
+            [pipeArgs]="formatOptions" [dataType]="'number'" [resizable]="true" [sortable]="true">
+            <ng-template igxCell let-cell="cell" let-val>
+              {{ val | formatNumberTo2dp }}
+            </ng-template>
+          </igx-column>
+          <igx-column [field]="'MinTransfer'" [header]="'Min Tfr'" [pipeArgs]="formatOptions" [dataType]="'number'"
+            [resizable]="true" [sortable]="true">
+          </igx-column>
+          <igx-column [field]="'RoundingAmount'" [header]="'Rnd Amt'" [pipeArgs]="formatOptions" [dataType]="'number'"
+            [resizable]="true" [sortable]="true">
+          </igx-column>
+          <igx-column [field]="'TotalMargin'" [header]="'Total Margin'" [width]="'200px'" [pipeArgs]="formatOptions"
+            [dataType]="'number'" [resizable]="true" [sortable]="true">
+            <ng-template igxCell let-cell="cell" let-val>
+              {{ val | formatNumberTo2dp }}
+            </ng-template>
+          </igx-column>
+          <igx-column [field]="'InternalAction'" [header]="'Action'" [resizable]="true" [sortable]="true">
+          </igx-column>
+          <igx-column [field]="'CounterpartyMargin'" [header]="'CP Margin'" [pipeArgs]="formatOptions"
+            [dataType]="'number'" [resizable]="true" [sortable]="true">
+            <ng-template igxCell let-cell="cell" let-val>
+              {{ val | formatNumberTo2dp }}
+            </ng-template>
+          </igx-column>
+          <igx-column [field]="'CounterpartyMatchPercent'" [header]="'CP Match Tol %'" [width]="'250px'"
+            [pipeArgs]="formatPercentOptions" [dataType]="'percent'" [resizable]="true" [sortable]="true">
+          </igx-column>
+          <igx-column [field]="'CounterpartyMatchDollar'" [header]="'CP Match Tol $'" [width]="'250px'"
+            [pipeArgs]="formatOptions" [dataType]="'number'" [resizable]="true" [sortable]="true">
+          </igx-column>
+          <igx-column [field]="'MarginDifference'" [header]="'CP/SB Diff'" [pipeArgs]="formatOptions"
+            [dataType]="'number'" [resizable]="true" [sortable]="true">
+            <ng-template igxCell let-cell="cell" let-val>
+              {{ val | formatNumberTo2dp }}
+            </ng-template>
+          </igx-column>
+          <igx-column [field]="'CollateralMovementType'" [header]="'Collateral Movement Type'" [width]="'250px'"
+            [resizable]="true" [sortable]="true">
+            <ng-template igxCell let-value let-cell="cell">
+              <a (click)="getCollateralSubstitutionDetails(cell)" class="falseLink">
+                {{ value }}
+              </a>
+            </ng-template>
+          </igx-column>
+          <igx-column field="CollateralStatus" header="Collateral Status" [editable]="true" [width]="'200px'"
+            [resizable]="true" [sortable]="true"[cellClasses]="editableCellcolor">
+            <ng-template igxCellEditor let-cell="cell" let-value>
+              <igx-select class="cell-select" [disabled]="isEmptyOrComplete()" [(ngModel)]="cell.editValue"
+                [igxFocus]="true">
+                <igx-select-item *ngFor="let statusType of statusTypes" [value]="statusType"
+                  (click)="onSelectChange($event, cell)">
+                  {{ statusType }}
+                </igx-select-item>
+              </igx-select>
+            </ng-template>
+          </igx-column>
+          <igx-column [field]="'CollateralMovedIn'" [header]="'Incoming Collateral Moved'" [width]="'200px'"
+            [pipeArgs]="formatOptions" [dataType]="'number'" [resizable]="true" [sortable]="true">
+            <ng-template igxCell let-cell="cell" let-val>
+              {{ val | formatNumberTo2dp }}
+            </ng-template>
+          </igx-column>
+          <igx-column [field]="'CollateralMovedOut'" [header]="'Outgoing Collateral Moved'" [width]="'200px'"
+            [pipeArgs]="formatOptions" [dataType]="'number'" [resizable]="true" [sortable]="true">
+            <ng-template igxCell let-cell="cell" let-val>
+              {{ val | formatNumberTo2dp }}
+            </ng-template>
+          </igx-column>
+          <igx-column [header]="'Movement Date'" [resizable]="true" [width]="'200px'" [sortable]="true"
+            field="CollateralMovementDate" [filterable]="false"  dataType="date" [pipeArgs]="datePipeArgs"></igx-column>
+          <igx-column [field]="'Comment'" [header]="'Comments'" [resizable]="true" [sortable]="true" [editable]="true"
+            [groupable]="true">
+            <ng-template igxCell let-value let-cell="cell">
+              <div *ngIf="value === null">
+                <a (click)="getCommentDetails(cell)" class="falseLink">Add </a>
+              </div>
+              <div *ngIf="value !== null">
+                <a (click)="getCommentDetails(cell)" class="falseLink">Edit/View</a>
+              </div>
+            </ng-template>
+          </igx-column>
+          <igx-column field="SettlementStatusDate" header="Settlement Status Date" [width]="'250px'" [dataType]="'date'"
+            [sortable]="true" [editable]="true" [resizable]="true"[cellClasses]="editableCellcolor" [pipeArgs]="datePipeArgs"></igx-column>
+        </igx-grid>
+      </div>
+    </div>
+    <div [hidden]="contentTab !== 'Counterparty'">
+      <div class="grid__wrapper">
+        <igx-grid #cpgrid class="bottomgrid" [width]="'100%'" [height]="'100%'" [rowHeight]="'20px'"
+          [data]="counterpartyMarginData" [autoGenerate]="false" [groupingExpressions]="group" [allowFiltering]="true"
+          [displayDensity]="'cosy'">
+          <igx-paginator [perPage]="10">
+            <igx-paginator-content>
+              <igx-page-size></igx-page-size>
+              <div>Total Items:<span class="spanTotalRecords"> {{ counterpartyMarginData.length
+                  }}</span></div>
+              <igx-page-nav></igx-page-nav>
+            </igx-paginator-content>
+          </igx-paginator>
+          <igx-column [header]="'Collateral Date'" [width]="'200px'" [resizable]="true" [sortable]="true"
+            field="DataDate" [filterable]="false" dataType="date" [pipeArgs]="datePipeArgs">
+          </igx-column>
+          <igx-column [field]="'AsOfDate'" [header]="'As Of Date'" [resizable]="true" [sortable]="true"
+            [filterable]="false" dataType="date" [pipeArgs]="datePipeArgs">
+            </igx-column>
+          <igx-column [field]="'Counterparty'" [width]="'200px'" [header]="'Counterparty'" [resizable]="true"
+            [sortable]="true">
+          </igx-column>
+          <igx-column [field]="'Party'" [header]="'Party'" [resizable]="true" [sortable]="true">
+          </igx-column>
+          <igx-column [field]="'Portfolio'" [header]="'Portfolio'" [resizable]="true" [sortable]="true">
+          </igx-column>
+          <igx-column [field]="'Exposure'" [header]="'Exposure'" [cellClasses]="zeroBorderClasses" [resizable]="true"
+            [sortable]="true">
+            <ng-template igxCell let-value let-cell="cell">
+              <a (click)="getTradeDetails(cell, 'cp')" class="falseLink">
+                {{ value | currency }}
+              </a>
+            </ng-template>
+          </igx-column>
+          <igx-column [field]="'ThresholdAmount'" [header]="'Threshold'" [pipeArgs]="formatOptions"
+            [dataType]="'number'" [resizable]="true" [sortable]="true">
+          </igx-column>
+          <igx-column [field]="'CollateralizedMTM'" [header]="'MTM Collaterized'" [width]="'200px'"
+            [pipeArgs]="formatOptions" [dataType]="'currency'" [resizable]="true" [sortable]="true">
+            <ng-template igxCell let-cell="cell" let-val>
+              {{ val | currency }}
+            </ng-template>
+          </igx-column>
+          <igx-column [field]="'CollateralValue'" [header]="'Collateral Value'" [width]="'200px'"
+            [cellClasses]="zeroBorderClasses" [pipeArgs]="formatOptions" [dataType]="'currency'" [resizable]="true"
+            [sortable]="true">
+            <ng-template igxCell let-value let-cell="cell">
+              <a (click)="getCollateralDetails(cell, 'cp')" class="falseLink">
+                {{ value | currency }}
+              </a>
+            </ng-template>
+          </igx-column>
+          <igx-column [field]="'MinTransfer'" [header]="'Min Tfr'" [pipeArgs]="formatOptions" [dataType]="'number'"
+            [resizable]="true" [sortable]="true">
+          </igx-column>
+          <igx-column [field]="'RoundingAmount'" [header]="'Rnd Amt'" [pipeArgs]="formatOptions" [dataType]="'number'"
+            [resizable]="true" [sortable]="true">
+          </igx-column>
+          <igx-column [field]="'TotalMargin'" [width]="'200px'" [header]="'Total Margin'" [pipeArgs]="formatOptions"
+            [dataType]="'number'" [resizable]="true" [sortable]="true">
+            <ng-template igxCell let-cell="cell" let-val>
+              {{ val | formatNumberTo2dp }}
+            </ng-template>
+          </igx-column>
+        </igx-grid>
+      </div>
+    </div>
+  </div>
+</div>
+</igx-splitter-pane>
+</igx-splitter>
+</div>
+
+
+<igx-dialog #tradeDetailsDialog [closeOnOutsideSelect]="false">
+  <div class="title-bar">
+    <h2 class="title">Trade Details</h2>
+    <a class="close-button" (click)="tradeDetailsDialog.close()" title="Close" aria-label="Close">&#10006;</a>
+  </div>
+  <div [hidden]="gridTab !== 'daily'" class="tradeGrid">
+    <igx-grid [data]="tradeDetailsGridData" #tradeDetailsGrid [autoGenerate]="false" [paging]="true" [perPage]="20"
+      [height]="'700px'" [width]="'100%'" [rowHeight]="'20px'" [displayDensity]="'cosy'" [allowFiltering]="true">
+      <!-- Observation Date -->
+      <igx-column [field]="'ObservationDate'" [header]="'Observation Date'" [width]="'150px'" dataType="date"   [pipeArgs]="datePipeArgs"></igx-column>
+      <!-- Internal ID -->
+      <igx-column [field]="'InternalId'" [header]="'Internal ID'" [width]="'130px'"[sortable]="true"[resizable]="true"></igx-column>
+
+      <!-- Trade Type -->
+      <igx-column [field]="'Tradetype'" [header]="'Trade Type'" [width]="'130px'"[sortable]="true"[resizable]="true"></igx-column>
+
+      <!-- Instrument Type -->
+      <igx-column [field]="'InstrumentType'" [header]="'Instrument Type'" [width]="'160px'"[sortable]="true"[resizable]="true"></igx-column>
+
+      <!-- Counterparty -->
+      <igx-column [field]="'Counterparty'" [header]="'Counterparty'" [width]="'130px'"[resizable]="true"></igx-column>
+
+      <!-- Trade Date -->
+      <igx-column [field]="'TradeDate'" [header]="'Trade Date'"[sortable]="true"[resizable]="true" [width]="'130px'" dataType="date"   [pipeArgs]="datePipeArgs"></igx-column>
+      <!-- Expiration Date -->
+      <igx-column [field]="'ExpirationDate'" [header]="'Expiration Date'"[sortable]="true"[width]="'155px'"[resizable]="true" dataType="date" [pipeArgs]="datePipeArgs"></igx-column>
+
+      <!-- Base Notional -->
+      <igx-column [field]="'BaseNotional'" [header]="'Base Notional'" [filterable]="false"[resizable]="true" [width]="'130px'">
+        <ng-template igxCell let-cell="cell" let-value="value">
+          {{ cell.value != null ? (cell.value | formatNumber) : '' }}
+        </ng-template>
+      </igx-column>
+
+      <!-- Units -->
+      <igx-column [field]="'Units'" [header]="'Units'" [filterable]="false"[resizable]="true" [width]="'130px'">
+        <ng-template igxCell let-cell="cell" let-value="value">
+          {{ cell.value != null ? (cell.value | formatNumber) : '' }}
+        </ng-template>
+      </igx-column>
+
+      <!-- Internal Model -->
+      <igx-column [field]="'InternalModel'" [header]="'Internal Model'" [filterable]="false"[resizable]="true" [width]="'130px'">
+        <ng-template igxCell let-cell="cell" let-value="value">
+          {{ cell.value != null ? (cell.value | formatNumber) : '' }}
+        </ng-template>
+      </igx-column>
+
+      <!-- Cross Notional -->
+      <igx-column [field]="'CrossNotional'" [header]="'Cross Notional'" [filterable]="false"[resizable]="true" [width]="'130px'"></igx-column>
+
+      <!-- Base Currency -->
+      <igx-column [field]="'BaseCurrency'" [header]="'Base Currency'" [filterable]="false"[resizable]="true" [width]="'130px'"></igx-column>
+
+      <!-- Cross Currency -->
+      <igx-column [field]="'CrossCurrency'" [header]="'Cross Currency'" [filterable]="false"[resizable]="true" [width]="'130px'"></igx-column>
+
+      <!-- Price Base Leg -->
+      <igx-column [field]="'Price_BaseLeg'" [header]="'Price - Base Leg'" [filterable]="false"[resizable]="true" [width]="'130px'">
+        <ng-template igxCell let-cell="cell" let-value="value">
+          {{ cell.value != null ? (cell.value | formatNumber) : '' }}
+        </ng-template>
+      </igx-column>
+
+      <!-- Price Cross Leg -->
+      <igx-column [field]="'Price_CrossLeg'" [header]="'Price - Cross Leg'" [filterable]="false"[resizable]="true" [width]="'135px'">
+        <ng-template igxCell let-cell="cell" let-value="value">
+          {{ cell.value != null ? (cell.value | formatNumber) : '' }}
+        </ng-template>
+      </igx-column>
+      <!-- Additional igxGrid configurations -->
+      <igx-paginator [perPage]="20">
+        <igx-paginator-content>
+          <igx-page-size></igx-page-size>
+          <div>Total Items:<span class="spanTotalRecords"> {{ tradeDetailsGridData.length
+              }}</span></div>
+          <igx-page-nav></igx-page-nav>
+        </igx-paginator-content>
+      </igx-paginator>
+    </igx-grid>
+  </div>
+  <div [hidden]="gridTab !== 'cp'" class="cpTradeGrid">
+    <igx-grid [data]="cpTradeDetailsGridData" #cpTradeDetailsGrid [height]="'567px'" [rowHeight]="'20px'"
+      [paging]="true" [perPage]="20" [displayDensity]="'cosy'" [allowFiltering]="true">
+      <!-- Data Date -->
+      <igx-column [field]="'DataDate'" [header]="'Data Date'" [width]="'10%'" [filterable]="false" dataType="date" [pipeArgs]="datePipeArgs"></igx-column>
+
+      <!-- Trade ID -->
+      <igx-column [field]="'TradeId'" [header]="'Trade ID'"[resizable]="true" [width]="'16%'"[sortable]="true"></igx-column>
+      <igx-column [field]="'BBGId'" [header]="'Internal ID'" [width]="'10%'"[resizable]="true"[sortable]="true"></igx-column>
+      <igx-column [field]="'InstrumentType'" [header]="'Instrument Type'" [width]="'13%'"[resizable]="true"[sortable]="true"> 
+      </igx-column>
+
+      <!-- Counterparty -->
+      <igx-column [field]="'Counterparty'" [header]="'Counterparty'" [width]="'10%'" [filterable]="false" >
+      </igx-column>
+
+      <!-- Trade Date -->
+      <igx-column [field]="'TradeDate'" [header]="'Trade Date'" [width]="'10%'" [sortable]="true" dataType="date"   [pipeArgs]="datePipeArgs"></igx-column>
+
+      <!-- Maturity Date -->
+      <igx-column [field]="'MaturityDate'" [header]="'Expiration Date'"[width]="'10%'"  [resizable]="true"[sortable]="true" dataType="date" [pipeArgs]="datePipeArgs"></igx-column>
+      
+      <!-- Notional -->
+      <igx-column [field]="'Notional'" [header]="'Notional'" [width]="'10.5%'" [resizable]="true" [filterable]="false">
+        <ng-template igxCell let-cell="cell" let-value="value">
+          {{ (cell.value === null || cell.value === 0) ? '' : (cell.value | formatNumber) }}
+        </ng-template>
+      </igx-column>
+
+      <!-- Market Value -->
+      <igx-column [field]="'MarketValue'" [header]="'Market Value'" [width]="'10.5%'"[filterable]="false"[sortable]="true">
+        <ng-template igxCell let-cell="cell" let-value="value">
+          {{ cell.value | formatNumber }}
+        </ng-template>
+      </igx-column>
+
+      <!-- Additional igxGrid configurations -->
+      <igx-paginator [perPage]="20">
+        <igx-paginator-content>
+          <igx-page-size></igx-page-size>
+          <div>Total Items:<span class="spanTotalRecords"> {{ cpTradeDetailsGridData.length
+              }}</span></div>
+          <igx-page-nav></igx-page-nav>
+        </igx-paginator-content>
+      </igx-paginator>
+    </igx-grid>
+  </div>
+</igx-dialog>
+<igx-dialog #collateralDetailsDialog [closeOnOutsideSelect]="false">
+  <div class="title-bar">
+    <h2 class="title">Collateral Details</h2>
+    <a class="close-button" (click)="collateralDetailsDialog.close()" title="Close" aria-label="Close">&#10006;</a>
+  </div>
+  <igx-grid [data]="collateralDetailsGridData" [autoGenerate]="false" height="200px" width="900px">
+
+    <igx-column [header]="'Data Date'" field="DataDate" dataType="date" [pipeArgs]="datePipeArgs"></igx-column>
+    <igx-column field="Counterparty" header="Counterparty"></igx-column>
+    <igx-column field="Entity" header="Entity"></igx-column>
+    <igx-column field="Value" header="Value" [hasSummary]="true" dataType="number"
+      [summaries]="valueNumericSummary">
+      <ng-template igxCell let-cell="cell" let-value="value">
+        {{ cell.value | formatNumberTo2dp }}
+      </ng-template>
+    </igx-column>
+    <igx-column field="ParValue" header="Par Value" [hasSummary]="true"
+      dataType="number" [summaries]="parValueNumericSummary">
+      <ng-template igxCell let-cell="cell" let-value="value">
+        {{ cell.value | formatNumberTo2dp }}
+      </ng-template>
+    </igx-column>
+    <igx-column field="CUSIP" header="CUSIP"></igx-column>
+  </igx-grid>
+</igx-dialog>
+<igx-dialog #collateralSubstitutionDialog [closeOnOutsideSelect]="false" data-dialog-name="collateral-substitution">
+  <div>
+    <div class="title-bar">
+      <h2 class="title">Collateral</h2>
+      <a class="close-button" (click)="clearSearchAndCloseDialog()" title="Close"
+        aria-label="Close">&#10006;</a>
+    </div>
+    <div class="container">
+      <div class="box1">
+        <div style="max-height: 250px; overflow-y: auto; border: 1px solid #ccc;">
+          <table class="table table-striped table-hover">
+            <tr>
+              <th colspan="3">
+                <div align="center">All Collateral</div>
+              </th>
+            </tr>
+            <tr>
+              <td>Cusip</td>
+              <td>Par Value</td>
+              <td>MV</td>
+            </tr>
+            <tr *ngFor="let securityBal of filteredCollateralBalances">
+              <td>{{ securityBal.CUSIP }}</td>
+              <td>{{ decimalPipe.transform(securityBal.ParValue) }}</td>
+              <td>{{ decimalPipe.transform(securityBal.Value, '1.2-2') }}</td>
+            </tr>
+            <!-- <tr>
+              <td></td>
+              <td>{{ decimalPipe.transform(getTotalParValues()) }}</td>
+              <td>{{ decimalPipe.transform(getTotalCollateralValue(), '1.2-2') }}</td>
+            </tr> -->
+          </table>
+        </div>
+        <div style="border: 1px solid #ccc;">
+          <table class="table table-striped table-hover">
+            <tr>
+              <td>
+                <button mat-raised-button class="custombtn usa-button" aria-label="Check All" title="" id="btnCheck"
+                  (click)="checkAllUseCp()" style="padding-left: 2px;">
+                  Check All
+                </button>
+              </td>
+              <td>
+                <button mat-raised-button class="custombtn usa-button" aria-label="Set To Best" title="" id="btnSet"
+                  (click)="setBestScenario()" style="padding-left: 2px;">
+                  Set To Best
+                </button>
+              </td>
+              <td style="padding-left: 0px;">Use CP</td>
+            </tr>
+            <tr>
+              <td>Exposure</td>
+              <td>
+                {{ getExposure() | number:'1.2-2' }}
+              </td>
+              <td>
+                <div align="center">
+                  <input type="checkbox" [(ngModel)]="this.UseCp.Exposure" />
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>Collateral</td>
+              <td>
+                {{ getCollateral() | number:'1.2-2' }}
+              </td>
+              <td>
+                <div align="center">
+                  <input type="checkbox" [(ngModel)]="this.UseCp.Collateral" />
+                </div>
+              </td>
+            </tr>
+            <tr (click)="
+                !dataComplete &&
+                  setParValue(
+                    calculateMargin(
+                      this.CurrentSecurity.Counterparty,
+                      this.CurrentSecurity.Entity,
+                      this.UseCp.Collateral,
+                      this.UseCp.Exposure
+                    )
+                  )
+              ">
+              <td>Total Margin</td>
+              <td [ngStyle]="!checkBestScenario() ? {'border': '1.5px solid red'} : {}">
+                
+                  {{ calculateMargin(this.CurrentSecurity.Counterparty, this.CurrentSecurity.Entity, this.UseCp.Collateral, this.UseCp.Exposure) | number:'1.2-2' }}
+                  
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div *ngIf="isValueNaN(calculateMargin(this.CurrentSecurity.Counterparty, this.CurrentSecurity.Entity, this.UseCp.Collateral, this.UseCp.Exposure))" style="color:red;padding-top:50px;">
+          <u>Warning:</u> <br/>Rounding Amount has not been configured for <br/>this CP in the CSA. Please check and try again.
+        </div>
+         
+      </div>
+      <div class="formbox">
+        <div style="max-height: 500px; overflow-y: auto; border: 1px solid #ccc;">
+          <form [formGroup]="myForm">
+            <table class="table table-striped table-hover">
+            <tr>
+              <th colspan="2">
+                <div style="float: left">
+                  <button mat-raised-button class="custombtn usa-button" aria-label="Remove" title="" id="btnRemove"
+                    [disabled]="adding" (click)="deleteMovement(CurrentSecurity)">
+                    Remove
+                  </button>
+                </div>
+                <div style="float: right">
+                  <button mat-raised-button class="custombtn usa-button" aria-label="Calculate MV" title="" [disabled]="isCalculateMVDisabled" (click)="calculateMV(CurrentSecurity)"  id="btnCalculateMV">
+                    Calculate MV
+                  </button>
+                </div>
+                <div align="center">{{ this.CurrentSecurity.Counterparty }}
+                  {{ this.CurrentSecurity.Cusip }}
+                </div>
+              </th>
+            </tr>
+           
+            <tr>
+              <td>CUSIP</td>
+              <td *ngIf="adding">
+                <igx-input-group>
+                  <input igxInput 
+                         [(ngModel)]="searchTerm" 
+                         placeholder="Type to search CUSIP..."
+                         (input)="onSecuritySearch($event)"
+                         (focus)="showSecurityDropdown = true"
+                         name="CusipSearch" 
+                         [ngModelOptions]="{ standalone: true }"
+                         autocomplete="off" />
+                  <igx-suffix>
+                    <igx-icon (click)="showSecurityDropdown = !showSecurityDropdown">search</igx-icon>
+                  </igx-suffix>
+                </igx-input-group>
+                <div *ngIf="shouldShowDropdown" 
+                     class="security-dropdown"
+                     style="position: absolute; z-index: 1000; background: white; border: 1px solid #ccc; 
+                            max-height: {{dropdownMaxHeight}}; 
+                            overflow-y: {{dropdownOverflowY}}; 
+                            width: 250px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                  <div *ngIf="!hasCash && (!searchTerm || 'cash'.includes(searchTerm.toLowerCase()))"
+                       class="security-item-hover"
+                       style="padding: 8px; cursor: pointer; border-bottom: 1px solid #eee; transition: background-color 0.2s;"
+                       (click)="selectSecurity('Cash')">
+                      Cash
+                  </div>
+                  <div *ngFor="let item of filteredSecurityList" 
+                       class="security-item-hover"
+                       style="padding: 8px; cursor: pointer; border-bottom: 1px solid #eee; transition: background-color 0.2s;"
+                       (click)="selectSecurity(item.Cusip)">
+                    {{ item.Cusip }}
+                  </div>
+                </div>
+                
+              </td>
+              <!--   
+                        | filter
+                          : CurrentSecurity.Counterparty
+                          : CurrentSecuritiesHeld
+                          : collateralBalances
+                          : currentMarginFilter  -->
+              <td *ngIf="!adding">
+                {{ CurrentSecurity.Cusip }}
+              </td>
+            </tr>
+            <tr *ngIf="
+                this.CurrentSecurity.Cusip != 'Cash' &&
+                this.CurrentSecurity.Cusip != 'NA'
+              ">
+              <td>ISIN</td>
+              <td>
+                {{ CurrentSecurity.ISIN }}
+              </td>
+            </tr>
+            <tr *ngIf="
+                this.CurrentSecurity.Cusip != 'Cash' &&
+                this.CurrentSecurity.Cusip != 'NA'
+              ">
+              <td>Security Type</td>
+              <td>
+                {{ this.CurrentSecurity.SecurityType }}
+              </td>
+            </tr>
+            <tr *ngIf="
+                this.CurrentSecurity.Cusip != 'Cash' &&
+                this.CurrentSecurity.Cusip != 'NA'
+              ">
+              <td>Security Name</td>
+              <td>
+                {{ this.CurrentSecurity.SecurityName }}
+              </td>
+            </tr>
+            <tr *ngIf="
+                this.CurrentSecurity.Cusip != 'Cash' &&
+                this.CurrentSecurity.Cusip != 'NA'
+              ">
+              <td>Issue Date</td>
+              <td>
+                {{ this.CurrentSecurity.IssueDate | date : "yyyy-MM-dd" }}
+              </td>
+            </tr>
+            <tr *ngIf="
+                this.CurrentSecurity.Cusip != 'Cash' &&
+                this.CurrentSecurity.Cusip != 'NA'
+              ">
+              <td>Maturity Date</td>
+              <td>
+                {{ this.CurrentSecurity.MaturityDate | date : "yyyy-MM-dd" }}
+              </td>
+            </tr>
+            <tr *ngIf="
+                this.CurrentSecurity.Cusip != 'Cash' &&
+                this.CurrentSecurity.Cusip != 'NA'
+              ">
+              <td>Coupon Rate</td>
+              <td>
+                {{ this.CurrentSecurity.CouponRate }}
+              </td>
+            </tr>
+            <tr *ngIf="this.CurrentSecurity.Cusip != 'NA'">
+              <td>Previous Day's Price</td>
+              <td>
+                {{ this.CurrentSecurity.LastPrice }}
+              </td>
+            </tr>
+            <tr *ngIf="this.CurrentSecurity.Cusip != 'NA'">
+              <td>Min Increment</td>
+              <td>
+                {{ this.CurrentSecurity.MinIncrement }}
+              </td>
+            </tr>
+            <tr *ngIf="this.CurrentSecurity.Cusip != 'NA'">
+              <td>Min Piece Size</td>
+              <td>
+                {{ this.CurrentSecurity.MinPieceSize }}
+              </td>
+            </tr>
+            <tr *ngIf="this.CurrentSecurity.Cusip != 'NA'">
+              <td>Original Face</td>
+              <td>
+                {{ (this.CurrentSecurity.ParValue !== null && this.CurrentSecurity.ParValue !== 0) ?
+                (this.CurrentSecurity.ParValue | number:'1.2-2') : '' }}
+                <!-- {{ (this.CurrentSecurity.ParValue !== null ? this.CurrentSecurity.ParValue : 0) | currency:'':'':'1.2-2'
+                }} -->
+              </td>
+            </tr>
+            <tr>
+              <td>Par Amount</td>
+              <td>
+                <input #inputElement type="text" class="form-control input-par-amount usa-input" 
+                  [class.is-invalid]="myForm.get('ParValue')?.invalid && myForm.get('ParValue')?.touched"
+                  name="ParValue" [(ngModel)]="this.CurrentSecurity.ParValue" 
+                  formControlName="ParValue" format-currency appCommaSeparated 
+                  />
+                
+                <!-- Validation Error Messages -->
+                <div *ngIf="myForm.get('ParValue')?.invalid && myForm.get('ParValue')?.touched" 
+                     class="invalid-feedback d-block">
+                  <div *ngIf="myForm.get('ParValue')?.errors?.['required']" class="text-danger small">
+                    Par Value is required.
+                  </div>
+                  <div *ngIf="myForm.get('ParValue')?.errors?.['minPieceSize']" class="text-danger small">
+                    Par Value must be at least {{ myForm.get('ParValue')?.errors?.['minPieceSize']?.requiredValue | number:'1.2-2' }}.
+                  </div>
+                  <div *ngIf="myForm.get('ParValue')?.errors?.['minIncrement']" class="text-danger small">
+                    Par Value must be a multiple of {{ myForm.get('ParValue')?.errors?.['minIncrement']?.requiredIncrement | number:'1.2-2' }}.
+                  </div>
+                  <div *ngIf="myForm.get('ParValue')?.errors?.['signMismatch']" class="text-danger small">
+                    Par Value must be {{ myForm.get('ParValue')?.errors?.['signMismatch']?.expectedSign }}.
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <tr *ngIf="this.CurrentSecurity.Cusip != 'NA'">
+              <td>MV Haircut</td>
+              <td>
+                {{ this.CurrentSecurity.MV | currency:'':'':'1.2-2' }}
+              </td>
+            </tr>
+          </table>
+        </form>
+        </div>
+      </div>
+      <div class="box2">
+        <div style="max-height: 200px; overflow-y: auto; border: 1px solid #ccc;">
+          <table class="table table-striped table-hover">
+            <tr>
+              <th colspan="3">
+                <div align="center">Current Securities</div>
+              </th>
+            </tr>
+            <tr>
+              <td>Cusip</td>
+              <td>Par Value</td>
+              <td>Market Value</td>
+            </tr>
+            <tr *ngFor="let security of CurrentSecuritiesHeld" (click)="setCurrentSecurity(security, security.Cusip)">
+              <td>{{ security.Cusip }}</td>
+              <td>{{ decimalPipe.transform(security.ParValue, '1.2-2') }}</td>
+              <td>{{ decimalPipe.transform(security.MV, '1.2-2') }}</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>
+                {{ decimalPipe.transform(getCurrentSecuritiesSum("ParValue"), '1.2-2') }}
+              </td>
+              <td>{{ decimalPipe.transform(getCurrentSecuritiesSum("MV"), '1.2-2') }}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="buttonsDialogBox">
+      <span *ngIf="loaders.reports" style="float: left" class="loader"></span>
+      <button mat-raised-button class="custombtn usa-button" style="font-size:12px" (click)="clearSearchAndCloseDialog()">
+        Cancel
+      </button>
+      <button mat-raised-button class="custombtn usa-button" aria-label="sendWire" title="" id="btnSendWire"
+        (click)="sendWireRequest()" *ngIf="CurrentSecurity.Cusip != 'NA'"
+       
+        [disabled]="!isSendWireEnabled" >
+        Send Wire
+      </button>
+       <!-- [disabled]="CurrentSecuritiesHeld.length == 0 || CurrentSecurity?.SendWire" -->
+      <button mat-raised-button class="custombtn usa-button" aria-label="sendTriParty" title="" id="btnSendTri"
+        (click)="sendTripartyMovement()" *ngIf="CurrentSecurity.Cusip != 'NA'"
+        [disabled]="CurrentSecuritiesHeld.length == 0">
+        Send TriParty Movement
+      </button>
+      <button mat-raised-button class="custombtn usa-button" aria-label="sendCollateral" title="" id="btnSendCol"
+        (click)="sendCollateralCall()" *ngIf="CurrentSecurity.Cusip != 'NA'">
+        Send Collateral Call
+      </button>
+      <button mat-raised-button class="custombtn usa-button" aria-label="AddSecurity" title="" id="btnAdd"
+        (click)="addNewSecurity(CurrentSecurity)" *ngIf="CurrentSecurity.Cusip != 'NA'"
+        [disabled]="adding || dataComplete">
+        Add Security
+      </button>
+      <button mat-raised-button class="custombtn usa-button" aria-label="SaveSecurity" title="" id="btnSave" (click)="
+          checkBestAmount(
+            CurrentSecurity.Counterparty,
+            CurrentSecurity.Entity,
+            UseCp.Collateral,
+            UseCp.Exposure
+          ) && saveCollateralMovement(CurrentSecurity)
+        " [disabled]="myForm.invalid || dataComplete">
+        Save Security
+      </button>
+    </div>
+  </div>
+</igx-dialog>
+<igx-dialog #commentDialog [closeOnOutsideSelect]="false">
+  <div class="title-bar">
+    <h2 class="title">Comments</h2>
+    <a class="close-button" (click)="commentDialog.close()" title="Close" aria-label="Close">&#10006;</a>
+  </div>
+  <app-commentdialog [commentData]="currentComment" (save)="saveComment($event)"
+    (close)="closeComment()"></app-commentdialog>
+</igx-dialog>
+<igx-dialog #refreshDialog [closeOnOutsideSelect]="false">
+  <div align="center" style="position: relative">
+    <div class="container" class="refreshDialogue">
+      <form name="RefreshCounterpartyForm">
+        <div class="title-bar">
+          <h2 class="title">Refresh CounterParties</h2>
+          <a class="close-button" (click)="refreshDialog.close()" title="Close" aria-label="Close">&#10006;</a>
+        </div>
+        <table class="table table-striped table-hover custom-table" style="width: 419px;">
+          <tr>
+            <th colspan="3">
+              <div align="center">
+                <b>Select Counterparties</b>
+              </div>
+              <div style="float: right">
+                <button mat-raised-button class="custombtn usa-button" aria-label="SelectAll" title=""
+                  (click)="selectAllRefresh()">
+                  Select All
+                </button>
+              </div>
+            </th>
+          </tr>
+          <tr>
+            <th>
+              <div align="center">Entity</div>
+            </th>
+            <th>
+              <div align="center">Counterparty</div>
+            </th>
+            <th>
+              <div align="center">Refresh</div>
+            </th>
+          </tr>
+          <ng-container *ngFor="let item of currentCounterparties; let i = index">
+            <tr [ngClass]="i % 2 === 0 ? 'custom-row-even' : 'custom-row-odd'">
+              <td class="data-cell">
+                <div align="center">
+                  {{ item.Entity }}
+                </div>
+              </td>
+              <td class="data-cell">
+                <div align="center">
+                  {{ item.Counterparty }}
+                </div>
+              </td>
+              <td class="data-cell">
+                <div align="center">
+                  <input type="checkbox" [(ngModel)]="item.Refresh" name="Refresh" />
+                </div>
+              </td>
+            </tr>
+          </ng-container>
+        </table>
+      </form>
+    </div>
+    <div style="padding-top: 10px">
+      <button mat-raised-button class="custombtn usa-button" aria-label="Refresh" title="" (click)="refreshData()">
+        Refresh</button>&nbsp;&nbsp;&nbsp;
+      <button mat-raised-button class="custombtn usa-button" aria-label="Cancel" title="" (click)="closeCpSelectDialog()">
+        Cancel
+      </button>
+    </div>
+  </div>
+</igx-dialog>
+
+

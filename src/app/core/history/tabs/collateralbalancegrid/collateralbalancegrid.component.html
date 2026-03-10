@@ -1,0 +1,28 @@
+<igx-grid #grid [data]="auditData" [width]="'100%'" [height]="'700px'" [rowHeight]="'20px'" [autoGenerate]="false"
+    [allowFiltering]="true" [displayDensity]="'cosy'">
+    <igx-paginator [perPage]="25">
+        <igx-paginator-content>
+            <igx-page-size></igx-page-size>
+            <div>Total Items:<span class="spanTotalRecords"> {{ auditData.length }}</span></div>
+            <igx-page-nav></igx-page-nav>
+        </igx-paginator-content>
+    </igx-paginator>
+<igx-column [field]="'DataDate'" [header]="'Data Date'" [dataType]="'date'" [resizable]="true" [sortable]="true"
+    [filterable]="true" [width]="'8%'" [pipeArgs]="datePipeArgs"></igx-column>
+<igx-column [field]="'Counterparty'" [header]="'Counterparty'" [dataType]="'string'"></igx-column>
+<igx-column [field]="'Entity'" [header]="'Entity'" [dataType]="'string'"></igx-column>
+<igx-column [field]="'ParValue'" [header]="'Par'" [dataType]="'number'">
+    <ng-template igxCell let-cell="cell">
+        {{ cell.value | formatNumber }}
+    </ng-template>
+</igx-column>
+<igx-column [field]="'Value'" [header]="'MV'" [dataType]="'number'">
+    <ng-template igxCell let-cell="cell">
+        {{ cell.value | formatNumber }}
+    </ng-template>
+</igx-column>
+<igx-column [field]="'Cusip'" [header]="'CUSIP'" [dataType]="'string'"></igx-column>
+<igx-column [field]="'SubstitutionCusip'" [header]="'Sub. CUSIP'" [dataType]="'string'"></igx-column>
+<igx-column [field]="'UpdatedTime'" [header]="'Updated Time'"  dataType="date" [pipeArgs]="dateTimePipeArgs"></igx-column>
+<igx-column [field]="'UpdatedUser'" [header]="'Updated User'" [dataType]="'string'"></igx-column>
+</igx-grid>

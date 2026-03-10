@@ -1,0 +1,62 @@
+.editable-cell {
+    background-color: rgba(116, 171, 216, 0.11);
+}
+
+.savebtn {
+    float: right;
+    position: relative;
+    margin-top: -38px;
+    right: 150px;
+}
+
+.fc-select.form-control{
+    -webkit-appearance: menulist;
+}
+
+.emailbtn {
+    float: right;
+    position: relative;
+    margin-top: -38px;
+}
+
+.datePicker{
+    ::ng-deep {
+            .igx-input-group__bundle {
+                padding-top: 0px;
+            }
+        }
+}
+
+.subHeader {
+    text-align: center;
+    background-image: linear-gradient(rgba(255, 255, 255, 0), rgba(211, 211, 211, .5098039216));
+    border: 1px solid #ccc;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+::ng-deep {
+
+    .igx-grid__tr--odd {
+        background: #f2f2f2 !important;
+    }
+
+    .igx-grid__td--active,
+    .igx-grid-th--active,
+    .igx-grid-th--active .igx-grid-th--selected,
+    .igx-grid-th--active .igx-grid-th--selectable,
+    .igx-grid-summary--active,
+    .igx-grid__group-row--active,
+    .igx-grid__tr-container--active {
+        box-shadow: none !important;
+        /* Remove box-shadow */
+        outline: none !important;
+        /* Remove outline */
+    }
+}
+
+.fc-select.form-control {
+    padding: 1px 10px;
+    font-size: 14px;
+    border-radius: 5px;
+}

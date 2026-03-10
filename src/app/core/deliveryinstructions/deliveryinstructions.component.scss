@@ -1,0 +1,191 @@
+// nav
+ul.nav.nav-tabs {
+    list-style: none;
+    margin-top: 5px;
+    padding: 7px;
+}
+
+/* Style for tab links */
+ul.nav.nav-tabs li a {
+    margin-right: 2px;
+    line-height: 1.42857143;
+    border: 1px solid transparent;
+    border-radius: 4px 4px 0 0;
+    padding: 10px 15px;
+    /* Adjust padding as needed */
+    color: #337ab7;
+    /* Tab text color */
+    text-decoration: none;
+    background-color: transparent;
+}
+
+/* Style for non-active tabs on hover */
+ul.nav.nav-tabs li:not(.active):hover a {
+    background-color: #f5f5f5;
+    /* Grayish background color on hover for non-active tabs */
+    border-color: #ddd;
+    /* Grayish border color on hover for non-active tabs */
+    color: #333;
+    /* Tab text color on hover for non-active tabs */
+    border-bottom: none;
+}
+
+/* Style for the active tab */
+ul.nav.nav-tabs li.active a,
+ul.nav.nav-tabs li.active a:focus,
+ul.nav.nav-tabs li.active a:hover {
+    color: #555;
+    /* Tab text color for active tab */
+    cursor: default;
+    background-color: #fff;
+    /* Background color for active tab */
+    border: 1px solid #ddd;
+    /* Border for active tab */
+    border-bottom: none;
+    cursor: pointer;
+}
+
+div.row.subContent ul.nav.nav-tabs li.disabled-tab a {
+    background-color: #dee2e6;
+    color: #999;
+    cursor: not-allowed;
+}
+
+
+.form-control {
+    height: 26px
+}
+
+.table> :not(caption)>*>* {
+    padding: 3px;
+}
+
+.table td {
+    font-size: 13px;
+}
+
+.table tr {
+    font-size: 13px;
+}
+
+.form-control[disabled],
+.form-control[readonly],
+fieldset[disabled] .form-control {
+    background-color: #eee;
+    opacity: 1;
+}
+
+a {
+    color: #337ab7;
+    text-decoration: none;
+}
+
+select.form-control {
+    -webkit-appearance: menulist;
+    padding: 2px;
+}
+
+.subHeader {
+    background-image: linear-gradient(#fff0, #d3d3d382);
+    font-size: 13px;
+    text-align: center;
+}
+
+.form-control {
+    font-size: 13px;
+}
+
+.input-width{
+    width: 250px;
+}
+
+.subBtns {
+    margin-right: 10px;
+    float: right;
+}
+
+.firstBox {
+    padding: 6px;
+}
+
+.infoIcon{
+    color: #eb2626;
+    cursor: default;
+}
+
+.title-bar {
+    background-color: #337ab7;
+    color: white;
+    border-radius: 6px;
+    padding: 10px;
+    display: flex;
+    width: 100%;
+}
+
+.title {
+    font-size: larger;
+    padding-left: 10px;
+    margin-top: -25px;
+    margin-bottom: -25px;
+}
+
+.button-row {
+    display: flex;
+    padding-left: 13rem;
+}
+
+igx-dialog {
+    z-index: 2000;
+}
+
+.scrollable-container {
+    max-height: 325px;
+    overflow-y: auto;
+}
+
+.scrollable-containerCp {
+    max-height: 405px;
+    overflow-y: auto;
+}
+
+.column-row {
+    display: flex;
+}
+
+.details-column {
+    flex: 1;
+}
+
+.ssi-column {
+    flex: 1;
+}
+
+.manual-column {
+    flex: 1;
+}
+
+.error-message {
+    margin-left: 0px !important;
+}
+
+.newdelivery tr td{
+    width: 50%;
+    padding-left: 10px;
+}
+.divpreformaterrormsg{
+    padding: 0px;
+    height: 10px;
+}
+.divmanual-instruction{
+    padding-top: 10px;
+}
+.divdialogdelivery-instructions{
+    max-height: 80vh;
+    width:600px;
+}
+.td-info-icon{
+    display: flex;
+}
+.div-edit-preformatcodeversion{
+    display: flex;
+}

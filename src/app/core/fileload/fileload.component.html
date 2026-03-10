@@ -1,0 +1,186 @@
+<div class="row">
+    <div class="col-lg-3 col-md-3 col-sm-4 col-12" style="width:300px !important">
+        <table class="firstDiv">
+            <td><label>Data Date</label></td>
+            <td><igx-date-picker class="datePicker" [(ngModel)]="defaultDate" [maxValue]="todayDate"
+                    (closed)="onDateChange()" mode="dropdown" inputFormat="yyyy-MM-dd"></igx-date-picker></td>
+        </table>
+    </div>
+    <div class="col-lg-5 col-md-3 col-sm-4 col-12">
+        <button mat-raised-button class="custombtn usa-button" id="btnPullData" aria-label="Pull Data" title=""
+            (click)="getData()">
+            Pull Data
+        </button>
+        <button mat-raised-button class="custombtn usa-button" style="margin-left: 10px" id="btnExportData" aria-label="Export Data"
+            (click)="openUploadDialog()">
+            Upload File
+        </button>
+    </div>
+</div>
+
+<div class="row" style="margin-top:10px">
+    <div class="grid__wrapper">
+        <igx-grid #grid [width]="'100%'" height="'400px'" [rowHeight]="'20px'" [data]="gridData" [autoGenerate]="false"
+            [allowFiltering]="true" [displayDensity]="'cosy'">
+            <igx-paginator [perPage]="10"></igx-paginator>
+            <igx-column [field]="'Counterparty'" [header]="'Counterparty'" [resizable]="true" [sortable]="true">
+            </igx-column>
+            <igx-column [field]="'Entity'" [header]="'Entity'" [resizable]="true" [sortable]="true">
+            </igx-column>
+            <igx-column [field]="'DataDate'" [header]="'File Date'" [resizable]="true" [sortable]="true" dataType="date" [pipeArgs]="datePipeArgs"></igx-column>
+            <igx-column-group header="Collateral File status">
+                <igx-column [field]="'CollateralStatus'" [header]="'File status'" [resizable]="true" [sortable]="true"
+                    [filterable]="false">
+                </igx-column>
+                <igx-column [field]="'CollateralLastUpdatedTime'" [header]="'Load Time'" [resizable]="true"
+                    [sortable]="true" [filterable]="false" dataType="date" [pipeArgs]="dateTimePipeArgs"></igx-column>
+                <igx-column [field]="'CollateralUpdatedUser'" [header]="'Updated By'" [resizable]="true" [sortable]="true"
+                    [filterable]="false">
+                </igx-column>
+            </igx-column-group>
+            <igx-column-group header="Exposure File status">
+                <igx-column [field]="'ExposureStatus'" [header]="'File status'" [resizable]="true" [sortable]="true"
+                    [filterable]="false">
+                </igx-column>
+                <igx-column [field]="'ExposureLastUpdatedTime'" [header]="'Load Time'" [resizable]="true"
+                    [sortable]="true" [filterable]="false" dataType="date" [pipeArgs]="dateTimePipeArgs"></igx-column>
+                <igx-column [field]="'ExposureUpdatedUser'" [header]="'Updated By'" [resizable]="true" [sortable]="true"
+                    [filterable]="false">
+                </igx-column>
+            </igx-column-group>
+        </igx-grid>
+    </div>
+</div>
+<div class="box">
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Name</th>
+                <th>Source</th>
+                <th>Status</th>
+                <th>Load Time</th>
+                <th>
+                    <button mat-raised-button class="custombtn usa-button" style="float: left" id="btnLoadAll"
+                        aria-label="Load All Files" title="" (click)="loadFiles('All', null)">
+                        Load All Files
+                    </button>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let item of fileLoadData">
+                <td>{{ item.DataDate | date : "yyyy-MM-dd" }}</td>
+                <td>{{ item.Name }}</td>
+                <td>{{ item.Source }}</td>
+                <td>{{ item.Status }}</td>
+                <td>{{ item.LoadTime | date : "yyyy-MM-dd HH:mm:ss" }}</td>
+                <td>
+                    <button mat-raised-button class="custombtn usa-button" style="font-size: 11px"
+                        (click)="loadFiles(item.LoadName, item.Name)" [disabled]="
+              item.LoadName == 'BaseRates' && isValidTicker(item.Name)
+            ">
+                        Load/Reload File
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<igx-dialog #uploadDialog [closeOnOutsideSelect]="false" style="width: 100%">
+    <form name="uploadForm"  #uploadForm="ngForm">
+        <div class="title-bar">
+            <h2 class="title">Upload</h2>
+            <a class="close-button" (click)="closeUploadDialog()" title="Close" aria-label="Close">&#10006;</a>
+        </div>
+        <table style="margin-top: 3px">
+            <tr>
+                <td width="40%">Counterparty</td>
+                <td width="30%">Entity</td>
+                <td width="30%">Type</td>
+            </tr>
+            <tr>
+                <td>
+                    <select [(ngModel)]="SelectedCounterparty" (ngModelChange)="validateUpload()" name="Counterparty"  style="width: 150px" required>
+                        <option *ngFor="let cp of MetaDataNames['Counterparty']" [value]="cp.Name">
+                            {{ cp.Name }}
+                        </option>
+                    </select>
+                    
+                </td>
+                <td>
+                    <select [(ngModel)]="SelectedEntity" (ngModelChange)="validateUpload()" name="Entity" style="width: 150px" required>
+                        <option *ngFor="let item of MetaDataTables['Entity']" [value]="item.Name">
+                            {{ item.Name }}
+                        </option>
+                    </select>
+                   
+                </td>
+                
+                <td>
+                    <select [(ngModel)]="SelectedSource" (ngModelChange)="validateUpload()" name="Source" style="width: 150px" required>
+                        <option>Collateral</option>
+                        <option>Exposure</option>
+                    </select>
+                   
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div *ngIf="uploadForm.controls['Counterparty']?.touched">
+                        <div style="color: red;" *ngIf="uploadForm.controls['Counterparty']?.hasError('required')">Counterparty is required</div>
+                    </div>
+                </td>
+                <td>
+                    <div *ngIf="uploadForm.controls['Entity']?.touched">
+                        <div style="color: red;" *ngIf="uploadForm.controls['Entity']?.hasError('required')">Entity is required</div>
+                    </div>
+                </td>
+                <td>
+                    <div *ngIf="uploadForm.controls['Source']?.touched">
+                        <div style="color: red;" *ngIf="uploadForm.controls['Source']?.hasError('required')">Type is required</div>
+                    </div>
+                </td>  
+            </tr>
+            <tr>
+                <td></td>
+                <td colspan="2">Comment</td>
+            </tr>
+            <tr>
+                <td style="vertical-align: text-top;">                    
+                    <input type="file" class="dataBtn" name="fileUpload" #fileUpload multiple (change)="onFileupload(fileUpload.files)" />
+                    <div style="color: red;">
+                        {{uploadFileError}}
+                    </div>              
+                </td>
+                <td colspan="2">
+                    <textarea style="width: 300px" [(ngModel)]="comments"  name="comments"   required></textarea>
+                    <div *ngIf="uploadForm.controls['comments']?.touched">
+                        <div style="color: red;" *ngIf="uploadForm.controls['comments']?.hasError('required')">Comment is required</div>
+                    </div>
+                </td>
+            </tr>
+            <!-- <tr>
+                <td>
+                    <div style="color: red;">
+                        {{uploadFileError}}
+                    </div>  
+                </td>
+                <td>
+                    <div *ngIf="uploadForm.controls['comments'].touched">
+                        <div style="color: red;" *ngIf="uploadForm.controls['comments']?.hasError('required')">comment is required</div>
+                    </div>
+                </td>
+            </tr> -->
+        </table>
+    </form>
+    <div style="text-align:center">
+        <button mat-raised-button class="custombtn usa-button" style="font-size:11px" (click)="closeUploadDialog()">
+            Cancel
+        </button>
+        <button mat-raised-button class="custombtn usa-button" style="font-size:11px" [disabled]="!uploadForm.valid" (click)="uploadFileToUrl()">
+            Upload
+        </button>
+    </div>
+</igx-dialog>

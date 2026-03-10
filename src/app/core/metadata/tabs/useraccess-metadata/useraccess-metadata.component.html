@@ -1,0 +1,44 @@
+<div align="center" class="type">User Access
+    <button mat-raised-button class="custombtn saveBtn choice usa-button" id="btnSaveData" aria-label="Save Data" (click)="getUsers()">Get Users</button>
+    <button mat-raised-button class="custombtn saveBtn choice usa-button" id="btnSaveData" aria-label="Save Data"
+        (click)="saveUsers()" [disabled]="!metaDataService.isAdmin">Save Users</button> &nbsp; &nbsp;
+</div>
+<div class="grid">
+    <igx-grid #grid [data]="userAccessList" [primaryKey]="'Id'" [rowEditable]="true" [width]="'100%'" [height]="'700px'"
+        [rowHeight]="'20px'" (cellEdit)="handleCellEdit($event)" (cellEditEnter)="handleCellEditEnter($event)"
+        (rowDeleted)="handleRowDeleted($event)" (rowAdded)="handleRowAdded($event)">
+        <igx-paginator [perPage]="22"></igx-paginator>
+        <igx-column field="Id" header="Id" width="10%"></igx-column>
+        <igx-column field="UserName" header="User Name">
+            <ng-template igxCell let-cell="cell" let-value="value">
+                <ng-container *ngIf="isNewRow">
+                    <input type="text" [(ngModel)]="cell.value" class="fc-select form-control usa-input usa-select" [disabled]="!isNewRow" />
+                </ng-container>
+                <ng-container *ngIf="!isNewRow">
+                    {{ cell.value }}
+                </ng-container>
+            </ng-template>
+        </igx-column>
+        <igx-column field="FullName" header="Full Name" class="custom-focused" [editable]="true">
+            <ng-template igxCell let-cell="cell">
+                <input type="texts" [(ngModel)]="cell.value" class="fc-select form-control usa-input usa-select"
+                    [disabled]="!editableCells.includes('FullName')" />
+            </ng-template>
+        </igx-column>
+        <igx-column field="Initials" header="Initials" class="custom-focused" [editable]="true">
+            <ng-template igxCell let-cell="cell">
+                <input type="texts" [(ngModel)]="cell.value" class="fc-select form-control usa-input usa-select"
+                    [disabled]="!editableCells.includes('Initials')" />
+            </ng-template>
+        </igx-column>
+                <igx-column field="ADName" header="AD Name" class="custom-focused" [editable]="true">
+                    <ng-template igxCell let-cell="cell">
+                        <input type="texts" [(ngModel)]="cell.value" class="fc-select form-control usa-input usa-select"
+                            [disabled]="!editableCells.includes('ADName')" />
+                    </ng-template>
+                </igx-column>
+        <igx-action-strip #actionstrip *ngIf="metaDataService.isAdmin">
+            <igx-grid-editing-actions [addRow]="true"></igx-grid-editing-actions>
+        </igx-action-strip>
+    </igx-grid>
+</div>

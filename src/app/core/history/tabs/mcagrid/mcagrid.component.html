@@ -1,0 +1,45 @@
+<igx-grid #grid [data]="auditData" [width]="'100%'" [height]="'700px'" [rowHeight]="'20px'" [autoGenerate]="false"
+    [allowFiltering]="true" [displayDensity]="'cosy'">
+    <igx-paginator [perPage]="25">
+        <igx-paginator-content>
+            <igx-page-size></igx-page-size>
+            <div>Total Items:<span class="spanTotalRecords"> {{ auditData.length }}</span></div>
+            <igx-page-nav></igx-page-nav>
+        </igx-paginator-content>
+    </igx-paginator>
+    <igx-column [field]="'Id'" [header]="'Id'" [dataType]="'number'" [hidden]="true"></igx-column>
+    <igx-column [field]="'AgreementType'" [header]="'Agreement Type'" [width]="'12%'" [dataType]="'string'"></igx-column>
+    <igx-column [field]="'Status'" [header]="'Status'" [width]="'8%'" [dataType]="'string'"></igx-column>
+    <igx-column [field]="'SignedDate'" [header]="'Signed Date'" [dataType]="'date'" [resizable]="true" [sortable]="true"
+        [filterable]="true" [width]="'7%'" [pipeArgs]="datePipeArgs"></igx-column>
+    <igx-column [field]="'SettlementCurrency'" [header]="'Currency'" [width]="'6%'" [dataType]="'string'"></igx-column>
+    <igx-column [field]="'FuturesPriceValuation'" [header]="'Futures Price Valuation'" [width]="'8%'" [dataType]="'string'">
+    </igx-column>
+    <igx-column [field]="'ExchangeTradedContract'" [header]="'Exchg. Traded Contract'" [width]="'8%'" [dataType]="'string'">
+    </igx-column>
+    <igx-column [field]="'AveragingDateDisruption'" [header]="'Averaging Date Disruption'" [width]="'9%'" [dataType]="'string'">
+    </igx-column>
+    <igx-column [field]="'AutomaticExercise'" [header]="'Automatic Exercise'" [width]="'8%'" [dataType]="'string'">
+    </igx-column>
+    <igx-column [field]="'IndexCancellation'" [header]="'Index Cancellation'" [width]="'12%'" [dataType]="'string'"></igx-column>
+    <igx-column [field]="'IndexModification'" [header]="'Index Modification'" [width]="'12%'" [dataType]="'string'"></igx-column>
+    <igx-column [field]="'IndexDisruption'" [header]="'Index Disruption'" [width]="'12%'" [dataType]="'string'"></igx-column>
+    <igx-column [field]="'DeterminingParty'" [header]="'Determining Party'" [width]="'7%'" [dataType]="'string'"></igx-column>
+    <igx-column [field]="'ChangeInLaw'" [header]="'Change In Law'" [width]="'7%'" [dataType]="'string'">
+    </igx-column>
+    <igx-column [field]="'IndexSponsorDisruption'" [header]="'Index Sponsor Disruption'" [width]="'9%'" [dataType]="'string'">
+    </igx-column>
+    <igx-column [field]="'HedgingDisruption'" [header]="'Hedging Disruption'" [width]="'7%'" [dataType]="'string'">
+    </igx-column>
+    <igx-column [field]="'IncreasedCostOfHedging'" [header]="'Increased Cost Of Hedging'" [width]="'9%'" [dataType]="'string'">
+    </igx-column>
+    <igx-column [field]="'LossOfStockBorrow'" [header]="'Loss Of Stock Borrow'" [width]="'9%'" [dataType]="'string'">
+    </igx-column>
+    <igx-column [field]="'IncreasedCostOfStockBorrow'" [header]="'Inc. Cost Of Stock Borrow'" [width]="'10%'" [dataType]="'string'">
+    </igx-column>
+    <igx-column [field]="'NonReliance'" [header]="'Non-Reliance'" [width]="'7%'" [dataType]="'string'">
+    </igx-column>
+    <igx-column [field]="'UpdatedTime'" [header]="'Updated Time'" [width]="'10%'" [dataType]="'date'" [pipeArgs]="dateTimePipeArgs"></igx-column>
+    <igx-column [field]="'UpdatedUser'" [header]="'Updated User'" [width]="'10%'" [dataType]="'string'"></igx-column>
+</igx-grid>
+

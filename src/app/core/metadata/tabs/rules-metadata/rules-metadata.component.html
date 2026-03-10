@@ -1,0 +1,87 @@
+<div align="center" class="type">Rules
+    <button mat-raised-button class="custombtn saveBtn choice usa-button" id="btnSaveData" aria-label="Save Data"
+        (click)="getRules()">Get Users</button>
+        <!-- Save Rules enabled only for Admin and MO -->
+    <button mat-raised-button class="custombtn saveBtn choice usa-button" id="btnSaveData" aria-label="Save Data"
+        (click)="saveRules()" [disabled]="!(metaDataService.isAdmin || metaDataService.isMO)">Save Rules</button> &nbsp; &nbsp;
+</div>
+
+<div class="grid">
+    <igx-grid #grid [data]="rulesList" [primaryKey]="'Id'" [rowEditable]="true" [width]="'100%'" [height]="'700px'"
+        [rowHeight]="'20px'" (cellEdit)="handleCellEdit($event)" (cellEditEnter)="handleCellEditEnter($event)"
+        (rowDeleted)="handleRowDeleted($event)" (rowAdded)="handleRowAdded($event)" [allowFiltering]="true">
+        <igx-paginator [perPage]="25"></igx-paginator>
+        <igx-column field="Id" header="Id"></igx-column>
+        <igx-column field="RuleName" header="Rule Name"></igx-column>
+        <igx-column field="Key" header="Key"></igx-column>
+        <igx-column field="Value" header="Value"></igx-column>
+        <igx-action-strip #actionstrip *ngIf="metaDataService.isAdmin || metaDataService.isMO">
+            <igx-grid-editing-actions [addRow]="true"></igx-grid-editing-actions>
+        </igx-action-strip>
+    </igx-grid>
+</div>
+
+<!-- <igx-dialog #addNewRuleDialog [closeOnOutsideSelect]="false">
+        <div class="title-bar">
+            <h2 class="title">New Rule</h2>
+            <a class="close-button" (click)="closeRuleDialog()" title="Close" aria-label="Close">&#10006;</a>
+        </div>
+        <div class="container" style="width: 500px">
+            <div>
+                <form [formGroup]="rulesForm">
+                    <div class="formbox">
+                        <table>
+                            <tr>
+                                <td>Id</td>
+                                <td>
+                                    <input type="text" class="form-control usa-input" formControlName="RuleName" placeholder="Rule Name" hidden>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Rule Name</td>
+                                <td>
+                                    <input type="text" class="form-control usa-input" formControlName="RuleName"
+                                        placeholder="Rule Name">
+                                    <div *ngIf="rulesForm.get('RuleName').hasError('required') && rulesForm.get('RuleName').touched"
+                                        class="error-message">
+                                        Rule Name is required
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Key</td>
+                                <td>
+                                    <input type="text" class="form-control usa-input" formControlName="Key" placeholder="Key">
+                                    <div *ngIf="rulesForm.get('Key').hasError('required') && rulesForm.get('Key').touched"
+                                        class="error-message">
+                                        Key is required
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Value</td>
+                                <td>
+                                    <input type="text" class="form-control usa-input" formControlName="Value" placeholder="Value">
+                                    <div *ngIf="rulesForm.get('Value').hasError('required') && rulesForm.get('Value').touched"
+                                        class="error-message">
+                                        Value is required
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+        <div class="button-row">
+            <button mat-raised-button class="custombtn usa-button" aria-label="SaveNewRule" title="Save New Rule" id="btnSave"
+                [disabled]="rulesForm.invalid" (click)="saveRules()">
+                Add New Rule
+            </button>
+            <button mat-raised-button class="custombtn usa-button" (click)="closeRuleDialog()">
+                Cancel
+            </button>
+            &nbsp; &nbsp;
+        </div>
+</igx-dialog> -->

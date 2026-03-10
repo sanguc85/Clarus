@@ -1,0 +1,530 @@
+<div class="row">
+  <div class="col-lg-2 col-md-2 col-sm-2 firstDiv">
+    <label>Start Date</label>
+    <igx-date-picker
+      class="datePicker"
+      [(ngModel)]="StartDate"
+      [maxValue]="todayDate"
+      mode="dropdown"
+      (closed)="onDateChange('startDate')"
+      inputFormat="yyyy-MM-dd">
+    </igx-date-picker>
+  </div>
+  <div class="col-lg-2 col-md-2 col-sm-2 firstDiv">
+    <label>End Date</label>
+    <igx-date-picker
+      class="datePicker"
+      [(ngModel)]="EndDate"
+      mode="dropdown"
+      (closed)="onDateChange('endDate')"
+      inputFormat="yyyy-MM-dd">
+    </igx-date-picker>
+  </div>
+  <div class="col-lg-4 col-md-3 col-sm-3">
+    <button mat-raised-button class="custombtn usa-button" id="btnPullData" aria-label="Pull Data" title="" (click)="getData()">
+      Pull Data
+    </button>
+    &nbsp; &nbsp;
+    <button mat-raised-button class="custombtn usa-button" id="btnSaveData" aria-label="Save Data" title="" (click)="saveData()">
+      Save Data
+    </button>
+    &nbsp; &nbsp;
+    <button
+      mat-raised-button
+      class="custombtn usa-button"
+      id="btnExportData"
+      aria-label="Export Data"
+      title=""
+      (click)="exportToExcel()">
+      Export Data
+    </button>
+  </div>
+</div>
+
+<div class="row">
+  <ul class="nav nav-tabs">
+    <li [class.active]="contentTab === 'Summary'">
+      <a (click)="setContent('Summary')" class="tab-link">Monthly Interest Summary</a>
+    </li>
+    <li [class.active]="contentTab === 'Details'">
+      <a (click)="setContent('Details')" class="tab-link">Monthly Interest Details</a>
+    </li>
+    <li [class.active]="contentTab === COUPON_INTEREST_TAB">
+      <a (click)="setContent(COUPON_INTEREST_TAB)" class="tab-link">Security Coupon</a>
+    </li>
+
+  </ul>
+</div>
+
+<div class="row" *ngIf="contentTab === 'Summary'">
+  <div class="grid__wrapper">
+    <igx-grid
+      #grid
+      [width]="'100%'"
+      height="660px"
+      [rowHeight]="'20px'"
+      class="custom-grid"
+      [data]="monthlyInterestData"
+      [groupingExpressions]="group"
+      [allowFiltering]="true"
+      [displayDensity]="'compact'"
+      [autoGenerate]="false"
+      [sortingExpressions]="[{ fieldName: 'Counterparty', dir: 'asc' }]">
+      <igx-paginator [perPage]="20"></igx-paginator>
+      <igx-column [field]="'Id'" [header]="'Id'" [resizable]="true" [sortable]="true" [hidden]="true"> </igx-column>
+      <igx-column [field]="'Counterparty'" [header]="'Counterparty'" [resizable]="true" [sortable]="true" width="8%"> </igx-column>
+      <igx-column [field]="'Entity'" [header]="'Entity'" [resizable]="true" [sortable]="true" width="6%"> </igx-column>
+      <igx-column [field]="'Party'" [header]="'Party'" [resizable]="true" [sortable]="true" width="5%"> </igx-column>
+      <igx-column
+        [field]="'TotalCashCollateral'"
+        [header]="'Total Cash Collateral'"
+        [dataType]="'number'"
+        [resizable]="true"
+        [sortable]="true" width="7%"
+        [pipeArgs]="formatOptions">
+      </igx-column>
+      <igx-column
+        [field]="'Interest'"
+        [header]="'Interest'"
+        [resizable]="true"
+        [dataType]="'number'"
+        [sortable]="true" width="7%"
+        [pipeArgs]="formatOptions">
+      </igx-column>
+      <igx-column [field]="''" [header]="'Create MI Report'" width="8%" [resizable]="true" [sortable]="true"[filterable]="false">
+        <ng-template igxCell let-value let-cell="cell">
+          <div align="center">
+            <button
+              mat-raised-button
+              [disabled]="cell.value >= 0"
+              class="custombtn usa-button"
+              (click)="openSendMIEmailDialog(cell.row.data)"
+              [id]="cell.value">
+              Send MI
+            </button>
+          </div>
+        </ng-template>
+      </igx-column>
+      <igx-column [field]="'Interest'" [header]="'Create Wire'" width="8%" [resizable]="true" [sortable]="true"[filterable]="false">
+        <ng-template igxCell let-value let-cell="cell">
+          <div align="center">
+            <button
+              mat-raised-button
+              [disabled]="cell.value >= 0"
+              class="custombtn usa-button"
+              (click)="sendWire(cell)"
+              aria-label="Send Wire"
+              title=""
+              [id]="cell.value">
+              Send Wire
+            </button>
+          </div>
+        </ng-template>
+      </igx-column>
+      <igx-column field="RecievedfromCP" header="Received from CP" [editable]="true"  width="5%"
+        [resizable]="true" [sortable]="true" [cellClasses]="editableCellcolor">
+        <ng-template igxCellEditor let-cell="cell" let-value>
+          <igx-select class="cell-select" [(ngModel)]="cell.editValue"
+          [igxFocus]="true">
+            <igx-select-item value="Y">Y</igx-select-item>
+            <igx-select-item value="N">N</igx-select-item>
+            <igx-select-item value="N/A">N/A</igx-select-item>
+          </igx-select>            
+        </ng-template>
+      </igx-column>
+      <igx-column field="MatchedwithCP" header="Matched with CP" [editable]="true"  width="5%"
+        [resizable]="true" [sortable]="true" [cellClasses]="editableCellcolor">
+        <ng-template igxCellEditor let-cell="cell" let-value>
+          <igx-select class="cell-select" [(ngModel)]="cell.editValue"
+          [igxFocus]="true">
+            <igx-select-item value="Y">Y</igx-select-item>
+            <igx-select-item value="N">N</igx-select-item>
+            <igx-select-item value="N/A">N/A</igx-select-item>
+          </igx-select>            
+        </ng-template>
+      </igx-column>
+      <igx-column field="Followups" header="Follow ups" [editable]="true"  width="5%"
+        [resizable]="true" [sortable]="true" [cellClasses]="editableCellcolor">
+        <ng-template igxCellEditor let-cell="cell" let-value>
+          <igx-select class="cell-select" [(ngModel)]="cell.editValue">
+            <igx-select-item value="1">1</igx-select-item>
+            <igx-select-item value="2">2</igx-select-item>
+            <igx-select-item value="3">3</igx-select-item>
+          </igx-select>            
+        </ng-template>
+      </igx-column>
+      <igx-column
+        field="MonthlyApproval"
+        header="Monthly Approval"
+        [resizable]="true"
+        [sortable]="true"
+        [dataType]="'boolean'"
+        [groupable]="true" width="8%"
+        [editable]="false" [filterable]="false">
+        <ng-template igxCell let-cell="cell">
+          <input
+            type="checkbox"
+            [checked]="cell.row.data.MonthlyApproval"
+            [(ngModel)]="cell.row.data.MonthlyApproval"
+            (click)="onCheck(cell)" />
+        </ng-template>
+      </igx-column>
+      <igx-column
+        field="SettleDate"
+        header="Settle Date"
+        [dataType]="'date'"
+        [sortable]="true"
+        [editable]="true" width="8%"
+        [resizable]="true"[cellClasses]="editableCellcolor" [pipeArgs]="datePipeArgs"></igx-column>
+      <igx-column
+        field="Reconcile"
+        header="Recon Date"
+        [dataType]="'date'"
+        [sortable]="true"
+        [editable]="true" width="8%"
+        [resizable]="true"[cellClasses]="editableCellcolor" [pipeArgs]="datePipeArgs"></igx-column>
+        
+      <igx-column
+        [field]="'Comment'"
+        [header]="'Comments'"
+        [resizable]="true"
+        [sortable]="true"
+        [editable]="false" width="9%"
+        [groupable]="true"[filterable]="false">
+        <ng-template igxCell let-value let-cell="cell">
+          <div *ngIf="value === null">
+            <a (click)="getCommentDetails(cell)" class="falseLink">Add </a>
+          </div>
+          <div *ngIf="value !== null">
+            <a (click)="getCommentDetails(cell)" class="falseLink">Edit/View</a>
+          </div>
+        </ng-template>
+      </igx-column>
+    </igx-grid>
+  </div>
+</div>
+<div class="row" *ngIf="contentTab === 'Details'">
+  <div class="sub-title-row">
+    <table>
+      <tr>
+        <td><span class="sub-title">Counterparty</span></td>
+        <td>
+          <select [(ngModel)]="Counterparty" (ngModelChange)="setCounterparty()" class="selectDropdown">
+            <option *ngFor="let cp of MetaDataNames['Counterparty']" [value]="cp.Name">{{ cp.Name }}</option>
+          </select>
+        </td>
+        <td><span class="sub-title">Entity</span></td>
+        <td>
+          <select [(ngModel)]="Entity" (ngModelChange)="getData()" class="selectDropdown">
+            <option *ngFor="let entity of MetaDataTables['Entity']" [value]="entity.Name">{{ entity.Name }}</option>
+          </select>
+        </td>
+        <td><span class="sub-title">Rate Type</span></td>
+        <td>
+          <select [(ngModel)]="RateType" (ngModelChange)="getData()" class="selectDropdown">
+            <option>FFR</option>
+            <option>LIBOR</option>
+          </select>
+        </td>
+        <td><span class="sub-title">Calculation Method</span></td>
+        <td>
+          <select
+            [(ngModel)]="CalculationMethod"
+            class="selectDropdown">
+            <option value="Simple">Simple</option>
+            <option value="Compounded">Compounded</option>
+            <option value="SimpleSpread">Simple Spread</option>
+          </select>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div class="grid__wrapper">
+    <igx-grid
+      #detailGrid
+      [width]="'100%'"
+      [rowHeight]="'20px'"
+      height="600px"
+      class="custom-grid"
+      [data]="detailData"
+      [autoGenerate]="false"
+      [allowFiltering]="true"
+      [displayDensity]="'compact'">
+      <igx-paginator [perPage]="20"></igx-paginator>
+      <igx-column [field]="'Id'" [header]="'Id'" [resizable]="true" [sortable]="true" [hidden]="true"> </igx-column>
+      <igx-column
+        [header]="'Accrual Date'"
+        [resizable]="true"
+        [sortable]="true"
+        field="AccrualDate"
+        [filterable]="false" dataType="date" [pipeArgs]="datePipeArgs"></igx-column>
+        
+      <igx-column [field]="'Counterparty'" [header]="'Counterparty'" [resizable]="true" [sortable]="true"> </igx-column>
+      <igx-column [field]="'Entity'" [header]="'Entity'" [resizable]="true" [sortable]="true"> </igx-column>
+      <igx-column
+        [field]="'OpeningBalance'"
+        [header]="'Opening Balance'"
+        [resizable]="true"
+        [dataType]="'number'"
+        [sortable]="true">
+      </igx-column>
+      <igx-column
+        [field]="'CollateralPosted'"
+        [header]="'Posted To CP'"
+        [resizable]="true"
+        [dataType]="'number'"
+        [sortable]="true">
+      </igx-column>
+      <igx-column
+        [field]="'CollateralReceived'"
+        [header]="'Posted By CP'"
+        [resizable]="true"
+        [dataType]="'number'"
+        [sortable]="true">
+      </igx-column>
+      <igx-column [field]="'InterestRate'" [header]="'Rate'" [resizable]="true" [dataType]="'number'" [sortable]="true">
+      </igx-column>
+      <igx-column
+        [field]="'TotalInterestRate'"
+        [header]="'All In Interest Rate'"
+        [resizable]="true"
+        [dataType]="'number'"
+        [sortable]="true">
+      </igx-column>
+      <igx-column
+        [field]="'NumberOfDays'"
+        [header]="'# Of Days'"
+        [resizable]="true"
+        [dataType]="'number'"
+        [sortable]="true">
+      </igx-column>
+      <igx-column
+        [field]="'DailyAccrualAmount'"
+        [header]="'Daily Accrual Amt'"
+        [resizable]="true"
+        [dataType]="'number'"
+        [sortable]="true"
+        [pipeArgs]="formatOptions">
+      </igx-column>
+      <igx-column
+        [field]="'CumulativeInterest'"
+        [header]="'Cumulative Interest'"
+        [resizable]="true"
+        [dataType]="'number'"
+        [sortable]="true"
+        [pipeArgs]="formatOptions">
+      </igx-column>
+    </igx-grid>
+  </div>
+</div>
+<div class="row" *ngIf="contentTab === COUPON_INTEREST_TAB">
+  <div class="col-lg-2 col-md-2 col-sm-2 dataDate coupon-date-section">
+    <label class="coupon-date-label">Date</label>
+    <igx-date-picker class="datePicker couponDatePicker" [(ngModel)]="defaultDate"
+      (ngModelChange)="onDateChange($event)" mode="dropdown" (closed)="getSecurityCouponData()"
+      inputFormat="yyyy-MM-dd">
+    </igx-date-picker>
+  </div>
+  <div class="col-lg-2 col-md-2 col-sm-2 coupon-button-section">
+    <button mat-raised-button class="custombtn usa-button" [disabled]="true">
+      Send To PAM
+    </button>
+  </div>
+  <div class="grid__wrapper">
+    <igx-grid #couponGrid [width]="'100%'" height="660px" [rowHeight]="'20px'" class="custom-grid"
+      [data]="securityCouponData" [autoGenerate]="false" [allowFiltering]="true" [displayDensity]="'compact'">
+      <igx-paginator [perPage]="20"></igx-paginator>
+      <igx-grid-toolbar>
+        <igx-grid-toolbar-title>Security Coupon</igx-grid-toolbar-title>
+        <igx-grid-toolbar-actions>
+          <igx-grid-toolbar-hiding title="Column Hiding" class="hidingTool"></igx-grid-toolbar-hiding>
+        </igx-grid-toolbar-actions>
+      </igx-grid-toolbar>
+      <igx-column [header]="'Currently Pledged'" [resizable]="true" [sortable]="true" [filterable]="true">
+        <ng-template igxCell let-cell="cell">
+          {{ cell.row.data.CurrentlyPledgedAsset ? 'Yes' : 'No' }}
+        </ng-template>
+      </igx-column>
+      <igx-column [field]="'Counterparty'" [header]="'Counterparty'" [resizable]="true" [sortable]="true"> </igx-column>
+      <igx-column [field]="'Entity'" [header]="'Entity'" [resizable]="true" [sortable]="true"> </igx-column>
+      <igx-column [field]="'Cusip'" [header]="'CUSIP'" [resizable]="true" [sortable]="true" [filterable]="true">
+      </igx-column>
+      <igx-column [field]="'ISIN'" [header]="'ISIN'" [resizable]="true" [sortable]="true" [filterable]="true">
+      </igx-column>
+      <igx-column [field]="'SecurityName'" [header]="'Security'" [resizable]="true" [sortable]="true"
+        [filterable]="true"> </igx-column>
+      <igx-column [header]="'Type2'" [resizable]="true" [sortable]="true" [filterable]="true" [hidden]="true"
+        [disableHiding]="false">
+        <ng-template igxCell let-cell="cell">
+          {{ cell.row.data.AdditionalDataObj?.SecurityType2 }}
+        </ng-template>
+      </igx-column>
+      <igx-column [field]="'IssueDate'" [header]="'Issue Date'" [resizable]="true" [sortable]="true" [dataType]="'date'"
+        [pipeArgs]="datePipeArgs" [filterable]="true" [hidden]="true" [disableHiding]="false"> </igx-column>
+      <igx-column [field]="'MaturityDate'" [header]="'Maturity Date'" [resizable]="true" [sortable]="true"
+        [dataType]="'date'" [pipeArgs]="datePipeArgs" [filterable]="true" [hidden]="true" [disableHiding]="false">
+      </igx-column>
+      <igx-column [header]="'BBG_Total Par'" [resizable]="true" [sortable]="true" [dataType]="'number'"
+        [pipeArgs]="formatOptions" [filterable]="true" [hidden]="true" [disableHiding]="false">
+        <ng-template igxCell let-cell="cell">
+          {{ cell.row.data.AdditionalDataObj?.TotalPar }}
+        </ng-template>
+      </igx-column>
+      <igx-column [field]="'CouponRate'" [header]="'Coupon Rate'" [resizable]="true" [sortable]="true"
+        [dataType]="'number'" [filterable]="true"> </igx-column>
+      <igx-column [header]="'Day Convention'" [resizable]="true" [sortable]="true" [filterable]="true">
+        <ng-template igxCell let-cell="cell">
+          {{ cell.row.data.AdditionalDataObj?.DayConvention }}
+        </ng-template>
+      </igx-column>
+      <igx-column [header]="'Previous Coupon Date'" [field]="'PrevCouponDate'" [resizable]="true"
+       [sortable]="true" [dataType]="'date'"[pipeArgs]="datePipeArgs"
+        [filterable]="true">
+      </igx-column>
+      <igx-column [header]="'Next Coupon Date'" [field]="'NextCouponDate'" [resizable]="true"
+       [sortable]="true" [dataType]="'date'"[pipeArgs]="datePipeArgs"
+        [filterable]="true">
+      </igx-column>
+      <igx-column [header]="'Current Coupon Date'" [field]="'ValidCouponDate'" [resizable]="true"
+       [sortable]="true" [dataType]="'date'"[pipeArgs]="datePipeArgs"
+        [filterable]="true">
+      </igx-column>
+      <igx-column  [header]="'BBG_Coupon'" [field]="'ValidCouponAmount'" [resizable]="true" [sortable]="true"
+        [dataType]="'number'" [pipeArgs]="formatOptions" [filterable]="true" [hidden]="true" [disableHiding]="false">
+        <ng-template igxCell let-cell="cell">
+        {{ cell.value | number: formatOptions.digitsInfo }}
+        </ng-template>
+      </igx-column>
+      <igx-column [header]="'SBL_Par'" [field]="'SBLParValue'" [resizable]="true" [sortable]="true" [dataType]="'number'"
+        [pipeArgs]="formatOptions" [filterable]="true">
+      </igx-column>
+      <igx-column [header]="'SBL_Coupon'" [field]="'SBLCoupon'" [resizable]="true" [sortable]="true" [dataType]="'number'"
+        [pipeArgs]="formatOptions" [filterable]="true">
+      </igx-column>
+      <igx-column [header]="'Email to CP'" [resizable]="true" [sortable]="false" [filterable]="false">
+        <ng-template igxCell let-cell="cell">
+          <div class="center-content">
+            <button mat-raised-button class="custombtn usa-button" [disabled]="true">
+              Send Report
+            </button>
+          </div>
+        </ng-template>
+      </igx-column>
+      <igx-column [header]="'Create Wire'" [resizable]="true" [sortable]="false" [filterable]="false">
+        <ng-template igxCell let-cell="cell">
+          <div class="center-content">
+            <button mat-raised-button class="custombtn usa-button" [disabled]="true">
+              Send Wire
+            </button>
+          </div>
+        </ng-template>
+      </igx-column>
+      <igx-column [field]="'ReceivedfromCP'" [header]="'Received from CP'" [resizable]="true" [sortable]="true"
+        [filterable]="true">
+      </igx-column>
+      <igx-column [field]="'MatchedwithCP'" [header]="'Matched with CP'" [resizable]="true" [sortable]="true"
+        [filterable]="true">
+      </igx-column>
+      <igx-column [field]="'FollowUps'" [header]="'Follow Ups'" [resizable]="true" [sortable]="true"
+        [filterable]="false">
+      </igx-column>
+      <igx-column [field]="'Approval'" [header]="'Approval'" [resizable]="true" [sortable]="false" [filterable]="false">
+        <ng-template igxCell let-cell="cell">
+          <span class="approval-checkbox-wrapper">
+            <input type="checkbox" [disabled]="true" />
+          </span>
+        </ng-template>
+      </igx-column>
+      <igx-column [field]="'SettleDate'" [header]="'Settle Date'" [resizable]="true" [sortable]="true"
+        [dataType]="'date'" [pipeArgs]="datePipeArgs" [filterable]="true"> </igx-column>
+      <igx-column [field]="'ReconDate'" [header]="'Recon Date'" [resizable]="true" [sortable]="true" [dataType]="'date'"
+        [pipeArgs]="datePipeArgs" [filterable]="true"> </igx-column>
+      <igx-column [field]="'Comments'" [header]="'Comments'" [resizable]="true" [sortable]="false" [filterable]="false">
+        <ng-template igxCell let-value let-cell="cell">
+          <div>
+            <a class="falseLink">Add</a>
+          </div>
+        </ng-template>
+      </igx-column>
+    </igx-grid>
+  </div>
+</div>
+
+<igx-dialog #commentDialog [closeOnOutsideSelect]="false">
+  <div class="title-bar">
+    <h2 class="title">Comments</h2>
+    <a class="close-button" (click)="commentDialog.close()" title="Close" aria-label="Close">&#10006;</a>
+  </div>
+  <app-commentdialog
+    [commentData]="currentComment"
+    (save)="saveComment($event)"
+    (close)="closeComment()"></app-commentdialog>
+</igx-dialog>
+
+<igx-dialog #sendMIDialog class="igx-dialog-send-mi"
+state="closed"
+closeOnEscape="true"
+showCloseButton="true"
+(onClose)="sendMIDialog.close()">
+<div class="title-bar">
+  <h2 class="title">Email Recipients: Monthly Interest Report</h2>
+  <a class="close-button" (click)="cancelEmail()" title="Close" aria-label="Close">&#10006;</a>
+</div>
+  <div *ngIf="NoCPMailId!=''" class="div-no-data-msg">{{NoCPMailId}}</div>
+  <div *ngIf="NoCPMailId==''" class="email-dialog-content">
+      <form [formGroup]="sendMIDialogForm" class="frm-send-mi">
+        <div class="div-mi-email">
+          <ng-container formArrayName="emailList">
+            <ng-container *ngFor="let control of emailListControls.controls; let i = index;">
+                <igx-input-group [formGroupName]="i" class="send-mi-email-input">
+                    <label igxLabel for="email{{ i }}">Email</label>
+                    <input igxInput name="email{{ i }}" type="email" formControlName="email"
+                        [ngClass]="notRecipientCondition(i) ? 'notRecipient' : 'isRecipient'"
+                        [disabled]="notRecipientCondition(i)" />
+                    <igx-suffix>
+                        <span igxButton="icon" (click)="hideRecipient(i)">
+                            <igx-icon>
+                                cancel
+                            </igx-icon>
+                        </span>
+                    </igx-suffix>
+                </igx-input-group>
+            </ng-container>
+        </ng-container>
+        </div>
+        <div class="div-button">
+          <span></span>
+          <button  mat-raised-button class="custombtn usa-button" (click)="addRecipient()">
+              Add Recipient
+          </button>
+      </div>
+          <div class="div-comments">
+            <textarea class="dialog-textarea usa-textarea" placeholder="Comments" formControlName="Comments"></textarea>
+            <div *ngIf="sendMIDialogForm.get('Comments').invalid && (sendMIDialogForm.get('Comments').dirty ||sendMIDialogForm.get('Comments').touched && sendMIDialogForm.get('Comments').value!==null)"
+                class="errorvalidator">
+                <!-- <small *ngIf="sendMIDialogForm.get('Comments').errors['required']" class="small-error">Comments is required.</small> -->
+                <small *ngIf="sendMIDialogForm.get('Comments').errors['minlength']"class="small-error small-minlength">Minimum length is 5
+                    characters.</small>
+                <small *ngIf="sendMIDialogForm.get('Comments').errors['noLeadingTrailingSpaces']"class="small-error small-dot-check">No leading or
+                    trailing spaces allowed.</small>
+                <small *ngIf="sendMIDialogForm.get('Comments').errors['pattern']"class="small-error">
+                    Only alphanumeric characters are allowed,
+                    with no leading/trailing spaces or only spaces.</small>
+            </div>
+        </div>
+
+      </form>
+  </div>
+  <div igxDialogActions class="div-send-mi-dialog-actions">
+      
+      <!-- <div class=""> -->
+          <button mat-raised-button class="custombtn usa-button" (click)="cancelEmail()" >
+              Cancel
+          </button>
+          <button mat-raised-button class="custombtn usa-button" type="submit"
+              [disabled]="!sendMIDialogForm.valid || isEmailListEmpty() || !isAnyEmailVisible()"
+              (click)="sendMIReportEmail()">Send Mail</button>
+      <!-- </div> -->
+  </div>
+</igx-dialog>
+

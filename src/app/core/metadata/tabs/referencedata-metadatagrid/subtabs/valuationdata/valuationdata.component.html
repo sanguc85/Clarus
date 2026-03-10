@@ -1,0 +1,77 @@
+<button mat-raised-button class="custombtn btnExportData usa-button" id="Export Data" aria-label="Export Data"
+    (click)="exportToExcel()">Export To Excel</button>
+
+    <div class="row">
+        <div class="col-lg-3 col-md-3 col-sm-4 col-12" style="width:300px !important">
+            <table class="firstDiv">
+                <td><label>Start Date</label></td>
+                <td><igx-date-picker class="datePicker" [(ngModel)]="startDate" [maxValue]="todayDate"
+                        mode="dropdown" inputFormat="yyyy-MM-dd"></igx-date-picker></td>
+            </table>
+        </div>
+        <div class="col-lg-5 col-md-3 col-sm-4 col-12">
+            <button mat-raised-button class="custombtn usa-button" id="btnPullData" aria-label="Pull Data" title=""
+                (click)="getValuationData()">
+                Pull Data
+            </button>
+        </div>
+    </div>
+
+    <div class="grid-container">
+        <igx-grid igxPreventDocumentScroll #ValuationData [displayDensity]="'compact'" [data]="valuationData"
+            [width]="'100%'" [height]="'700px'" [rowHeight]="'20px'" [allowFiltering]="true" >
+            <igx-paginator [perPage]="25">
+                <igx-paginator-content>
+                    <igx-page-size></igx-page-size>
+                    <div>Total Items:<span class="spanTotalRecords"> {{ valuationData.length }}</span></div>
+                    <igx-page-nav></igx-page-nav>
+                </igx-paginator-content>
+            </igx-paginator>
+            <igx-column field="ObservationDate" header="Observation Date" width="8%" [filterable]="true" [resizable]="true" [sortable]="true"
+                [groupable]="true" dataType="date" [pipeArgs]="datePipeArgs"></igx-column>
+            
+            <igx-column field="InternalId" header="Internal ID" width="6%" [filterable]="true"  [resizable]="true" [sortable]="true"
+                [groupable]="true"></igx-column>
+            <igx-column field="Tradetype" header="Trade Type" width="7%" [filterable]="true" [resizable]="true" [sortable]="true"
+                [groupable]="true"></igx-column>
+            <igx-column field="InstrumentType" header="Instrument Type" width="8%" [filterable]="true" [resizable]="true" [sortable]="true"
+                [groupable]="true"></igx-column>
+            <igx-column field="Counterparty" header="Counterparty" width="7%" [resizable]="true" [sortable]="true"
+                [groupable]="true"></igx-column>
+            <!-- <igx-column field="Entity" header="Entity" width="6%" [resizable]="true" [sortable]="true"
+                [groupable]="true"></igx-column> -->
+            <igx-column field="TradeDate" header="Trade Date" width="8%" [filterable]="true" [resizable]="true"  [sortable]="true" [groupable]="true" dataType="date" [pipeArgs]="datePipeArgs"></igx-column>
+             
+            <igx-column field="ExpirationDate" header="Expiration Date" width="8%" [filterable]="true" [resizable]="true" [sortable]="true"
+                [groupable]="true" dataType="date" [pipeArgs]="datePipeArgs"></igx-column>
+            
+            <igx-column field="BaseNotional" header="Base Notional" width="8%" [filterable]="true" [resizable]="true" [sortable]="true"
+                [groupable]="true">
+                <ng-template igxCell let-cell="cell">
+                    {{ cell.value != null ? (cell.value | formatNumber) : '' }}
+                </ng-template></igx-column>
+            <igx-column field="Units" header="Units" width="5%">
+                <ng-template igxCell let-cell="cell">
+                    {{ cell.value != null ? (cell.value | formatNumber) : '' }}
+                </ng-template>
+            </igx-column>
+            <igx-column field="InternalModel" header="Internal Model" width="7%" [filterable]="true" [resizable]="true" [sortable]="true"
+                [groupable]="true">
+                <ng-template igxCell let-cell="cell">
+                    {{ cell.value != null ? (cell.value | formatNumber) : '' }}
+                </ng-template></igx-column>
+            <igx-column field="CrossNotional" header="Cross Notional" width="8%" [filterable]="true" [resizable]="true" [sortable]="true"
+                [groupable]="true">
+                <ng-template igxCell let-cell="cell">
+                    {{ cell.value != null ? (cell.value | formatNumber) : '' }}
+                </ng-template></igx-column>
+            <igx-column field="BaseCurrency" header="Base Currency" width="7%" [filterable]="true" [resizable]="true" [sortable]="true"
+                [groupable]="true"></igx-column>
+            <igx-column field="CrossCurrency" header="Cross Currency" width="7%" [filterable]="true" [resizable]="true" [sortable]="true"
+                [groupable]="true"></igx-column>
+            <igx-column field="Price_BaseLeg" header="Price-Base Leg" width="8%" [filterable]="true" [resizable]="true" [sortable]="true"
+                [groupable]="true"></igx-column>
+            <igx-column field="Price_CrossLeg" header="Price-Cross Leg" width="8%" [filterable]="true" [resizable]="true" [sortable]="true"
+                [groupable]="true"></igx-column>
+            </igx-grid>
+            </div>

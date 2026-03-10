@@ -1,0 +1,252 @@
+<div class="row">
+    <div class="col-lg-2 col-md-2 col-sm-2 firstDiv">
+        <label>Start Date</label>
+        <igx-date-picker class="datePicker" [(ngModel)]="startDate" [maxValue]="endDate" #defaultDate mode="dropdown"
+            inputFormat="yyyy-MM-dd">
+        </igx-date-picker>
+    </div>
+    <div class="col-lg-2 col-md-2 col-sm-2 firstDiv">
+        <label>End Date</label>
+        <igx-date-picker class="datePicker" [(ngModel)]="endDate" (ngModelChange)="onDateChange($event)" #defaultDate
+            mode="dropdown" inputFormat="yyyy-MM-dd">
+        </igx-date-picker>
+    </div>
+    <div class="col-lg-4 col-md-3 col-sm-3">
+        <button mat-raised-button class="custombtn usa-button" id="btnPullData" aria-label="Pull Data" (click)="getData()">Pull
+            Data</button> &nbsp; &nbsp;
+        <button mat-raised-button class="custombtn usa-button" id="btnExportData" aria-label="Export Data"
+            (click)="exportToExcel()">Export Data</button> &nbsp; &nbsp;
+        <button mat-raised-button class="custombtn usa-button" id="btnSendReport" aria-label="Send Movement Report"
+            (click)="contentTab === 'estimatedMovement' ? onSendEstimateReport() : sendMovementReport()">
+            Send Report
+        </button>
+    </div>
+</div>
+
+<div class="row">
+    <ul class="nav nav-tabs">
+        <li [class.active]="contentTab === 'collateralMovement'">
+            <a (click)="onTabChange('collateralMovement')" style="cursor: pointer">Collateral Movement</a>
+        </li>
+        <li [class.active]="contentTab === 'collateralSummary'">
+            <a (click)="onTabChange('collateralSummary')" style="cursor: pointer">Collateral Summary</a>
+        </li>
+        <li [class.active]="contentTab === 'estimatedMovement'">
+            <a (click)="onTabChange('estimatedMovement')" class="tab-link">Estimated Movement</a>
+        </li>
+    </ul>
+</div>
+
+<div class="row" *ngIf="contentTab === 'collateralMovement'">
+    <div class="grid__wrapper">
+        <igx-grid #grid [width]="'100%'" [height]="'750px'" [rowHeight]="'20px'" [data]="collateralMovements"
+            [autoGenerate]="false" [allowFiltering]="true" [displayDensity]="'cosy'">
+            <igx-paginator [perPage]="25"></igx-paginator>
+            <igx-column [field]="'Id'" [header]="'Id'" [resizable]="true" [sortable]="true" [hidden]="true">
+            </igx-column>
+            <igx-column [field]="'CollateralMovementType'" [header]="'Collateral MovementType'" [resizable]="true"
+                [filterable]="true" [sortable]="true" [width]="'10%'">
+            </igx-column>
+            <igx-column [field]="'TransactionType'" [header]="'Tran. Type'" [resizable]="true" [sortable]="true"
+                [filterable]="true" [width]="'6%'">
+            </igx-column>
+            <igx-column [field]="'Portfolio'" [header]="'Portfolio'" [resizable]="true" [filterable]="true"
+                [sortable]="true" [width]="'6%'">
+            </igx-column>
+            <igx-column [field]="'Counterparty'" [header]="'Counterparty'" [resizable]="true" [filterable]="true"
+                [sortable]="true" [width]="'7%'">
+            </igx-column>
+            <igx-column [field]="'Entity'" [header]="'Entity'" [resizable]="true" [filterable]="true" [sortable]="true"
+                [width]="'6%'">
+            </igx-column>
+            <igx-column [field]="'Cusip'" [header]="'Cusip'" [resizable]="true" [filterable]="true" [sortable]="true"
+                [width]="'6%'">
+            </igx-column>
+            <igx-column [field]="'SecurityType'" [header]="'Sec. Type'" [resizable]="true" [filterable]="true"
+                [sortable]="true" [width]="'6%'">
+            </igx-column>
+            <igx-column [header]="'Mat. Date'" [field]="'MaturityDate'" [resizable]="true" [sortable]="true"
+                [filterable]="true" [width]="'6%'" dataType="date" [pipeArgs]="datePipeArgs"></igx-column>
+
+            <igx-column [header]="'Yrs. To Mat.'" [field]="'YearsToMaturity'" [dataType]="'number'" [resizable]="true"
+                [sortable]="true" [filterable]="true" [width]="'7%'">
+            </igx-column>
+            <igx-column [header]="'Par'" [field]="'ParValue'" [dataType]="'number'" [resizable]="true" [sortable]="true"
+                [filterable]="true" [width]="'6%'">
+            </igx-column>
+            <igx-column [header]="'Price'" [field]="'Price'" [dataType]="'number'" [resizable]="true" [sortable]="true"
+                [filterable]="true" [width]="'5%'">
+            </igx-column>
+            <igx-column [header]="'Price Date'" [field]="'DataDate'" [resizable]="true" [sortable]="true"
+                [filterable]="true" dataType="date" [pipeArgs]="datePipeArgs"></igx-column>
+            <!-- <igx-column [header]="'Source MV'"> -->
+
+            <!--<igx-column [field]="'SourceMV'" [dataType]="'number'" [header]="'Source MV'" [editable]="true">
+                 <ng-template igxCell let-cell="cell">
+                  {{ cell.value }}
+                </ng-template> -->
+            <!-- <ng-template igxCellEditor let-cell="cell" let-value>
+                  <igx-select [igxFocus]="cell.focused">
+                    <igx-select-item *ngFor="let option of sourceMVItems" [value]="option.key"
+                    (click)="onSourceMVChange($event, cell, option.key)" >{{ option.value }}
+                    </igx-select-item>
+                  </igx-select>
+                </ng-template>
+              </igx-column> -->
+            <igx-column [field]="'SourceMV'" header="Source MV" [editable]="true" [width]="'10%'" [resizable]="true"
+                [sortable]="true" [cellClasses]="editableCellcolor">
+                <ng-template igxCellEditor let-cell="cell" let-value>
+                    <igx-select class="cell-select" [(ngModel)]="cell.editValue" [igxFocus]="true">
+                        <igx-select-item *ngFor="let option of sourceMVItems" [value]="option.value"
+                            (click)="onSourceMVChange($event, cell, option.value)">
+                            {{ option.value }}
+                        </igx-select-item>
+                    </igx-select>
+                </ng-template>
+            </igx-column>
+
+            <igx-column [header]="'MV'" [field]="'MVValue'" [dataType]="'number'" [resizable]="true" [sortable]="true"
+                [filterable]="true" [width]="'6%'">
+                <ng-template igxCell let-value>
+                    {{ value | number:'1.2-2' }}
+                </ng-template>
+            </igx-column>
+            <igx-column [header]="'Haircut %'" [field]="'HaircutPercent'" [dataType]="'number'" [resizable]="true"
+                [sortable]="true" [filterable]="true" [width]="'6%'">
+            </igx-column>
+            <igx-column [header]="'MV After Haircut'" [field]="'HaircutMVDifference'" [dataType]="'number'"
+                [resizable]="true" [sortable]="true" [filterable]="true" [width]="'8%'">
+            </igx-column>
+            <igx-column [field]="'Substitution'" [header]="'Substitution'" [resizable]="true" [sortable]="true"
+                [filterable]="true" [width]="'7%'">
+            </igx-column>
+            <igx-column [header]="'Movement Date'" [field]="'CollateralMovementDate'" [resizable]="true"
+                [sortable]="true" [filterable]="true" [width]="'8%'" dataType="date"
+                [pipeArgs]="datePipeArgs"></igx-column>
+            <igx-column [header]="'Settle Date'" [field]="'SettleDate'" [resizable]="true" [sortable]="true"
+                [filterable]="true" [width]="'7%'" dataType="date" [pipeArgs]="datePipeArgs"></igx-column>
+            <igx-column [header]="'Instructed By'" [field]="'InstructedBy'" [resizable]="true" [filterable]="true"
+                [sortable]="true" [width]="'7%'">
+            </igx-column>
+
+        </igx-grid>
+    </div>
+</div>
+<div class="row" *ngIf="contentTab === 'collateralSummary'">
+    <div class="col-lg-2 col-md-2 col-sm-2 collateralDate">
+        <label>Collateral Date</label>
+        <igx-date-picker class="datePicker" style="margin-left:30px" [(ngModel)]="dataDate"
+            (ngModelChange)="onDateChange($event)" mode="dropdown" (closed)="getData()" inputFormat="yyyy-MM-dd">
+        </igx-date-picker>
+    </div>
+    <div class="grid__wrapper">
+        <igx-grid #summaryGrid [width]="'100%'" [height]="'715px'" [rowHeight]="'20px'" class="summaryGrid"
+            [groupingExpressions]="group" [data]="collateralSummaryData" [autoGenerate]="false" [allowFiltering]="true"
+            [displayDensity]="'cosy'">
+            <igx-paginator [perPage]="25"></igx-paginator>
+            <igx-column [field]="'Id'" [header]="'Id'" [resizable]="true" [sortable]="true" [hidden]="true">
+            </igx-column>
+            <igx-column [header]="'Data Date'" [field]="'DataDate'" [resizable]="true" [sortable]="true"
+                [filterable]="true" dataType="date" [pipeArgs]="datePipeArgs"></igx-column>
+            <igx-column [field]="'Counterparty'" [header]="'Counterparty'" [resizable]="true" [filterable]="true"
+                [sortable]="true">
+            </igx-column>
+            <igx-column [field]="'Entity'" [header]="'Entity'" [resizable]="true" [sortable]="true" [filterable]="true">
+            </igx-column>
+            <igx-column [field]="'Party'" [header]="'Party'" [resizable]="true" [filterable]="true" [sortable]="true">
+            </igx-column>
+            <igx-column [field]="'RatingEventTrigger'" [header]="'Rating Event Trigger'" [resizable]="true"
+                [filterable]="true" [sortable]="true">
+            </igx-column>
+            <igx-column-group header="Collateral Held">
+                <igx-column [field]="'CashCollateralHeld'" [header]="'Cash'" [pipeArgs]="formatOptions"
+                    [dataType]="'currency'" [resizable]="true" [sortable]="true" [filterable]="true">
+                </igx-column>
+                <igx-column [field]="'SecurityCollateralHeld'" [header]="'Security'" [pipeArgs]="formatOptions"
+                    [dataType]="'currency'" [resizable]="true" [sortable]="true" [filterable]="true">
+                </igx-column>
+            </igx-column-group>
+            <igx-column-group header="Collateral In Transit">
+                <igx-column [field]="'CashCollateralInTransit'" [header]="'Cash'" [pipeArgs]="formatOptions"
+                    [dataType]="'currency'" [resizable]="true" [sortable]="true" [filterable]="true">
+                </igx-column>
+                <igx-column [field]="'SecurityCollateralInTransit'" [header]="'Security'" [pipeArgs]="formatOptions"
+                    [dataType]="'currency'" [resizable]="true" [sortable]="true" [filterable]="true">
+                </igx-column>
+            </igx-column-group>
+            <igx-column-group header="Total Collateral">
+                <igx-column [field]="'CashCollateralTotal'" [header]="'Cash'" [pipeArgs]="formatOptions"
+                    [dataType]="'currency'" [resizable]="true" [sortable]="true" [filterable]="true">
+                </igx-column>
+                <igx-column [field]="'SecurityCollateralTotal'" [header]="'Security'" [pipeArgs]="formatOptions"
+                    [dataType]="'currency'" [resizable]="true" [sortable]="true" [filterable]="true">
+                </igx-column>
+            </igx-column-group>
+        </igx-grid>
+    </div>
+</div>
+<!-- Split layout ONLY for the Estimated Movement tab -->
+<div class="estimated-split-container" *ngIf="contentTab === 'estimatedMovement'">
+  <div class="grid-section" [class.collapsed]="estimateEmailDialogVisible">
+    <!-- existing Estimated Movement grid goes here (unchanged) -->
+    <igx-grid #estimatedGrid [width]="'100%'" [height]="'750px'" [rowHeight]="'20px'"
+              [data]="estimatedMovementData" [rowClasses]="rowClasses"
+              [autoGenerate]="false" [allowFiltering]="true" [displayDensity]="'cosy'">
+      <igx-paginator [perPage]="25"></igx-paginator>
+            <igx-column [header]="'Date'" [field]="'Date'" [dataType]="'date'" [resizable]="true" [sortable]="true" [filterable]="false">
+                <ng-template igxCell let-cell="cell">
+                    <span [style.fontWeight]="cell.row.data?.IsFooter ? 'bold' : 'normal'">
+                        <ng-container *ngIf="cell.value; else empty">
+                            {{ cell.value | date:'yyyy-MM-dd' }}
+                        </ng-container>
+                        <ng-template #empty></ng-template>
+                    </span>
+                </ng-template>
+            </igx-column>
+
+
+            <igx-column [field]="'CpName'" [header]="'Counterparty'">
+                <ng-template igxCell let-cell="cell">
+                    <span [style.fontWeight]="cell.row.data?.IsFooter ? 'bold' : 'normal'">{{ cell.value }}</span>
+                </ng-template>
+            </igx-column>
+            <igx-column [field]="'Party'" [header]="'Party'"[filterable]="false">
+            </igx-column>
+            <igx-column [field]="'Entity'" [header]="'Entity'" [filterable]="false">
+                <ng-template igxCell let-cell="cell">
+                    <span [style.fontWeight]="cell.row.data?.IsFooter ? 'bold' : 'normal'">{{ cell.value }}</span>
+                </ng-template>
+            </igx-column>
+            <igx-column [field]="'OutgoingCash'" [header]="'Outgoing Cash'" [dataType]="'currency'" [resizable]="true"
+                [sortable]="true" [filterable]="true">
+                <ng-template igxCell let-cell="cell">
+                    <span class="cell-right" [style.fontWeight]="cell.row.data?.IsFooter ? 'bold' : 'normal'"
+                        [style.color]="'black'">
+                        {{ (cell.value !== null && cell.value !== undefined) ? (cell.value | currency:'USD':'symbol':'1.2-2') : '' }}
+                    </span>
+                </ng-template>
+            </igx-column>
+            <igx-column [field]="'IncomingCash'" [header]="'Incoming Cash'" [dataType]="'currency'" [resizable]="true"
+                [sortable]="true" [filterable]="true">
+                <ng-template igxCell let-cell="cell">
+                    <span class="cell-right" [style.fontWeight]="cell.row.data?.IsFooter ? 'bold' : 'normal'"
+                        [style.color]="'black'">
+                        {{ (cell.value !== null && cell.value !== undefined) ? (cell.value | currency:'USD':'symbol':'1.2-2') : '' }}
+                    </span>
+                </ng-template>
+            </igx-column>
+    </igx-grid>
+  </div>
+
+  <div class="email-section" *ngIf="estimateEmailDialogVisible">
+    <app-email-dialog
+      [title]="'Email Recipients: Estimated Movement Report'"
+      [recipients]="estimateEmailRecipients"
+      [noEmailMessage]="estimateNoEmailMessage"
+      [visible]="estimateEmailDialogVisible"
+      [loading]="estimateEmailSpinner"
+      (cancel)="onEstimateEmailCancel()"
+      (submit)="onEstimateEmailSubmit($event)">
+    </app-email-dialog>
+  </div>
+</div>

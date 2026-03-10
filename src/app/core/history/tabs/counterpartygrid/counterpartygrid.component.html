@@ -1,0 +1,23 @@
+<igx-grid #grid [data]="auditData" [width]="'100%'" [height]="'700px'" [rowHeight]="'20px'" [autoGenerate]="false"
+    [allowFiltering]="true" [displayDensity]="'cosy'">
+    <igx-paginator [perPage]="25">
+        <igx-paginator-content>
+            <igx-page-size></igx-page-size>
+            <div>Total Items:<span class="spanTotalRecords"> {{ auditData.length }}</span></div>
+            <igx-page-nav></igx-page-nav>
+        </igx-paginator-content>
+    </igx-paginator>
+    <igx-column [field]="'Id'" [header]="'Id'"></igx-column>
+    <igx-column [field]="'Counterparty'" [header]="'Counterparty'" [dataType]="'string'"></igx-column>
+    <igx-column [field]="'Guarantor'" [header]="'Guarantor'" [dataType]="'string'"></igx-column>
+    <igx-column [field]="'Description'" [header]="'Counterparty Name'" [dataType]="'string'"></igx-column>
+    <igx-column [field]="'CountryCode'" [header]="'Country'" [dataType]="'string'"></igx-column>
+    <igx-column [field]="'Party'" [header]="'Party'" [dataType]="'string'"></igx-column>
+    <igx-column [field]="'Cleared'" [header]="'Cleared'" [dataType]="'bool'"></igx-column>
+    <igx-column [field]="'Repo'" [header]="'Repo'" [dataType]="'bool'"></igx-column>
+    <igx-column [field]="'Custodian'" [header]="'Custodian'" [dataType]="'string'"></igx-column>
+    <igx-column [field]="'LEI'" [header]="'LEI'" [dataType]="'string'"></igx-column>
+    <igx-column [field]="'UpdatedTime'" [header]="'Updated Time'"   dataType="date" [pipeArgs]="dateTimePipeArgs"></igx-column>
+    <igx-column [field]="'UpdatedUser'" [header]="'Updated User'" [dataType]="'string'"></igx-column>
+</igx-grid>
+

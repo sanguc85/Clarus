@@ -1,0 +1,164 @@
+<!-- begin header -->
+  <div class="row">
+    <div class="col-lg-2 col-md-2 col-sm-4 col-12" style="width:275px !important">
+      <table class="firstDiv">
+        <td><label>Data Date</label></td>
+        <td><igx-date-picker class="datePicker" [(ngModel)]="defaultDate" [maxValue]="todayDate" (closed)="onDateChange()"
+            mode="dropdown" inputFormat="yyyy-MM-dd"></igx-date-picker></td>
+      </table>
+    </div>
+    <div class="col-lg-2 col-md-2 col-sm-4 col-12" style="display: contents;">
+      <label>Counterparty</label> &nbsp; &nbsp;
+      <igx-simple-combo [data]="MetaDataNames['Counterparty']"  placeholder="Choose Counterparty..." displayKey="Name" valueKey="Name"
+       [(ngModel)]="Counterparty" class="combo">
+      </igx-simple-combo>
+    </div>
+    &nbsp;&nbsp;
+    <div class="col-lg-2 col-md-2 col-sm-4 col-12" style="display: contents;">
+     <label>Entity</label> &nbsp;&nbsp;
+    <igx-simple-combo [data]="MetaDataTables['Entity']" placeholder="Choose Entity..." displayKey="Name" valueKey="Name"
+      [(ngModel)]="Entity" class="combo">
+    </igx-simple-combo>
+    </div>
+    <div class="col-lg-2 col-md-2 col-sm-4 col-12" style="width:15rem">
+      <button mat-raised-button class="custombtn usa-button" id="btnPullData" aria-label="Pull Data" title="" (click)="getData()">
+        Pull Data
+      </button>
+      <button mat-raised-button class="custombtn usa-button" style="margin-left: 7px" id="btnExportData" aria-label="Export Data"
+        (click)="exportData()">
+        Export Data
+      </button>
+    </div>
+  </div>
+<!-- end header -->
+<!-- content bar -->
+<div class="row">
+  <ul class="nav nav-tabs">
+    <li [class.active]="contentTab === 'collateral'">
+      <a (click)="onTabChange('collateral')" style="cursor: pointer">Collateral</a>
+    </li>
+    <li [class.active]="contentTab === 'exposure'">
+      <a (click)="onTabChange('exposure')" style="cursor: pointer">Exposure</a>
+    </li>
+  </ul>
+</div>
+<!-- end content bar -->
+
+<div class="row" *ngIf="contentTab === 'collateral'">
+  <div class="collaterGrid">
+    <igx-grid
+      #grid
+      [width]="'100%'"
+      height="750px"
+      [rowHeight]="'20px'"
+      [data]="CounterpartyCollateralData"
+      [autoGenerate]="false"
+      [allowFiltering]="true"
+      [displayDensity]="'cosy'"
+      [sortingExpressions]="sortingExpressions">
+      <igx-paginator [perPage]="25"></igx-paginator>
+      <igx-column [field]="'DataDate'" [header]="'Data Date'" [resizable]="true" [sortable]="true" [groupable]="true"  
+        dataType="date" [pipeArgs]="datePipeArgs"></igx-column>
+      <igx-column
+        [field]="'Counterparty'"
+        [header]="'Counterparty'"
+        [resizable]="true"
+        [sortable]="true"
+        [groupable]="true">
+      </igx-column>
+      <igx-column [field]="'Entity'" [header]="'Entity'" [resizable]="true" [sortable]="true" [groupable]="true">
+      </igx-column>
+      <igx-column
+        [field]="'Value'"
+        [header]="'Value'"
+        [dataType]="'number'"
+        [resizable]="true"
+        [sortable]="true"
+        [groupable]="true">
+        <ng-template igxCell let-cell="cell">
+          <ng-container>
+            {{ cell.value | formatNumber }}
+          </ng-container>
+        </ng-template>
+      </igx-column>
+      <igx-column
+        [field]="'ParValue'"
+        [header]="'Par Value'"
+        [dataType]="'number'"
+        [resizable]="true"
+        [sortable]="true"
+        [groupable]="true">
+        <ng-template igxCell let-cell="cell">
+          <ng-container>
+            {{ cell.value | formatNumber }}
+          </ng-container>
+        </ng-template>
+      </igx-column>
+      <igx-column [field]="'CUSIP'" [header]="'CUSIP'" [resizable]="true" [sortable]="true" [groupable]="true">
+      </igx-column>
+    </igx-grid>
+  </div>
+</div>
+
+<div class="row" *ngIf="contentTab === 'exposure'">
+  <div class="collaterGrid">
+    <igx-grid
+      #grid
+      [width]="'100%'"
+      height="750px"
+      [rowHeight]="'20px'"
+      [data]="CounterPartyExposureData"
+      [autoGenerate]="false"
+      [allowFiltering]="true"
+      [displayDensity]="'cosy'"
+      [sortingExpressions]="sortingExpressions">
+      <igx-paginator [perPage]="25"></igx-paginator>
+      <igx-column [field]="'DataDate'" [header]="'Data Date'" [resizable]="true" [sortable]="true" [groupable]="true"  dataType="date" [pipeArgs]="datePipeArgs"></igx-column>
+      <igx-column [field]="'TradeId'" [header]="'Trade ID'" [resizable]="true" [sortable]="true" [groupable]="true">
+      </igx-column>
+      <igx-column
+        [field]="'Counterparty'"
+        [header]="'Counterparty'"
+        [resizable]="true"
+        [sortable]="true"
+        [groupable]="true">
+      </igx-column>
+      <igx-column [field]="'Entity'" [header]="'Entity'" [resizable]="true" [sortable]="true" [groupable]="true">
+      </igx-column>
+      <igx-column
+        [field]="'MarketValue'"
+        [header]="'Market Value'"
+        [dataType]="'number'"
+        [resizable]="true"
+        [sortable]="true"
+        [groupable]="true">
+        <ng-template igxCell let-cell="cell">
+          <ng-container>
+            {{ cell.value | formatNumber }}
+          </ng-container>
+        </ng-template>
+      </igx-column>
+      <igx-column
+        [field]="'Notional'"
+        [header]="'Notional'"
+        [dataType]="'number'"
+        [resizable]="true"
+        [groupable]="true"
+        [sortable]="true">
+        <ng-template igxCell let-cell="cell">
+          <ng-container>
+            {{ cell.value | formatNumber }}
+          </ng-container>
+        </ng-template>
+      </igx-column>
+      <igx-column [field]="'TradeDate'" [header]="'Trade Date'" [resizable]="true" [sortable]="true" [groupable]="true"  dataType="date" [pipeArgs]="datePipeArgs"></igx-column>
+        
+      <igx-column
+        [field]="'MaturityDate'"
+        [header]="'Maturity Date'"
+        [resizable]="true"
+        [sortable]="true"
+        [groupable]="true" dataType="date" [pipeArgs]="datePipeArgs"></igx-column>
+    </igx-grid>
+  </div>
+</div>

@@ -1,0 +1,57 @@
+.table > tbody > tr > td{
+    padding: 0;
+}
+
+.table th,
+.table tr,
+.table td {
+    font-size: 12px;
+}
+
+.box{
+    margin: 10px;
+}
+
+.grid__wrapper{
+    margin-top: -4px !important;
+    margin: 10px;
+    padding-right: 35px;
+}
+
+ .title-bar {
+     background-color: #337ab7;
+     color: white;
+     border-radius: 6px;
+     padding: 10px;
+     display: flex;
+ }
+
+ .title {
+     font-size: large;
+     padding-left: 10px;
+     margin-top: -25px;
+     margin-bottom: -25px;
+ }
+
+.datePicker {
+  padding-left:10px;
+  margin-top: -20px;
+}
+
+.firstDiv {
+  margin-left: 7px;
+}
+
+ .dataBtn{
+    margin-top: 15px;
+    width:300px;
+ }
+
+ ::ng-deep .igx-grid-thead__item .igx-grid-thead__title {
+     justify-content: center;
+ }
+
+ .buttons{
+    display: flex;
+    margin-top:5px;
+ }

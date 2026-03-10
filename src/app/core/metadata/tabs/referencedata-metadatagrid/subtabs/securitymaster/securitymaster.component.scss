@@ -1,0 +1,227 @@
+::ng-deep {
+    .igx-grid-thead__item .igx-grid-thead__title {
+        justify-content: center;
+    }
+
+    .igx-grid__tr--odd {
+        background: #f2f2f2 !important;
+    }
+}
+
+.firstDiv{
+    margin-top: -38px;
+    display: flex;
+    float: right;
+    margin-right: 15px;
+}
+
+.container {
+    margin-top: 10px;
+}
+
+.title-bar {
+    background-color: #337ab7;
+    color: white;
+    border-radius: 6px;
+    padding: 10px;
+    display: flex;
+    width: 100%;
+}
+
+.title {
+    font-size: larger;
+    padding-left: 10px;
+    margin-top: -25px;
+    margin-bottom: -25px;
+}
+
+.form-control {
+    height: 25px;
+    font-size: 13px;
+}
+
+.table td {
+    font-size: 13px;
+}
+
+.table tr {
+    font-size: 13px;
+}
+
+.form-control[disabled],
+.form-control[readonly],
+fieldset[disabled] .form-control {
+    background-color: #eee;
+    opacity: 1;
+}
+
+
+
+.button-row {
+    display: flex;
+    padding-left: 11rem;
+}
+
+.container {
+    display: flex;
+    flex-direction: row;
+}
+
+.formbox {
+    flex: 2;
+    font-size: 15px;
+    text-align: left;
+    padding: 8px;
+    line-height: 1.42857143;
+
+}
+
+.box {
+    flex: 1;
+    font-size: 15px;
+    position: relative;
+    margin: 0 10px 10px 10px;
+    text-align: left;
+}
+
+/* Even rows */
+.table tr:nth-child(even) {
+    background-color: #ffffff;
+}
+
+/* Odd rows */
+.table tr:nth-child(odd) {
+    // background-color: #f2f2f2;
+    background-color: #f5f5f5;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+}
+
+/* Hover effect */
+.table tr:hover {
+    background-color: #dddddd;
+}
+
+/* Odd rows */
+.table th {
+    background-color: #f2f2f2;
+}
+
+/* Coupon Dialog Styles */
+.coupon-dialog {
+    width: 600px;
+    max-width: 80vw;
+}
+
+.coupon-dialog-content {
+    max-height: 500px;
+    overflow-y: auto;
+    min-width: 500px;
+
+    .coupon-table {
+        width: 100%;
+    }
+}
+
+.coupon-dialog-button-row {
+    margin-top: 15px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* Coupon Payment Count Badge */
+.coupon-count-badge {
+    display: inline-block;
+    min-width: 18px;
+    height: 18px;
+    padding: 1px 4px;
+    background-color: #e8f4fd;
+    color: #337ab7;
+    text-align: center;
+    line-height: 16px;
+    border: 1px solid #337ab7;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+        background-color: #337ab7;
+        color: white;
+    }
+
+    &.disabled {
+        background-color: #f5f5f5;
+        color: #999;
+        border-color: #ddd;
+        cursor: default;
+        
+        &:hover {
+            background-color: #f5f5f5;
+            color: #999;
+        }
+    }
+}
+
+.main-flex-container {
+  display: flex;
+  width: 100%;
+  height: calc(100vh - 140px); /* adjust height if toolbar exists */
+}
+
+.grid-wrapper {
+  flex: 1;
+  min-width: 0;
+  width: 70%;
+}
+
+.coupon-side-panel {
+  width: 30%;
+  max-height: 780px;
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin: 0px 10px;
+  padding: 16px;
+  box-sizing: border-box;
+}
+.coupon-grid-wrapper {
+    flex: 1;
+    overflow-y: auto;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    margin-top: 12px;
+    max-height: 680px;
+}
+
+.panel-header {
+  background-color: #f5f5f5;
+  padding: 12px 16px;
+  font-size: 18px;
+  font-weight: 600;
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.panel-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 35px;
+  cursor: pointer;
+  margin-bottom: 8px;
+}
+
+

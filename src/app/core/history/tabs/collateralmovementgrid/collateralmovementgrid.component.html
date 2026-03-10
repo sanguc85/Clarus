@@ -1,0 +1,46 @@
+<igx-grid #grid [data]="auditData" [width]="'100%'" [height]="'700px'" [rowHeight]="'20px'" [autoGenerate]="false"
+    [allowFiltering]="true" [displayDensity]="'cosy'">
+    <igx-paginator [perPage]="25">
+        <igx-paginator-content>
+            <igx-page-size></igx-page-size>
+            <div>Total Items:<span class="spanTotalRecords"> {{ auditData.length }}</span></div>
+            <igx-page-nav></igx-page-nav>
+        </igx-paginator-content>
+    </igx-paginator>
+    <igx-column [field]="'Id'" [header]="'ID'" [width]="'5%'"></igx-column>
+    <igx-column [field]="'DataDate'" [header]="'Data Date'" [dataType]="'date'" [resizable]="true" [sortable]="true"
+        [filterable]="true" [width]="'6%'"  [pipeArgs]="datePipeArgs"></igx-column>
+    <igx-column [field]="'Counterparty'" [header]="'Counterparty'" [width]="'6%'" [dataType]="'string'"></igx-column>
+    <igx-column [field]="'Entity'" [header]="'Entity'" [width]="'5%'" [dataType]="'string'"></igx-column>
+    <igx-column [field]="'CollateralMovementType'" [width]="'9%'" [header]="'Collateral Movement Type'"
+        [dataType]="'string'"></igx-column>
+    <igx-column [field]="'TransactionType'" [header]="'Tran. Type'" [width]="'5%'" [dataType]="'string'"></igx-column>
+    <igx-column [field]="'Portfolio'" [header]="'Portfolio'" [width]="'5%'" [dataType]="'string'"></igx-column>
+    <igx-column [field]="'Cusip'" [header]="'CUSIP'" [width]="'5%'" [dataType]="'string'"></igx-column>
+    <igx-column [field]="'MaturityDate'" [header]="'Mat. Date'" [dataType]="'date'" [resizable]="true" [sortable]="true"
+        [filterable]="true" [width]="'6%'" [pipeArgs]="datePipeArgs"></igx-column>
+    <igx-column [field]="'ParValue'" [header]="'Par'" [width]="'6%'" [dataType]="'number'">
+        <ng-template igxCell let-cell="cell">
+            {{ cell.value | formatNumber }}
+        </ng-template>
+    </igx-column>
+    <igx-column [field]="'Price'" [header]="'Price'" [width]="'5%'" [dataType]="'number'">
+        <ng-template igxCell let-cell="cell">
+            {{ cell.value | formatNumber }}
+        </ng-template>
+    </igx-column>
+    <igx-column [field]="'MV'" [header]="'MV'" [width]="'6%'" [dataType]="'number'">
+        <ng-template igxCell let-cell="cell">
+            {{ cell.value | number: '1.2-2' }}
+        </ng-template>
+    </igx-column>
+    <igx-column [field]="'SubstitutionCusip'" [header]="'Sub. CUSIP'" [width]="'6%'" [dataType]="'string'"></igx-column>
+    <igx-column [field]="'Substitution'" [header]="'Substitution'" [width]="'5%'" [dataType]="'bool'">
+        <ng-template igxCell let-value>
+            <span [ngClass]="{'substitution-yes': value === 'Yes', 'substitution-no': value === 'No'}">{{ value  }}</span>
+        </ng-template>
+    </igx-column>
+    <igx-column [field]="'UpdatedTime'" [width]="'10%'" [header]="'Updated Time'"    dataType="date" [pipeArgs]="dateTimePipeArgs"></igx-column>
+    <igx-column [field]="'UpdatedUser'" [width]="'10%'" [header]="'Updated User'" [dataType]="'string'"></igx-column>
+</igx-grid>
+

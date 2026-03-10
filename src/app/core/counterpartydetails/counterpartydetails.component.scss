@@ -1,0 +1,297 @@
+.firstDiv {
+    display: flex;
+    align-items: center;
+    position: relative;
+    margin-left: 8px;
+}
+
+.datePickerCp{
+    width:220px !important;
+    margin-top:-23px;
+}
+
+.title-bar {
+    background-color: #337ab7;
+    color: white;
+    border-radius: 6px;
+    padding: 10px;
+    display: flex;
+    width: 100%;
+}
+
+.title {
+    font-size: larger;
+    padding-left: 10px;
+    margin-top: -25px;
+    margin-bottom: -25px;
+}
+.subContacts{
+    text-align: center;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+}
+.button-row {
+    display: flex;
+    padding-left: 9rem;
+}
+
+.firstBox {
+    padding: 6px;
+}
+
+.main-heading {
+    display: flex;
+    background-color: #ddd;
+    border: 1px solid #ccc;
+}
+
+.center-heading {
+    text-align: center;
+    font-weight: bold;
+}
+
+.right-button {
+    margin-right: 10px;
+}
+
+.right-action-btn {
+    margin-right: 10px;
+    float: right;
+}
+
+.action-cell {
+    padding: 6px;
+}
+
+.delete-icon {
+    cursor: pointer;
+    color: #d9534f;
+}
+
+.collateral-type-select {
+    width: 150px;
+}
+
+.grid-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+::ng-deep {
+   
+    .wrapText .igx-grid__td-text{
+        white-space: normal !important;
+        overflow: visible !important;
+    }
+    .igx-grid-thead__item .igx-grid-thead__title {
+        justify-content: center;
+    }
+
+    .igx-grid__td,
+    .igx-grid-thead__title,
+    .igx-grid-th {
+        font-size: 12px;
+    }
+    .igx-dialog__window-content {
+        padding: 10px;
+    } 
+    .igx-grid__tr--odd {
+        background: #f2f2f2 !important;
+      }
+      .selectedrowclass {
+        background-color: rgba(52, 124, 183, 0.25) !important; 
+    }
+}
+
+.nav-item .nav-link.active {
+    background-color: #dddddd;
+    border-top: 1px solid rgb(168, 168, 183);
+    border-left: 1px solid rgb(168, 168, 183);
+    border-right: 1px solid rgb(168, 168, 183);
+    border-radius: 2px;
+}
+
+.nav-tab {
+    flex: 1;
+    padding: 10px 20px;
+    color: #000;
+    cursor: pointer;
+    text-decoration: none;
+    background-color: #fff;
+    transition: color 0.2s, background-color 0.2s;
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    border-top: 1px solid #ddd;
+    border-radius: 4px 4px 0 0;
+}
+
+ .nav-link:hover {
+    background-color: #eee;
+ }
+
+.nav-tab.active {
+    color: #000;
+    background-color: #fff;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ddd;
+    border-radius: 4px 4px 0 0;
+}
+
+.form-control {
+    height: 25px
+}
+
+.table> :not(caption)>*>* {
+    padding: 5px;
+}
+.table td{
+    font-size:13px;
+}
+.table tr{
+    font-size: 13px;
+}
+
+.form-control[disabled],
+.form-control[readonly],
+fieldset[disabled] .form-control {
+    background-color: #eee;
+    opacity: 1;
+}
+
+a {
+    color: #337ab7;
+    text-decoration: none;
+}
+.custom-igx-select {
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    padding: 6px;
+    width: 100%;
+    height: 35px;
+}
+
+.entity-igx-select {
+    width: 160px;
+    margin-left: 50px;
+}
+
+.entityBtn{
+    margin-top: 4px;
+    margin-left: -80px;
+    color:#fff;
+}
+
+/* Add spacing between Cash Wire and DTC columns */
+.table th:nth-child(2),
+.table td:nth-child(2),
+.table th:nth-child(4),
+.table td:nth-child(4),
+.table th:nth-child(6),
+.table td:nth-child(6) {
+    padding-right: 20px;
+}
+
+/* Reset padding for other columns */
+.table th:not(:nth-child(2)):not(:nth-child(4)):not(:nth-child(6)),
+.table td:not(:nth-child(2)):not(:nth-child(4)):not(:nth-child(6)) {
+    padding-right: 10px;
+}
+
+.subHeader {
+    text-align: center;
+    background-image: linear-gradient(white, lightgrey);    
+    font-size: 13px;
+}
+
+.entityHeading{
+    margin-left: 31.5rem;
+    font-weight: bold;
+    font-size: 13px;
+}
+.subBtns{
+    margin-right: 10px;
+    float: right;
+}
+.dialog-content {
+    max-height: 500px; /* Set your desired maximum height */
+    overflow-y: auto; /* Enable vertical scrolling */
+  }
+  /* Add this CSS to your styles.css or a relevant stylesheet */
+ul.nav.nav-tabs {
+    list-style: none;
+    padding: 7px;
+    margin-top: 7px;
+}
+/* Styles from your old UI */
+
+/* Style for tab links */
+ul.nav.nav-tabs li a {
+    margin-right: 2px;
+    line-height: 1.42857143;
+    border: 1px solid transparent;
+    border-radius: 4px 4px 0 0;
+    padding: 10px 15px;
+    /* Adjust padding as needed */
+    color: #337ab7;
+    /* Tab text color */
+    text-decoration: none;
+    background-color: transparent;
+}
+
+/* Style for non-active tabs on hover */
+ul.nav.nav-tabs li:not(.active):hover a {
+    background-color: #f5f5f5;
+    /* Grayish background color on hover for non-active tabs */
+    border-color: #ddd;
+    /* Grayish border color on hover for non-active tabs */
+    color: #333;
+    /* Tab text color on hover for non-active tabs */
+    border-bottom: none;
+}
+
+/* Style for the active tab */
+ul.nav.nav-tabs li.active a,
+ul.nav.nav-tabs li.active a:focus,
+ul.nav.nav-tabs li.active a:hover {
+    color: #555;
+    /* Tab text color for active tab */
+    cursor: default;
+    background-color: #fff;
+    /* Background color for active tab */
+    border: 1px solid #ddd;
+    /* Border for active tab */
+    border-bottom: none;
+}
+.error-message {
+    margin-left: 0px !important;
+}
+.fc-select.form-control.date{
+    
+      margin-left: 0px !important;
+  }
+
+.datе-picker-wrapper {
+    padding: 1rem;
+    max-width: 600px;
+}
+/* Override CSS styles for the date picker */
+.igx-date-picker {
+    /* Adjust margins or padding as needed */
+    margin-bottom: 0; /* Remove bottom margin */
+}
+
+/* Example of adjusting the spacing between month name and week name */
+.igx-calendar-header {
+    /* Adjust margins or padding as needed */
+    margin-bottom: 0; /* Remove bottom margin */
+}
+
+/* Example of adjusting the spacing within the week name row */
+.igx-calendar__weekdays {
+    /* Adjust margins or padding as needed */
+    margin-top: 0; /* Remove top margin */
+    padding-top: 0; /* Remove top padding */
+}
+

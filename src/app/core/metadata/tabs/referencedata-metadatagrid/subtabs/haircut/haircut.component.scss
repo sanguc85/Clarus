@@ -1,0 +1,88 @@
+// nav
+ul.nav.nav-tabs {
+    list-style: none;
+    padding: 7px;
+    margin-top: 5px;
+}
+
+.btnExportData {
+    float: right;
+    position: relative;
+    margin-top: -38px;
+}
+
+/* Style for tab links */
+ul.nav.nav-tabs li a {
+    margin-right: 2px;
+    line-height: 1.42857143;
+    border: 1px solid transparent;
+    border-radius: 4px 4px 0 0;
+    padding: 10px 15px;
+    /* Adjust padding as needed */
+    color: #337ab7;
+    /* Tab text color */
+    text-decoration: none;
+    background-color: transparent;
+}
+
+/* Style for non-active tabs on hover */
+ul.nav.nav-tabs li:not(.active):hover a {
+    background-color: #f5f5f5;
+    /* Grayish background color on hover for non-active tabs */
+    border-color: #ddd;
+    /* Grayish border color on hover for non-active tabs */
+    color: #333;
+    /* Tab text color on hover for non-active tabs */
+    border-bottom: none;
+}
+
+/* Style for the active tab */
+ul.nav.nav-tabs li.active a,
+ul.nav.nav-tabs li.active a:focus,
+ul.nav.nav-tabs li.active a:hover {
+    color: #555;
+    /* Tab text color for active tab */
+    cursor: default;
+    background-color: #fff;
+    /* Background color for active tab */
+    border: 1px solid #ddd;
+    /* Border for active tab */
+    border-bottom: none;
+}
+
+::ng-deep {
+    table.mat-table tr.mat-row,
+    table.mat-table tr.mat-footer-row {
+        height: 30px !important;
+    }
+
+
+    .igx-group-label__icon {
+        display: none;
+    }
+
+    .igx-badge__value {
+        color: white;
+    }
+
+    .igx-grid__tr--odd {
+        background: #f2f2f2 !important;
+    }
+
+    .igx-grid__td,
+    .igx-grid-thead__title,
+    .igx-grid-th {
+        font-size: 14px;
+    }
+    .igx-grid-thead__item .igx-grid-thead__title {
+        justify-content: center;
+    }
+}
+
+.haircut{
+::ng-deep {
+.igx-grid-grouparea {
+        display: none !important;
+    }
+}
+}

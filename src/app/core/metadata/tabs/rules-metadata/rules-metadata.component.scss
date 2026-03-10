@@ -1,0 +1,58 @@
+::ng-deep {
+
+    .igx-grid__tr--odd {
+        background: #f2f2f2 !important;
+    }
+
+    .igx-grid__td--active,
+    .igx-grid-th--active,
+    .igx-grid-th--active .igx-grid-th--selected,
+    .igx-grid-th--active .igx-grid-th--selectable,
+    .igx-grid-summary--active,
+    .igx-grid__group-row--active,
+    .igx-grid__tr-container--active {
+        box-shadow: none !important;
+        /* Remove box-shadow */
+        outline: none !important;
+        /* Remove outline */
+    }
+}
+
+.fc-select.form-control {
+    padding: 1px 10px;
+    font-size: 14px;
+    border-radius: 5px;
+    width: 200px;
+}
+
+.choice {
+    float: right;
+}
+
+.grid {
+    width: 70%;
+    margin-left: 300px;
+}
+
+.type {
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 15px;
+    margin-bottom: 10px
+}
+
+.title-bar {
+    background-color: #337ab7;
+    color: white;
+    border-radius: 6px;
+    padding: 10px;
+    display: flex;
+    width: 100%;
+}
+
+.title {
+    font-size: larger;
+    padding-left: 10px;
+    margin-top: -25px;
+    margin-bottom: -25px;
+}

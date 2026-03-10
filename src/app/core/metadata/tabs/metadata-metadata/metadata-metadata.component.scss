@@ -1,0 +1,34 @@
+.entity-igx-select {
+    width: 200px;
+    margin-left: 5px;
+}
+
+.saveBtn {
+    margin-top: -25px;
+    float: right;
+}
+
+.label {
+    padding-left: 5px;
+    font-weight: bold;
+}
+
+::ng-deep .igx-grid__tr--odd {
+    background: #f2f2f2 !important;
+}
+
+.type {
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: -25px;
+}
+.choice {
+  margin-bottom: 15px;
+}
+.grid-container {
+  width: 75%;
+  margin-left: 300px;
+}
+::ng-deep .igx-grid__tr--odd {
+  background: #f2f2f2 !important;
+}

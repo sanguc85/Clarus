@@ -1,0 +1,19 @@
+<igx-grid #grid [data]="auditData" [width]="'100%'" [height]="'700px'" [rowHeight]="'20px'" [autoGenerate]="false"
+    [allowFiltering]="true" [displayDensity]="'cosy'">
+    <igx-paginator [perPage]="25">
+        <igx-paginator-content>
+            <igx-page-size></igx-page-size>
+            <div>Total Items:<span class="spanTotalRecords"> {{ auditData.length }}</span></div>
+            <igx-page-nav></igx-page-nav>
+        </igx-paginator-content>
+    </igx-paginator>
+    <igx-column [field]="'Id'" [header]="'Id'" [width]="'6%'"></igx-column>
+    <igx-column [field]="'Entity'" [header]="'Entity'" [dataType]="'string'"></igx-column>
+    <igx-column [field]="'LEI'" [header]="'LEI'" [dataType]="'string'"></igx-column>
+    <igx-column [field]="'Account'" [header]="'Account'" [dataType]="'string'"></igx-column>
+    <igx-column [field]="'Custodian'" [header]="'Custodian'" [dataType]="'string'"></igx-column>
+    <igx-column [field]="'AccountType'" [header]="'Account Type'" [dataType]="'string'"></igx-column>
+    <igx-column [field]="'UpdatedTime'" [header]="'Updated Time'" [dataType]="'date'" [pipeArgs]="dateTimePipeArgs"></igx-column>
+    
+    <igx-column [field]="'UpdatedUser'" [header]="'Updated User'" [dataType]="'string'"></igx-column>
+</igx-grid>

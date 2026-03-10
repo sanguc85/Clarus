@@ -1,0 +1,25 @@
+<igx-grid #grid [data]="auditData" [width]="'100%'" [height]="'700px'" [rowHeight]="'20px'" [autoGenerate]="false"
+    [allowFiltering]="true" [displayDensity]="'cosy'">
+    <igx-paginator [perPage]="25">
+        <igx-paginator-content>
+            <igx-page-size></igx-page-size>
+            <div>Total Items:<span class="spanTotalRecords"> {{ auditData.length }}</span></div>
+            <igx-page-nav></igx-page-nav>
+        </igx-paginator-content>
+    </igx-paginator>
+    <igx-column [field]="'Id'" [header]="'ID'" [width]="'6%'"></igx-column>
+    <igx-column [field]="'Status'" [header]="'Status'" [dataType]="'string'"></igx-column>
+    <igx-column [field]="'AgreementType'" [header]="'DocumentationType'" [dataType]="'string'"></igx-column>
+    <igx-column [field]="'Counterparty'" [header]="'Counterparty'" [dataType]="'string'"></igx-column>
+    <igx-column [field]="'Guarantor'" [header]="'Guarantor'" [dataType]="'string'"></igx-column>
+    <igx-column [field]="'SignedDate'" [header]="'Signed Date'" [dataType]="'date'" [resizable]="true" [sortable]="true"
+        [filterable]="true" [width]="'8%'" [pipeArgs]="datePipeArgs"></igx-column>
+    <igx-column [field]="'DocumentationLaw'" [header]="'Documentation Law'" [dataType]="'string'">
+    </igx-column>
+    <igx-column [field]="'Currency'" [header]="'Currency Code'" [dataType]="'string'">
+    </igx-column>
+    <igx-column [field]="'UpdatedTime'" [header]="'Updated Time'" [dataType]="'date'" [pipeArgs]="dateTimePipeArgs"></igx-column>
+    
+    <igx-column [field]="'UpdatedUser'" [header]="'Updated User'" [dataType]="'string'">
+    </igx-column>
+</igx-grid>

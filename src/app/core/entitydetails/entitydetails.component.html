@@ -1,0 +1,252 @@
+<div class="row">
+  <div class="col-lg-3 col-md-3 col-sm-4 col-12" style="width:300px !important">
+    <table class="firstDiv">
+      <td><label>Entity</label></td>
+      <td><select #select [(ngModel)]="currentData.Entity" (ngModelChange)="onEntitySelected()" name="Entity"
+          class="entity-igx-select usa-select" required>
+          <option *ngFor="let entity of MetaDataTables['Entity']" [value]="entity.Name">
+            {{ entity.Name }}
+          </option>
+        </select></td>
+    </table>
+  </div>
+  <div class="col-lg-5 col-md-3 col-sm-4 col-12">
+    <button mat-raised-button class="custombtn usa-button entityBtn" aria-label="New Entity" (click)="openEntityDialog()">
+      Add New Entity
+    </button>
+  </div>
+</div>
+<!-- Your Angular template -->
+<igx-dialog #addNewEntityDialog [closeOnOutsideSelect]="false">
+  <div>
+    <div class="title-bar">
+      <h2 class="title">New Entity</h2>
+      <a class="close-button" (click)="closeEntityDialog()" title="Close" aria-label="Close">&#10006;</a>
+    </div>
+    <div class="container" style="width: 500px">
+      <div class="formbox" [formGroup]="newEntityForm">
+        <table class="table table-striped table-hover">
+          <tr>
+            <th colspan="2">
+              <div align="center"><b>New Entity</b></div>
+            </th>
+          </tr>
+          <tr>
+            <td>Entity</td>
+            <td>
+              <input type="text" class="form-control usa-input" [(ngModel)]="NewEntity.Entity" id="Entity"
+                formControlName="Entity" required />
+              <div *ngIf="
+                  newEntityForm?.get('Entity')?.hasError('required') &&
+                  newEntityForm?.get('Entity')?.touched
+                " class="error-message">
+                Entity is required
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>Description</td>
+            <td>
+              <input type="text" class="form-control usa-input" [(ngModel)]="NewEntity.Description" id="Description"
+                formControlName="Description" />
+            </td>
+          </tr>
+          <tr>
+            <td>Account</td>
+            <td>
+              <input type="text" class="form-control usa-input" [(ngModel)]="NewEntity.Account" id="Account"
+                formControlName="Account" />
+            </td>
+          </tr>
+          <tr>
+            <td>Account Type</td>
+            <td>
+              <select class="usa-select" #select [(ngModel)]="NewEntity.AccountType" formControlName="AccountType" required
+                [ngClass]="'custom-igx-select'">
+                <option *ngFor="let entity of MetaDataTables['EntityAccountType']" [value]="entity.Name">
+                  {{ entity.Name }}
+                </option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>Custodian</td>
+            <td>
+              <input type="text" class="form-control usa-input" [(ngModel)]="NewEntity.Custodian" id="Custodian"
+                formControlName="Custodian" />
+            </td>
+          </tr>
+          <tr>
+            <td>LEI</td>
+            <td>
+              <input type="text" class="form-control usa-input" [(ngModel)]="NewEntity.LEI" id="LEI" formControlName="LEI" />
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <div class="button-row">
+      <button mat-raised-button class="custombtn usa-button" aria-label="SaveNewEntity" title="Save New Entity" id="btnSave"
+        [disabled]="newEntityForm.invalid" (click)="saveNewEntity()">
+        Save New Entity
+      </button>
+      <button mat-raised-button class="custombtn usa-button" (click)="closeEntityDialog()">
+        Cancel
+      </button>
+      &nbsp; &nbsp;
+    </div>
+  </div>
+</igx-dialog>
+<div id="layout">
+  <div class="firstBox">
+    <igx-grid #grid [data]="gridData" [width]="'100%'" [height]="'155px'" [rowHeight]="'20px'" [autoGenerate]="false"
+      [displayDensity]="'cosy'" [hideRowSelectors]="true"  [rowSelection]="'single'" (rowSelectionChanging)="onCellClick($event)" [rowClasses]="rowClasses">
+      <igx-column field="Entity" header="Entity"></igx-column>
+      <igx-column field="Counterparty" header="Counterparty"></igx-column>
+      <igx-column field="CounterpartyDescription" header="Counterparty Name"></igx-column>
+      <igx-column field="Guarantor" header="Guarantor"></igx-column>
+      <igx-column field="ISDAStatus" header="ISDA Status"></igx-column>
+      <igx-column field="DocumentationType" header="Documentation Type"></igx-column>
+      <igx-column field="LEI" header="LEI"></igx-column>
+      <igx-column field="SignedDate" header="Signed Date" dataType="date" [pipeArgs]="datePipeArgs"></igx-column>
+      <igx-column field="CSAStatus" header="CSA Status"></igx-column>
+
+    </igx-grid>
+  </div>
+
+
+  <div class="firstBox">
+    <div class="col-lg-4 col-md-4 col-sm-4" style="background-image: linear-gradient(white, lightgrey);">
+      <span class="entityHeading">{{ currentEntity }}</span>
+      <button mat-raised-button class="custombtn usa-button" style="float:right" (click)="saveData()">
+        Save
+      </button>
+    </div>
+
+    <div class="grid-container">
+      <!-- Focus Data -->
+      <igx-grid #focusGrid [data]="focusData" [primaryKey]="'Id'" [width]="'33.5%'" [height]="'160px'"
+        [rowHeight]="'20px'" [autoGenerate]="false" [displayDensity]="'cosy'" (cellEdit)="handleCellEdit($event)">
+        <igx-column field="Entity" header="Entity" [width]="'13%'"></igx-column>
+        <igx-column field="LEI" header="LEI" [width]="'33%'" [editable]="true"></igx-column>
+        <igx-column field="Account" header="Account" [width]="'15%'" [editable]="true"></igx-column>
+        <igx-column field="Custodian" header="Custodian" [width]="'18%'" [editable]="true"></igx-column>
+        <igx-column field="AccountType" header="Account Type" [editable]="true">
+          <!-- Specify the igx-select editor for editing -->
+          <ng-template igxCellEditor let-cell="cell" let-value="value">
+            <igx-select [(ngModel)]="cell.value">
+              <igx-select-item *ngFor="let entity of MetaDataTables['EntityAccountType']" [value]="entity.Name">
+                {{ entity.Name }}
+              </igx-select-item>
+            </igx-select>
+          </ng-template>
+        </igx-column>
+      </igx-grid>
+      <!-- RatingData -->
+      <igx-grid #ratingGrid [data]="ratingData" [width]="'66%'" [height]="'180px'" [rowHeight]="'20px'"
+        [autoGenerate]="false" [displayDensity]="'cosy'" style="margin-top:-20px">
+        <igx-column-group header="Rating">
+          <igx-column-group>
+            <igx-column field="Guarantor" header="Guarantor"></igx-column>
+            <igx-column field="Entity" header="Counterparty"></igx-column>
+          </igx-column-group>
+          <igx-column-group header="S&P">
+            <igx-column field="SnPRating" header="Rating" width="100px"></igx-column>
+            <igx-column field="SnPOutlook" header="OutLook" width="100px"></igx-column>
+            <igx-column field="SnPAsOfDate" header="As Of Date" width="120px" dataType="date" [pipeArgs]="datePipeArgs"></igx-column>
+          </igx-column-group>
+
+          <igx-column-group header="Moody's">
+            <igx-column field="MoodysRating" header="Rating" width="100px"></igx-column>
+            <igx-column field="MoodysOutlook" header="OutLook" width="100px"></igx-column>
+            <igx-column field="MoodysAsOfDate" header="As Of Date" width="120px" dataType="date" [pipeArgs]="datePipeArgs"></igx-column>
+          </igx-column-group>
+
+          <igx-column-group header="Fitch">
+            <igx-column field="FitchRating" header="Rating" width="100px"></igx-column>
+            <igx-column field="FitchOutlook" header="OutLook" width="100px"></igx-column>
+            <igx-column field="FitchAsOfDate" header="As Of Date" width="120px" dataType="date" [pipeArgs]="datePipeArgs"></igx-column>
+          </igx-column-group>
+        </igx-column-group>
+
+      </igx-grid>
+    </div>
+  </div>
+
+  <div class="row" style="margin-top: 10px;">
+    <ul class="nav nav-tabs">
+      <li [class.active]="contentTab === 'deliveryInstructions'">
+        <a (click)="onTabChange('deliveryInstructions')" style="cursor: pointer">Delivery Instructions</a>
+      </li>
+      <li [class.active]="contentTab === 'contacts'">
+        <a (click)="onTabChange('contacts')" style="cursor: pointer">Contacts</a>
+      </li>
+    </ul>
+  </div>
+
+  <app-deliveryinstructions *ngIf="contentTab === 'deliveryInstructions'"
+    [selectedEntity]="currentData.Entity"></app-deliveryinstructions>
+  <app-contacts *ngIf="contentTab === 'contacts'" [contacts]="contactObj"(refreshContacts)="handleRefreshContacts()"></app-contacts>
+  <!-- <div class="row subContent" *ngIf="contentTab === 'contacts'">
+      <form #contactsForm="ngForm" autocomplete="off">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th class="subHeader" colspan="5">
+                <b>Contacts</b>
+                <button mat-raised-button class="custombtn usa-button" style="margin-right: 10px; float: right;"
+                  class="btn btn-xs btn-primary usa-button" (click)="enableContacts()">
+                  {{ contactsEnabled ? 'Disable Edit' : 'Edit' }}
+                </button>
+                <button mat-raised-button class="custombtn usa-button" style="margin-right: 10px; float: right;"
+                  [disabled]="!contactsEnabled" (click)="saveContacts()">
+                  Save
+                </button>
+                <button mat-raised-button class="custombtn usa-button" style="margin-right: 10px; float: right;"
+                  [disabled]="!contactsEnabled" (click)="addContact()">
+                  Add
+                </button>
+              </th>
+            </tr>
+            <tr class="subContacts">
+              <th>Position</th>
+              <th>Name</th>
+              <th>Phone Number</th>
+              <th>Email</th>
+              <th>Comment</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of Contacts; let i = index">
+              <td>
+                <input type="text" class="form-control usa-input" (change)="setCurrentEdit()" [readonly]="!contactsEnabled"
+                  [disabled]="!contactsEnabled" [(ngModel)]="item.Position" [name]="'Position_' + i" />
+              </td>
+              <td>
+                <input type="text" class="form-control usa-input" (change)="setCurrentEdit()" [readonly]="!contactsEnabled"
+                  [disabled]="!contactsEnabled" [(ngModel)]="item.Name" [name]="'Name_' + i" />
+              </td>
+              <td>
+                <input type="text" class="form-control usa-input" (change)="setCurrentEdit()" [readonly]="!contactsEnabled"
+                  [disabled]="!contactsEnabled" [(ngModel)]="item.PhoneNumber" [name]="'PhoneNumber_' + i" />
+              </td>
+              <td>
+                <input type="email" class="form-control email usa-input" [name]="'Email_' + i" (change)="setCurrentEdit()"
+                  *ngIf="contactsEnabled" [(ngModel)]="item.Email" />
+                <span style="color:red"
+                  *ngIf="contactsForm && contactsForm.controls['Email_' + i]?.hasError('email') && contactsForm.controls['Email_' + i]?.dirty">
+                  Invalid
+                </span>
+                <a *ngIf="!contactsEnabled" [href]="'mailto:' + item.Email">{{ item.Email }}</a>
+              </td>
+              <td>
+                <input type="text" class="form-control usa-input" (change)="setCurrentEdit()" [readonly]="!contactsEnabled"
+                  [disabled]="!contactsEnabled" [(ngModel)]="item.Comment" [name]="'Comment_' + i" />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </form>
+    </div> -->
+
+</div>

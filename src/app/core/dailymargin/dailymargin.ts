@@ -1,0 +1,33 @@
+export interface dailyMargin {
+    Id?:number;
+    DataDate:Date;
+    AsOfDate:Date;
+    Counterparty:string;
+    Entity:string;
+    Party:string;
+    Portfolio:string;
+    Exposure?:number;
+    ThresholdAmount?:number;
+    CollateralizedMTM?:number;
+    CollateralValue ?:number;
+    MinTransfer?:number;
+    RoundingAmount?:number;
+    MarginCalculation?:number;
+    TotalMargin?:number;
+    InternalAction:string;
+    CounterpartyMargin?:number;
+    CounterpartyMatchPercent?:number;
+    CounterpartyMatchDollar?:number;
+    MarginDifference?:number;
+    CollateralMovementType:string;
+    CollateralStatus:string;
+    CollateralMovedIn?:number;
+    CollateralMovedOut?:number;
+    CollateralMovementDate?:Date;
+    Comment:string;
+    SettlementStatusDate?:Date;
+    CrossCheck?:Boolean;
+    CrossCheckComment:string;
+    Complete:Boolean;
+    LastUpdatedTime:Date;
+}

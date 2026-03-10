@@ -1,0 +1,194 @@
+<div class="firstDiv">
+    <button mat-raised-button class="custombtn addSecurityMasterbtn usa-button" id="btnExportData" aria-label="Export Data"
+        (click)="openSecurityMasterDialog()" [disabled]="!metaDataService.isMO">Update Currently Pledged</button>
+
+    <button mat-raised-button class="custombtn btnExportData usa-button" id="Export Data" aria-label="Export Data"
+        (click)="exportToExcel()">Export To Excel</button>
+</div>
+
+<div class="main-flex-container">
+  <div class="grid-wrapper" [class.expanded]="showCouponPanel">
+<igx-grid #securityMaster [data]="securityMasterData" [width]="'100%'" [height]="'780px'" [rowHeight]="'20px'" [allowFiltering]="true">
+    <igx-grid-toolbar>
+        <igx-grid-toolbar-actions>
+            <igx-grid-toolbar-hiding title="Column Hiding" class="columnHidingIcon"></igx-grid-toolbar-hiding>
+        </igx-grid-toolbar-actions>
+    </igx-grid-toolbar>
+    <igx-paginator [perPage]="28">
+        <igx-paginator-content>
+            <igx-page-size></igx-page-size>
+            <div>Total Items:<span class="spanTotalRecords"> {{ securityMasterData.length }}</span></div>
+            <igx-page-nav></igx-page-nav>
+        </igx-paginator-content>
+    </igx-paginator>
+    <igx-column field="Cusip" header="Cusip"></igx-column>
+    <igx-column field="ISIN" header="ISIN"></igx-column>
+    <igx-column field="SecurityName" header="Security" width="13%"></igx-column>
+    <igx-column field="SecurityType" header="Type"></igx-column>
+    <igx-column header="Type 2">
+      <ng-template igxCell let-cell="cell">
+        {{ cell.row.data.AdditionalDataObj?.SecurityType2 || '-' }}
+      </ng-template>
+    </igx-column>
+    <igx-column field="IssueDate" header="Issue Date" dataType="date" [pipeArgs]="datePipeArgs"></igx-column>
+    
+    <igx-column field="MaturityDate" header="Maturity" dataType="date" [pipeArgs]="datePipeArgs" [sortable]="true"></igx-column>
+    <igx-column header="TotalPar">
+      <ng-template igxCell let-cell="cell">
+        {{ cell.row.data.AdditionalDataObj?.TotalPar || 0 }}
+      </ng-template>
+    </igx-column>
+    <igx-column field="CouponRate" header="Coupon"></igx-column>
+    <igx-column header="Previous Coupon Date" [hidden]="true" dataType="date" [pipeArgs]="datePipeArgs">
+      <ng-template igxCell let-cell="cell">
+        {{ cell.row.data.AdditionalDataObj?.PrevCouponDate ? (cell.row.data.AdditionalDataObj?.PrevCouponDate | date: datePipeArgs.format) : '-' }}
+      </ng-template>
+    </igx-column>
+
+    <igx-column header="Next Coupon Date" [sortable]="true" dataType="date" [pipeArgs]="datePipeArgs">
+      <ng-template igxCell let-cell="cell">
+        {{ cell.row.data.AdditionalDataObj?.NextCouponDate ? (cell.row.data.AdditionalDataObj?.NextCouponDate | date: datePipeArgs.format) : '-' }}
+      </ng-template>
+    </igx-column>
+    <igx-column header="Coupon Payments">
+      <ng-template igxCell let-cell="cell">
+        <span
+          class="coupon-count-badge"
+          [class.disabled]="!(cell.row.data.AdditionalDataObj?.CouponPayment?.length)"
+          (click)="openCouponDialog(cell.row.data)">
+          {{ cell.row.data.AdditionalDataObj?.CouponPayment?.length || 0 }}
+        </span>
+      </ng-template>
+    </igx-column>
+    <igx-column header="Day Convention" [hidden]="true">
+      <ng-template igxCell let-cell="cell">
+        {{ cell.row.data.AdditionalDataObj?.DayConvention || '-' }}
+      </ng-template>
+    </igx-column>
+    <igx-column field="MinIncrement" header="Min Increment"></igx-column>
+    <igx-column field="MinPieceSize" header="Min Piece Size"></igx-column>
+    <igx-column field="CurrentlyPledgedAsset" header="Currently Pledged">
+        <ng-template igxCell let-cell="cell">
+            {{ cell.value ? 'Yes' : 'No' }}
+        </ng-template>
+    </igx-column>
+    <igx-column field="OriginalBuildDate" header="Build Date" [dataType]="'date'" [pipeArgs]="datePipeArgs" [sortable]="true"></igx-column>
+    <igx-column header="Issuer" [hidden]="true">
+      <ng-template igxCell let-cell="cell">
+        {{ cell.row.data.AdditionalDataObj?.Issuer || '-' }}
+      </ng-template>
+    </igx-column>
+    <igx-column header="Security Desc" [hidden]="true">
+      <ng-template igxCell let-cell="cell">
+        {{ cell.row.data.AdditionalDataObj?.SecurityDescription || '-' }}
+      </ng-template>
+    </igx-column>
+    <igx-column header="Market Sector" [hidden]="true">
+      <ng-template igxCell let-cell="cell">
+        {{ cell.row.data.AdditionalDataObj?.MarketSector || '-' }}
+      </ng-template>
+    </igx-column>
+</igx-grid>
+</div>
+<!--Right Side Panel with its own IGX GRID -->
+<div class="coupon-side-panel" *ngIf="showCouponPanel">
+  <div class="panel-header">
+    <span class="panel-title">Coupon Payments – {{ selectedSecurityCusip }}</span>
+    <button class="close-btn usa-button" (click)="closeCouponPanel()">×</button>
+  </div>
+<div class="coupon-grid-wrapper">
+  <igx-grid
+    [data]="selectedCouponPayments"
+    [height]="'100%'"
+    [rowHeight]="'28px'"
+    [width]="'100%'"
+    [allowFiltering]="false"
+    [autoGenerate]="false">
+    
+    <igx-column field="BC_DT" header="Payment Date" dataType="date">
+      <ng-template igxCell let-cell="cell">
+        {{ cell.value | date:'yyyy-MM-dd' }}
+      </ng-template>
+    </igx-column>
+
+    <igx-column field="BC_DES_CASH_FLOW_CPN_AMT" header="Coupon Amount">
+      <ng-template igxCell let-cell="cell">
+        {{ cell.value | number:'1.2-2' }}
+      </ng-template>
+    </igx-column>
+
+    <igx-column field="SW_VAL_PREMIUM" header="Principal">
+      <ng-template igxCell let-cell="cell">
+        {{ cell.value | number:'1.2-2' }}
+      </ng-template>
+    </igx-column>
+
+  </igx-grid>
+</div>
+  <div *ngIf="!selectedCouponPayments?.length" class="no-data-msg">
+    No coupon payments available.
+  </div>
+</div>
+
+<igx-dialog #addOrRemoveSecurityMasterDialog [closeOnOutsideSelect]="false">
+    <div>
+        <div class="title-bar">
+            <h2 class="title">Add And Remove Securities</h2>
+            <a class="close-button" (click)="closeSecurityMasterDialog()" title="Close" aria-label="Close">&#10006;</a>
+        </div>
+        <div class="container" style="width: 500px;overflow:auto; height:500px;">
+            <div class="formbox" #securityMasterForm>
+                <table class="table table-striped table-hover" style="margin-bottom:25px">
+                    <tr>
+                        <th colspan="2">
+                            <div align="center">
+                                <b>Select Securities</b>
+                            </div>
+                        </th>
+                    </tr>
+                    <tr>
+                        <td>Filter:</td>
+                        <td><input type="text" [(ngModel)]="cusipSearch" class="form-control usa-input"
+                                style="width:200px; height:25px" (input)="applyFilter()" /></td>
+                    </tr>
+                    <tr>
+                        <th>
+                            <div align="center">
+                                Cusip
+                            </div>
+                        </th>
+                        <th>
+                            <div align="center">
+                                Currently Pledged
+                            </div>
+                        </th>
+                    </tr>
+                    <tr *ngFor="let item of filteredSecurities; let i = index">
+                        <td>
+                            <div align="center">
+                                {{ item.Cusip }}
+                            </div>
+                        </td>
+                        <td>
+                            <div align="center">
+                                <igx-checkbox [(ngModel)]="item.CurrentlyPledgedAsset"
+                                    [name]="'CurrentlyPledgedAsset' + i"></igx-checkbox>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="button-row">
+            <button mat-raised-button class="custombtn usa-button" aria-label="SaveSecurityPrice" title="Save/Remove Securities"
+                id="btnSave" [disabled]="!securityMasterForm" (click)="saveSecurityMaster()">
+                Save
+            </button>
+            <button mat-raised-button class="custombtn usa-button" (click)="closeSecurityMasterDialog()">
+                Cancel
+            </button>
+            &nbsp; &nbsp;
+        </div>
+    </div>
+</igx-dialog>
+

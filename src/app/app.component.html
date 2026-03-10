@@ -1,0 +1,34 @@
+<app-nav (toggleErrorTrayEvent)="toggleErrorTray()"></app-nav>
+
+<div class="AppWrapper usa-prose">
+<div class="H_APP_CONTAINER">
+  <router-outlet></router-outlet>
+  <igx-nav-drawer 
+    #drawer 
+    [enableGestures]="false" 
+    [pin]="false" 
+    [position]="'right'" 
+    [isOpen]="false" 
+    class="error-list-container closed">
+    <ng-template igxDrawer>
+      <nav>
+        <div class="error-messages-container">
+          <igx-card *ngFor="let error of Errors" class="error-message" (dblclick)="closeTray()">
+            <igx-card-content class="error-list">
+              <div class="error-text">{{ error.Message }}</div>
+            </igx-card-content>
+          </igx-card>
+        </div>
+      </nav>
+    </ng-template>
+  </igx-nav-drawer>
+</div>
+
+  <igx-toast #toaster [autoHide]="true" [displayTime]="10000" [positionSettings]="positionSettings"
+    (dblclick)="toaster.close()" class="toast-position">
+  </igx-toast>
+
+<div *ngIf="spinner$ | async" class="overlay">
+  <igx-circular-bar [animate]="false" [indeterminate]="true" [textVisibility]="false"></igx-circular-bar>
+</div>
+</div>

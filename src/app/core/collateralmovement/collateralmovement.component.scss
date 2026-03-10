@@ -1,0 +1,197 @@
+.firstDiv {
+  display: flex;
+  align-items: self-end;
+  position: relative;
+  margin-left: 10px;
+  width: 250px;
+}
+
+.datePicker {
+  position: absolute;
+  left: 90px;
+}
+
+.collateralDate{
+    display: flex;
+    align-items: self-end;
+    position: relative;
+    margin-left: 10px;
+    width: 270px;
+    margin-top: 10px;
+}
+
+.summaryGrid{
+    margin-top:10px;
+}
+
+.tab-link {
+    cursor: pointer;
+}
+
+::ng-deep {
+
+    .igx-grid-thead__item .igx-grid-thead__title {
+        justify-content: center;
+    }
+    .igx-grid-grouparea {
+        display: none !important;
+    }
+    .igx-group-label__icon {
+        display: none;
+    }
+
+    .igx-badge__value {
+        color: white;
+    }
+    .igx-grid__tr--odd {
+        background: #f2f2f2 !important;
+    }
+
+}
+
+/* Even rows */
+.table tr:nth-child(even) {
+    background-color: #ffffff;
+}
+
+/* Custom summary styling */
+.custom-summary {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+  width: 100%;
+}
+
+.summary-right {
+  text-align: right;
+  align-items: flex-end;
+}
+
+.summary-right .summary-row {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  height: 24px;
+  align-items: center;
+}
+
+.custom-summary .summary-row {
+  height: 24px;       // two rows fit into summaryRowHeight=56 with padding
+  display: flex;
+  align-items: center;
+}
+
+/* Odd rows */
+.table tr:nth-child(odd) {
+    background-color: #f2f2f2;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+}
+
+/* Hover effect */
+.table tr:hover {
+    background-color: #dddddd;
+}
+
+/* Odd rows */
+.table th {
+    background-color: #f2f2f2;
+}
+
+//nav
+/* Add this CSS to your styles.css or a relevant stylesheet */
+ul.nav.nav-tabs {
+  list-style: none;
+  padding: 7px;
+  margin-top: 10px;
+}
+/* Styles from your old UI */
+
+/* Style for tab links */
+ul.nav.nav-tabs li a {
+  margin-right: 2px;
+  line-height: 1.42857143;
+  border: 1px solid transparent;
+  border-radius: 4px 4px 0 0;
+  padding: 10px 15px;
+  /* Adjust padding as needed */
+  color: #337ab7;
+  /* Tab text color */
+  text-decoration: none;
+  background-color: transparent;
+}
+
+/* Style for non-active tabs on hover */
+ul.nav.nav-tabs li:not(.active):hover a {
+  background-color: #f5f5f5;
+  /* Grayish background color on hover for non-active tabs */
+  border-color: #ddd;
+  /* Grayish border color on hover for non-active tabs */
+  color: #333;
+  /* Tab text color on hover for non-active tabs */
+  border-bottom: none;
+}
+
+/* Style for the active tab */
+ul.nav.nav-tabs li.active a,
+ul.nav.nav-tabs li.active a:focus,
+ul.nav.nav-tabs li.active a:hover {
+  color: #555;
+  /* Tab text color for active tab */
+  cursor: default;
+  background-color: #fff;
+  /* Background color for active tab */
+  border: 1px solid #ddd;
+  /* Border for active tab */
+  border-bottom: none;
+}
+
+/* Cell alignment helper */
+.cell-right { 
+  display: inline-flex; 
+  width: 100%; 
+  justify-content: flex-end; 
+}
+
+/* Footer row styling */
+::ng-deep .footer-row { 
+  font-weight: bold !important; 
+  background: #f8f9fa !important; 
+}
+
+/* Split layout for Estimated Movement */
+.estimated-split-container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 750px;
+  transition: all 0.3s ease;
+}
+
+.grid-section {
+  flex: 1;
+  transition: flex 0.3s ease;
+  overflow: hidden;
+}
+
+.grid-section.collapsed {
+  flex: 0.6; /* grid takes less space when email panel is visible */
+}
+
+.email-section {
+  flex: 0.4;
+  max-height: 450px; /* Reduced from 600px to 450px */
+  min-height: 400px; /* Reduced from 500px to 400px */
+  background-color: #fff;
+  border-left: 1px solid #ddd;
+  box-shadow: -2px 0 8px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Remove scrolling */
+  animation: slideIn 0.25s ease forwards;
+}
+
+@keyframes slideIn {
+  from { transform: translateX(100%); opacity: 0; }
+  to   { transform: translateX(0); opacity: 1; }
+}

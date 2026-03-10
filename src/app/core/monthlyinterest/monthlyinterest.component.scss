@@ -1,0 +1,293 @@
+.firstDiv {
+  display: flex;
+  align-items: self-end;
+  position: relative;
+  margin-left: 10px;
+  width: 250px;
+}
+
+.approval-checkbox-wrapper {
+  display: flex;
+  margin-left: 45%;
+}
+
+.center-content {
+  text-align: center;
+}
+
+.tab-link {
+  cursor: pointer;
+}
+
+.coupon-date-section {
+  margin-bottom: 20px;
+}
+
+.coupon-date-label {
+  margin-bottom: 0;
+}
+
+.datePicker {
+  position: absolute;
+  left: 90px;
+}
+
+.couponDatePicker {
+  margin-left: 30px;
+}
+
+.coupon-button-section {
+  margin-bottom: 20px;
+  padding-top: 23px;
+}
+
+/* Add this CSS to your styles.css or a relevant stylesheet */
+ul.nav.nav-tabs {
+  list-style: none;
+  padding: 7px;
+  margin-top: 10px;
+}
+/* Styles from your old UI */
+
+/* Style for tab links */
+ul.nav.nav-tabs li a {
+  margin-right: 2px;
+  line-height: 1.42857143;
+  border: 1px solid transparent;
+  border-radius: 4px 4px 0 0;
+  padding: 10px 15px;
+  /* Adjust padding as needed */
+  color: #337ab7;
+  /* Tab text color */
+  text-decoration: none;
+  background-color: transparent;
+}
+
+/* Style for non-active tabs on hover */
+ul.nav.nav-tabs li:not(.active):hover a {
+  background-color: #f5f5f5;
+  /* Grayish background color on hover for non-active tabs */
+  border-color: #ddd;
+  /* Grayish border color on hover for non-active tabs */
+  color: #333;
+  /* Tab text color on hover for non-active tabs */
+  border-bottom: none;
+}
+
+/* Style for the active tab */
+ul.nav.nav-tabs li.active a,
+ul.nav.nav-tabs li.active a:focus,
+ul.nav.nav-tabs li.active a:hover {
+  color: #555;
+  /* Tab text color for active tab */
+  cursor: default;
+  background-color: #fff;
+  /* Background color for active tab */
+  border: 1px solid #ddd;
+  /* Border for active tab */
+  border-bottom: none;
+}
+
+::ng-deep {
+  .igx-grid-thead__item .igx-grid-thead__title {
+    justify-content: center;
+  }
+  .igx-grid-grouparea {
+    display: none !important;
+  }
+  .igx-group-label__icon {
+    display: none;
+  }
+
+  .igx-badge__value {
+    color: white;
+  }
+  .igx-grid__tr--odd {
+    background: #f2f2f2 !important;
+  }
+  .igx-drop-down__list {
+    width: 50px !important;
+  }
+  .igx-drop-down__item {
+    padding: 5px 5px !important;
+    height: auto !important;
+  }
+}
+
+/* Even rows */
+.table tr:nth-child(even) {
+  background-color: #ffffff;
+}
+
+/* Odd rows */
+.table tr:nth-child(odd) {
+  background-color: #f2f2f2;
+  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+}
+
+/* Hover effect */
+.table tr:hover {
+  background-color: #dddddd;
+}
+
+/* Odd rows */
+.table th {
+  background-color: #f2f2f2;
+}
+
+.title-bar {
+  background-color: #337ab7;
+  color: white;
+  border-radius: 6px;
+  padding: 10px;
+  display: flex;
+}
+.title {
+  font-size: larger;
+  padding-left: 10px;
+  margin-top: -25px;
+  margin-bottom: -25px;
+}
+
+.sub-title {
+    font-size: 14px;
+    margin-left: 5px;
+}
+
+.sub-title-row {
+  margin: 5px;
+}
+
+.selectDropdown{
+  width: 150px;
+  margin-left: 10px;
+}
+.div-no-data-msg{
+  display: flex;
+  justify-content: center;
+  color: #356585;
+}
+.email-dialog-content {
+  display: flex; 
+  justify-content: center;
+  flex-direction: column;
+  width: 47rem;
+  // height: 14rem;
+  
+  margin-top: -1%;
+  align-items: center;
+  margin-bottom: -6%;
+}
+.div-mi-email{
+  max-height: 10rem; 
+    overflow-y: auto; 
+    padding: 0.5rem; 
+    margin: 1rem 0; 
+    box-sizing: border-box; 
+    background-color: #f9f9f9; 
+    margin-top: 2%;
+}
+.email-dialog-content > form > span{
+  align-self: flex-end;
+  margin-top: 2%;
+  margin-left: 78%;
+}
+.email-dialog-content > button {
+  margin: 2em .5em 1em .5em;
+}
+.notRecipient {
+  text-decoration: line-through;   
+}
+.div-button{
+  display: flex;
+  padding-top: 10px;
+  justify-content: space-between;
+  padding-bottom: 7px;
+}
+.igx-dialog-send-mi{
+  display: flex; 
+  justify-content: center;
+  flex-direction: column;
+  width: 50rem;
+  overflow-y: auto;
+  margin-top: -1%;
+}
+.div-comments{
+  height: 105px;
+}
+.dialog-textarea{
+  height: 6rem;
+  width: 100%;
+  box-sizing: border-box;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  background-color: #f8f8f8;
+  font-size: 16px;
+}
+.frm-send-mi{
+  width: 45rem;
+}
+.send-mi-email-input{
+ //height: 40px;
+}
+.div-send-mi-dialog-actions{
+ display: flex;
+ justify-content: center;
+ margin-top: 7%;
+}
+.errorvalidator {
+  color: red;
+  display: flex;
+  align-items: center;
+  margin-top: -1%
+}
+.small-error{
+  line-height: 1;
+}
+.small-minlength{
+  width: 270px;
+}
+.small-dot-check{
+  width: 280px;
+}
+
+/* Custom scrollbar styles */
+// .email-dialog-content::-webkit-scrollbar {
+//   width: 8px;
+// }
+
+// .email-dialog-content::-webkit-scrollbar-thumb {
+//   background: #888;
+//   border-radius: 4px;
+// }
+
+// .email-dialog-content::-webkit-scrollbar-thumb:hover {
+//   background: #555;
+// }
+
+// .email-dialog-content::-webkit-scrollbar-track {
+//   background: #f1f1f1;
+//   border-radius: 4px;
+// }
+
+.custom-grid {
+  margin-bottom: 0 !important;
+}
+
+.custom-grid igx-paginator {
+  margin-top: 0 !important;
+}
+.dataDate{
+    display: flex;
+    align-items: self-end;
+    position: relative;
+    margin-left: 10px;
+    width: 270px;
+    margin-top: 10px;
+}
+// override only for Coupon Interest
+.couponDatePicker {
+  left: 30px !important; // reduce spacing just for this one
+}
+

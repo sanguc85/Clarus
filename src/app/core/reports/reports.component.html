@@ -1,0 +1,196 @@
+<div class="row">
+  <div class="col-lg-3 col-md-3 col-sm-4 col-12" style="width:300px !important">
+    <table class="firstDiv">
+      <td><label>Data Date</label></td>
+      <td>
+    <igx-date-picker #dataDatedatepicker class="datePicker" mode="dropdown" inputFormat="yyyy-MM-dd" [maxValue]="todayDate"
+      [(ngModel)]="DataDate"
+      [value]="DataDate"> </igx-date-picker>
+    </td>
+  </table>
+</div>
+<div class="col-lg-5 col-md-3 col-sm-4 col-12">
+    <button mat-raised-button class="custombtn usa-button" id="btnPullData" aria-label="Pull Data" (click)="getReport(contentTab,CurrentReportType,null)">
+      Get Report
+    </button>
+    <button mat-raised-button class="custombtn usa-button" id="btnSaveData" aria-label="Save Data" (click)="openEmailDialog(contentTab)">Send Report</button>
+    <button mat-raised-button class="custombtn usa-button" id="btnSaveData" aria-label="Save Data" title="" (click)="clearReportData(contentTab)">Refresh Report</button>
+    <button mat-raised-button class="custombtn usa-button" id="btnSaveData" aria-label="Save Data" title="" [disabled]="CurrentReportTypeHolder.toLowerCase() == 'xlsx' || CurrentReportTypeHolder.toLowerCase() == 'xls'"
+    (click)="downloadReport(contentTab, CurrentReportTypeHolder.toLowerCase())">
+      Download Report
+    </button>
+    <button mat-raised-button class="custombtn usa-button" id="btnExportData" aria-label="Export Data" title="" (click)="getReport(contentTab, 'xls', null)">
+      Export To Excel
+    </button>
+  </div>
+</div>
+<div class="row">
+  <ul class="nav nav-tabs">
+    <li *ngFor="let item of MetaDataTables['ReportType']" [ngClass]="{ 'active': contentTab === item.Name }">
+      <a (click)="handleItemClick(item.Name)" style="cursor: pointer">
+          {{ item.Description }}
+      </a>
+  </li>
+  </ul>
+</div>
+<div [align]="'center'">
+  <div class="divcontentTab" *ngIf="['CounterpartyRatings', 'CounterpartyExposure', 'PamCollateral'].indexOf(contentTab) !== -1">
+    <b>{{ splitName(contentTab) }}</b>
+  </div>
+  <div class="divcontentTab" *ngIf="['CounterpartyRatings', 'CounterpartyExposure', 'PamCollateral'].indexOf(contentTab) === -1"
+    [(ngModel)]="Counterparty">
+    <b>{{ splitName(contentTab) }} {{ Counterparty }}</b>
+  </div>
+</div>
+<div class="optionsMenu">
+  <!-- <div > -->
+  <ng-container *ngIf="['CounterpartyRatings', 'CounterpartyExposure', 'PamCollateral'].indexOf(contentTab) === -1">
+    <label>Counterparty</label>
+    <select [(ngModel)]="Counterparty" class="fc-select form-select cpselect usa-select" (ngModelChange)="handleChange()">
+      <option *ngFor="let cp of MetaDataNames['Counterparty']" [value]="cp.Name">{{ cp.Name }}</option>
+    </select>
+    <label>Entity</label>
+    <select [(ngModel)]="Entity" class="fc-select form-select cpselect usa-select" (ngModelChange)="setContent(contentTab)">
+      <option *ngFor="let entity of MetaDataTables['Entity']" [value]="entity.Name">{{ entity.Name }}</option>
+    </select>
+  </ng-container>
+  <label>Format</label>
+  <select [(ngModel)]="CurrentReportType" class="fc-select form-select cpselect usa-select" (ngModelChange)="setContent(contentTab)">
+    <option *ngFor="let type of ReportTypeList" [value]="type">{{ type }}</option>
+    <!-- <option [value]="'PDF'">PDF</option>
+      <option [value]="'Excel'">Excel</option>
+      <option [value]="'HTML'">HTML</option> -->
+  </select>
+  <ng-container *ngIf="['MonthlyInterest'].indexOf(contentTab) !== -1">
+    <label>Calculation Method</label>
+    <select [(ngModel)]="CalculationMethod" class="fc-select form-select cpselect usa-select" (ngModelChange)="setContent(contentTab)">
+      <option [value]="'Simple'">Simple</option>
+      <option [value]="'Simple'">Compounded</option>
+      <option [value]="'Simple'">Simple Spread</option>
+    </select>
+    <table>
+      <tr>
+        <td><label>Start Date</label></td>
+      </tr>
+      <tr>
+        <td>
+          <igx-date-picker class="datePickerMonthlyInterest" mode="dropdown" inputFormat="yyyy-MM-dd"
+             [(ngModel)]="StartDate"></igx-date-picker>
+        </td>
+      </tr>
+      <tr>
+        <td><label>End Date</label></td>
+      </tr>
+      <tr>
+        <td>
+          <igx-date-picker class="datePickerMonthlyInterest" mode="dropdown" inputFormat="yyyy-MM-dd"
+            [(ngModel)]="EndDate"></igx-date-picker>
+        </td>
+      </tr>
+    </table>
+  </ng-container>
+  <ng-container *ngIf="['PamCollateral'].indexOf(contentTab) !== -1">
+    <label>Party</label>
+    <select [(ngModel)]="PamParty" class="fc-select form-select cpselect usa-select" (ngModelChange)="setContent(contentTab)">
+      <option *ngFor="let party of MetaDataTables['Party']" [value]="party.Name">{{ party.Name }}</option>
+    </select>
+  </ng-container>
+
+  <!-- </div> -->
+  <!-- <div *ngIf="['CounterpartyRatings', 'CounterpartyExposure', 'PamCollateral'].indexOf(contentTab) !== -1">
+    <label>Format</label>
+    <select class="fc-select form-select usa-select" (ngModelChange)="getData()">
+      <option [value]="'PDF'">PDF</option>
+      <option [value]="'Excel'">Excel</option>
+      <option [value]="'HTML'">HTML</option>
+    </select>
+  </div> -->
+  <!-- <div *ngIf="CurrentReportTypeHolder">
+    <embed src="" embed-src="reportURL" type="application/pdf" id="embed-pdf-report"
+      style="width: 75%; height: 625px; padding-top: 50px; padding-left: 100px; display: inline" />
+  </div> -->
+</div>
+
+
+<div [align]="'center'" *ngIf="CurrentReportTypeHolder.toLowerCase() === 'pdf' && (reportURL && reportURL !== '')"><!-- need to change the inline style after testing and working -->
+  <embed [src]="reportURL" type="application/pdf" id="embed-pdf-report" [style.width]="'75%'"
+   [style.height]="'625px'" [style.padding-top]="'50px'"
+    [style.padding-left]="'100px'" style="display:inline"/>
+</div>
+<div [align]="'center'" class="divMessage" *ngIf="CurrentReportTypeHolder.toLowerCase() === 'pdf' && !(reportURL && reportURL !== null && reportURL !== '')">
+  <div class="divmsgInner">
+    Unable to view report: <br />
+    {{ reportMessage }}
+  </div>
+</div>
+<div [align]="'center'" class="divHtmlMain" *ngIf="CurrentReportTypeHolder.toLowerCase() === 'html'" class="container">
+  <div class="divHtmlInner">
+    <div [innerHTML]="htmlText"></div>
+  </div>
+</div>
+<div [align]="'center'" class="divMessage" *ngIf="CurrentReportTypeHolder.toLowerCase() === 'html' && !(htmlText && htmlText !== null && htmlText !== '')">
+   <div class="divmsgInner">
+       Unable to view report: <br />
+       {{ reportMessage }}
+   </div>
+</div>
+<div [align]="'center'" class="divMessage" *ngIf="['excel', 'xlsx', 'xls'].includes(CurrentReportTypeHolder.toLowerCase())">
+    <div class="divmsgInner"> Please click below to download the file</div>
+    <br>
+    <button mat-raised-button class="custombtn usa-button" 
+            (click)="getReport(contentTab, 'xls', null)">
+        Download Report
+    </button> &nbsp; &nbsp;
+</div>
+
+<igx-dialog #emailDialog id="report-email-dialog"
+
+state="closed"
+closeOnEscape="true"
+showCloseButton="true"
+[(isOpen)]="dialogOpen"
+(onClose)="onDialogClose()">
+<div class="title-bar">
+  <h2 class="title">Email Recipients</h2>
+  <a class="close-button" (click)="cancelEmail()" title="Close" aria-label="Close">&#10006;</a>
+</div>
+  <div class="divNodataMsg">{{NoCPMailId}}</div>
+  <div class="email-dialog-content">
+      <form [formGroup]="emailDialogForm">
+          <ng-container formArrayName="emailList">
+              <ng-container *ngFor="let control of emailListControls.controls; let i = index;">
+                  <igx-input-group [formGroupName]="i">
+                      <label igxLabel for="email{{ i }}">Email</label>
+                      <input igxInput name="email{{ i }}" type="email" formControlName="email"
+                          [ngClass]="notRecipientCondition(i) ? 'notRecipient' : 'isRecipient'"
+                          [disabled]="notRecipientCondition(i)" />
+                      <igx-suffix>
+                          <span igxButton="icon" (click)="hideRecipient(i)">
+                              <igx-icon>
+                                  cancel
+                              </igx-icon>
+                          </span>
+                      </igx-suffix>
+                  </igx-input-group>
+              </ng-container>
+          </ng-container>
+          <div class="divButton">
+              <span></span>
+              <button  mat-raised-button class="custombtn usa-button"  (click)="addRecipient()">
+                  Add Recipient
+              </button>
+          </div>
+      </form>
+  </div>
+  <div igxDialogActions style="display: flex;justify-content: space-between;">
+      
+      <div style="width:100%;text-align:center;">
+          <button mat-raised-button class="custombtn usa-button" (click)="cancelEmail()" >
+              Cancel
+          </button>
+          <button mat-raised-button  class="custombtn usa-button" type="submit"
+              [disabled]="!emailDialogForm.valid || isEmailListEmpty() || !isAnyEmailVisible()"
+              (click)="sendEmail()">Send Mail</button>
+      </div>
+  </div>
+</igx-dialog>

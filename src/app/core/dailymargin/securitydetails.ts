@@ -1,0 +1,26 @@
+export interface securityDetails{    
+    CollateralMovementType:string;
+    Counterparty:string;
+    CouponRate:number;
+    Cusip:string;
+    DataDate:Date;
+    Entity:string;
+    ISIN:string;
+    Id:number;
+    IssueDate:Date;
+    LastPrice:number;
+    MV:number;
+    MaturityDate:Date;
+    MinIncrement:number;
+    MinPieceSize:number;
+    ParValue:number;
+    Portfolio:string;
+    Price:number
+    SecurityName:string;
+    SecurityType:string;
+    Substitution:string;
+    SubstitutionCusip:string;
+    TransactionType:string;
+    UseCpCollateral:Boolean;
+    UseCpExposure:Boolean;
+}

@@ -1,0 +1,55 @@
+<div>
+  <nav id="navHeader" class="navbar navbar-expand-md navbar-dark navbar-dark">
+    <div id="navSubHeader" class="d-flex align-items-center">
+      <div id="imgbrandcontainer" class="d-flex align-items-center me-3">
+        <img id="imgbrand" src="assets/clarus.jpg" alt="">
+        <div id="HeaderBrand">CLARUS</div>
+      </div> 
+      <div class="scroll-menu flex-grow-1">
+        <ul class="nav nav-tabs mr-auto">
+          <li class="nav-item">
+            <a href="#" routerLink="DailyMargin" routerLinkActive="active" class="navLink">Daily Margin</a>
+          </li>
+          <li class="nav-item">
+            <a href="#" routerLink="Security" routerLinkActive="active" class="navLink">Security</a>
+          </li>
+          <li class="nav-item">
+            <a href="#" routerLink="MonthlyInterest" routerLinkActive="active" class="navLink">Interest</a>
+          </li>
+          <li class="nav-item">
+            <a href="#" routerLink="CollateralMovement" routerLinkActive="active" class="navLink">Collateral Movement</a>
+          </li>
+          <li class="nav-item">
+            <a href="#" routerLink="EntityDetails" routerLinkActive="active" class="navLink">Entity Details</a>
+          </li>
+          <li class="nav-item">
+            <a href="#" routerLink="CounterpartyDetails" routerLinkActive="active" class="navLink">Counterparty Details</a>
+          </li>
+          <li class="nav-item">
+            <a href="#" routerLink="FileLoadStatus" routerLinkActive="active" class="navLink">File Load Status</a>
+          </li>
+          <li class="nav-item">
+            <a href="#" routerLink="CounterpartyCollateral" routerLinkActive="active" class="navLink">Counterparty Collateral</a>
+          </li>
+          <li class="nav-item">
+            <a href="#" routerLink="MetaData" routerLinkActive="active" class="navLink">Metadata</a>
+          </li>
+          <li class="nav-item">
+            <a href="#" routerLink="Reports" routerLinkActive="active" class="navLink">Reports</a>
+          </li>
+          <li class="nav-item">
+            <a href="#" routerLink="History" routerLinkActive="active" class="navLink">History</a>
+          </li>
+        </ul>
+      </div>
+      <div class="d-flex align-items-center gap-3 me-3">
+        <div class="welcome-user text-white">
+          Welcome {{ username }}
+        </div>
+        <button id="notificationButton" igxButton="icon" (click)="toggleErrorTray()">
+          <igx-icon class="medium-icon">notifications</igx-icon>
+        </button>
+      </div>
+    </div>
+</nav>
+</div>

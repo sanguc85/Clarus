@@ -1,0 +1,147 @@
+@import url("https://fonts.googleapis.com/css2?family=Work+Sans:wght@800&display=swap");
+@import url("https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap");
+@import url("https://fonts.googleapis.com/css?family=Titillium+Web");
+
+#HeaderBrand {
+    color: white;
+    font-family: "Helvetica Neue",
+                    Helvetica,
+                    Arial,
+                    sans-serif;
+    font-size: 2rem;
+    font-style: oblique;
+    width: auto;
+    text-align: start;
+    margin-right: 0;
+    margin-left: 5px;
+}
+
+#navHeader {
+    height: 7%;
+    background-color: #404040;
+    padding: 0;
+}
+
+.navbarHeader {
+    float: right;
+    margin-right: 30px;
+    color: white;
+    text-align: center;
+    font-size: 12px;
+}
+
+#imgbrand {
+    height: 50px;
+}
+
+.navLink:hover {
+    background-color: #696969;
+}
+
+.navLink.active {
+    background-color: #337ab7;
+}
+
+.navLink {
+    display: block;
+    color: white;
+    font-size: 12px;
+    text-decoration: none;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+#navHeader ul {
+    border-bottom: 1px;
+    display: flex;
+    overflow-x: auto;
+    overflow-y: hidden;
+    width: 95%;
+    height: 60%;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    line-height: 50px;
+    font-family: Verdana;
+    font-size: 12px;
+}
+
+#navHeader ul li {
+    text-align: center;
+    background-color: #404040;
+    list-style-type: none;
+    display: inline-block;
+}
+
+.scroll-menu {
+    width: 100%;
+}
+
+#navSubHeader {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+#imgbrandcontainer {
+    display: flex;
+    align-items: center;
+    margin-right: 15px;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+    height: 8px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px grey;
+    border-radius: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: gray;
+    border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.849);
+}
+
+.blueband {
+    display: block;
+    margin-top: 0;
+    background-color: #337ab7;
+    height: 21px;
+    color:whitesmoke;
+    font-size: 13px;
+    padding-left: 10px;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+.welcome-user {
+    white-space: nowrap;
+}
+
+#notificationButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    color: white;
+    margin-bottom: 5px;
+  }
+  
+  #notificationButton:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: #ff0000;
+    transition: 0.2s ease-in-out;
+  }
+  
+  .medium-icon {
+    font-size: 1.5rem;
+  }

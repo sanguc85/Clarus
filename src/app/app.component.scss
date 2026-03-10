@@ -1,0 +1,143 @@
+
+//uncomment these styles while implementing drawer and circular bar
+
+// //clear button
+// .btn {
+//     color: white;
+//     position: fixed; 
+//     right: 3vh;
+//     bottom: 1vh;
+//     width: max-content;
+//     overflow: visible;
+//     z-index: 10010;
+//     border-radius: 8px;
+// }
+
+// igx-circular-bar {
+//     position: absolute;
+//     top: 50%;
+//     left: 50%;
+//     transform: translate(-50%, -50%);
+//     z-index: 3;
+//     backdrop-filter: blur(2px);
+// }
+
+// //igxlayout
+// .warning-icon {
+//     display: inline-flex;
+//     align-items: flex-end;
+// }
+// .igx-card{
+//     word-break:break-all;
+// }
+
+
+// ::ng-deep .igx-nav-drawer__aside {
+//     border-left: 0px solid white  !important;
+//     border-radius: 1vh  !important;
+// }
+
+// .toast-position {
+//     position: absolute; 
+//     right: 8vw;
+//     top: 0vh;
+//     width: max-content;
+//     margin-top: 0.5vh;
+//     z-index: 10010;
+//     background-color: rgba(116, 141, 169, 0.8);
+//     border-radius: 8px;
+// }
+
+// .error-list-container {
+//     width: max-content;
+//     right: 1vw; 
+//     top: 6vh; 
+//     position: absolute;
+//     z-index: 10010;
+//     max-height:700px;
+//     border-left: 0px solid white;
+// }
+
+// .error-list {
+//     padding: 5px;
+//     font-size: small;
+//     color: rgb(183, 91, 42);
+//     background-color: rgba(248, 215, 218); 
+//     border-radius: 5px;
+//     border: 1px solid rgb(245, 198, 203);
+//     z-index: 999;
+// }
+
+// .notification-position{
+//     position: absolute;
+//     right: 25px;
+//     top: 0.5vh;
+//     z-index: 10010;
+//     color: white;
+//     background-color: #6582a2f0;
+//     border-radius: 50%;
+// }
+
+// .notification-position:hover {
+//     color: #eaf556;
+//     background-color: #ce5712;
+// }
+
+.AppWrapper {
+  position: relative;
+  height: 100%;
+}
+
+.container3 {
+    position: absolute;
+    top: 10px;
+    right: 30px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    z-index: 1100;
+  }
+  
+.error-list-container {
+    position: absolute !important;
+    right: 25px !important;
+    top: -5px !important;
+    width: 260px !important;
+    height: 90vh !important;
+    background-color: white !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2) !important;
+    border-left: 1px solid rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease-in-out !important;
+    z-index: 1050;
+  }
+  
+.error-list-container.open {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translateX(0) !important;
+  }
+  
+.error-list-container.closed {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transform: translateX(120%) !important;
+  }
+  
+.error-messages-container {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 10px;
+    max-height: calc(100% - 60px);
+  }
+  
+.error-message {
+    background-color: #f8d7da;
+    padding: 5px;
+    margin: 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    word-wrap: break-word;
+  }
+  

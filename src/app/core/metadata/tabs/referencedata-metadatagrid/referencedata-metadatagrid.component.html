@@ -1,0 +1,26 @@
+<div class="row">
+    <ul class="nav nav-tabs" *ngIf="metaDataService.isAdmin || metaDataService.isMO">
+        <li routerLinkActive="active">
+            <a routerLink="Haircut">Haircut</a>
+        </li>
+        <li routerLinkActive="active">
+            <a routerLink="SecurityPrices">Security Prices</a>
+        </li>
+        <li routerLinkActive="active">
+            <a routerLink="SecurityMaster">Security Master</a>
+        </li>
+        <li  routerLinkActive="active">
+            <a routerLink="BenchmarkData">Benchmark Data</a>
+        </li>
+        <li routerLinkActive="active">
+            <a routerLink="ValuationData">Valuation Data</a>
+        </li>
+        <li routerLinkActive="active">
+            <a routerLink="Ratings">Ratings</a>
+        </li>
+    </ul>
+</div>
+
+<div class="row" *ngIf="metaDataService.isAdmin || metaDataService.isMO">
+    <router-outlet></router-outlet>
+</div>

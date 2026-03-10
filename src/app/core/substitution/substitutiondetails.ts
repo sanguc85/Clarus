@@ -1,0 +1,27 @@
+export interface substitutionDetails{
+    Id:number;
+    Counterparty:string;
+    Entity:string;
+    DataDate:Date;
+    Cusip:string;
+    ISIN:string;
+    SecurityName:string;
+    SecurityType:string;
+    IssueDate:Date;
+    MaturityDate:Date;
+    CouponRate:number;
+    ParValue:number;
+    Price:number;
+    LastPrice:number;
+    MinIncrement:number;
+    MinPieceSize:number;
+    OriginalFace:number;
+    MVHaircut:number;
+    HaircutPercent:number;
+    CollateralMovementType:string;
+    TransactionType:string;
+    Substitution:boolean;
+    SubstitutionParValue:number;
+    ProduceTransactions:boolean;
+    IsCollateralEligible:boolean;
+}

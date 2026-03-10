@@ -1,0 +1,34 @@
+<igx-grid #grid [data]="auditData" [width]="'100%'" [height]="'700px'" [rowHeight]="'20px'" [autoGenerate]="false"
+    [allowFiltering]="true" [displayDensity]="'cosy'">
+    <igx-paginator [perPage]="25">
+        <igx-paginator-content>
+            <igx-page-size></igx-page-size>
+            <div>Total Items:<span class="spanTotalRecords"> {{ auditData.length }}</span></div>
+            <igx-page-nav></igx-page-nav>
+        </igx-paginator-content>
+    </igx-paginator>
+    <igx-column [field]="'Id'" [header]="'ID'"  [width]="'5%'"></igx-column>
+    <igx-column [field]="'Counterparty'" [header]="'Counterparty'" [sortable]="true" [width]="'8%'" [dataType]="'string'"></igx-column>
+    <igx-column [field]="'Entity'" [header]="'Entity'"  [width]="'8%'" [sortable]="true"  [dataType]="'string'"></igx-column>
+    <igx-column [field]="'Party'" [header]="'Party'"  [width]="'7%'" [dataType]="'string'"></igx-column>
+    <igx-column [field]="'TotalCashCollateral'" [width]="'8%'" [header]="'Total Cash Collateral'" [dataType]="'number'">
+        <ng-template igxCell let-cell="cell">
+            {{ cell.value | number: '1.2-2' }}
+        </ng-template>
+    </igx-column>
+    <igx-column [field]="'Interest'" [header]="'Interest'" [width]="'8%'" [dataType]="'number'">
+        <ng-template igxCell let-cell="cell">
+            {{ cell.value | number: '1.2-2' }}
+        </ng-template>
+    </igx-column>
+    <igx-column [field]="'RecievedfromCP'" [header]="'Recieved from CP'"  [width]="'5%'" [dataType]="'string'"></igx-column>
+    <igx-column [field]="'MatchedwithCP'" [header]="'Matched with CP'"  [width]="'5%'" [dataType]="'string'"></igx-column>
+    <igx-column [field]="'Followups'" [header]="'Followups'"  [width]="'5%'" [dataType]="'number'"></igx-column>
+    <igx-column [field]="'MonthlyApproval'" [header]="'MonthlyApproval'"  [width]="'5%'" ></igx-column>
+    <igx-column [field]="'SettleDate'" [header]="'Settle Date'"  [width]="'8%'" [dataType]="'date'" [pipeArgs]="datePipeArgs"></igx-column>
+    <igx-column [field]="'Reconcile'" [header]="'Recon Date'"  [width]="'8%'" [dataType]="'date'" [pipeArgs]="datePipeArgs"></igx-column>
+     
+    <igx-column [field]="'UpdatedTime'" [header]="'Updated Time'" [sortable]="true" [width]="'10%'" [dataType]="'date'" [pipeArgs]="dateTimePipeArgs"></igx-column>
+    
+    <igx-column [field]="'UpdatedUser'" [header]="'Updated User'"  [width]="'10%'" [dataType]="'string'"></igx-column>
+</igx-grid>

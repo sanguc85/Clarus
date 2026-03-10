@@ -1,0 +1,18 @@
+<igx-grid #grid [data]="auditData" [width]="'100%'" [height]="'700px'" [rowHeight]="'20px'" [autoGenerate]="false"
+    [allowFiltering]="true" [displayDensity]="'cosy'">
+    <igx-paginator [perPage]="25">
+        <igx-paginator-content>
+            <igx-page-size></igx-page-size>
+            <div>Total Items:<span class="spanTotalRecords"> {{ auditData.length }}</span></div>
+            <igx-page-nav></igx-page-nav>
+        </igx-paginator-content>
+    </igx-paginator>
+    <igx-column [field]="'Id'" [header]="'ID'"  [width]="'6%'"></igx-column>
+    <igx-column [field]="'RuleName'" [header]="'Rule Name'"  [width]="'10%'" [dataType]="'string'"></igx-column>
+    <igx-column [field]="'Key'" [header]="'Key'"  [width]="'10%'" [dataType]="'string'"></igx-column>
+    <igx-column [field]="'Value'" [header]="'Value'"  [width]="'50%'" [dataType]="'string'"></igx-column>
+    <igx-column [field]="'UpdatedTime'" [header]="'Updated Time'"  [width]="'12%'" [dataType]="'date'" [pipeArgs]="dateTimePipeArgs"></igx-column>  
+    
+    <igx-column [field]="'UpdatedUser'" [header]="'Updated User'"  [width]="'12%'" [dataType]="'string'"></igx-column>
+</igx-grid>
+

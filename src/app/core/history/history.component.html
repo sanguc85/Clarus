@@ -1,0 +1,101 @@
+<div class="row">
+    <div class="col-lg-2 col-md-2 col-sm-2 firstDiv">
+        <label>Start Date</label>
+        <igx-date-picker class="datePicker" [(ngModel)]="startDate" [maxValue]="endDate" (closed)="onDateChange()" #defaultDate
+            mode="dropdown" inputFormat="yyyy-MM-dd">
+        </igx-date-picker>
+    </div>
+    <div class="col-lg-2 col-md-2 col-sm-2 firstDiv">
+        <label>End Date</label>
+        <igx-date-picker class="datePicker" [(ngModel)]="endDate" (closed)="onDateChange()" #defaultDate mode="dropdown"
+            inputFormat="yyyy-MM-dd">
+        </igx-date-picker>
+    </div>
+    <div class="col-lg-2 col-md-3 col-sm-3">
+        <button mat-raised-button class="custombtn usa-button" id="btnPullData" aria-label="Pull Data" title=""
+            (click)="getData()">
+            Pull Data
+        </button>
+        &nbsp; &nbsp;
+        <button mat-raised-button class="custombtn usa-button" style="margin-left: 7px" id="btnExportData" aria-label="Export Data"
+            (click)="exportData()">
+            Export Data
+        </button>
+    </div>
+    <div class="col-lg-3 col-md-5 col-sm-5" [style.display]="contentTab === 'ReferenceData' ? 'block' : 'none'">
+        <label igxLabel>Reference Table Name</label>
+        <select [(ngModel)]="referenceTable" (ngModelChange)="onReferenceTableChange()"
+            style="margin-left: 10rem;">
+            <option *ngFor="let item of referenceTableList" [value]="item">{{item}}</option>
+        </select>
+    </div>
+</div>
+
+
+<div class="row">
+    <ul class="nav nav-tabs">
+        <li [class.active]="contentTab === 'DailyMargin'">
+            <a (click)="onTabChange('DailyMargin')" style="cursor: pointer">Daily Margin</a>
+        </li>
+        <li [class.active]="contentTab === 'MonthlyInterestSummary'">
+            <a (click)="onTabChange('MonthlyInterestSummary')" style="cursor: pointer">Monthly Interest</a>
+        </li>
+        <li [class.active]="contentTab === 'CollateralMovements'">
+            <a (click)="onTabChange('CollateralMovements')" style="cursor: pointer">Collateral Movements</a>
+        </li>
+        <li [class.active]="contentTab === 'CollateralBalance'">
+            <a (click)="onTabChange('CollateralBalance')" style="cursor: pointer">Collateral Balance</a>
+        </li>
+        <li [class.active]="contentTab === 'ReferenceData'">
+            <a (click)="onTabChange('ReferenceData')" style="cursor: pointer">Reference Data</a>
+        </li>
+        <li [class.active]="contentTab === 'Counterparty'">
+            <a (click)="onTabChange('Counterparty')" style="cursor: pointer">Counterparty</a>
+        </li>
+        <li [class.active]="contentTab === 'Entity'">
+            <a (click)="onTabChange('Entity')" style="cursor: pointer">Entity</a>
+        </li>
+        <li [class.active]="contentTab === 'FileLoad'">
+            <a (click)="onTabChange('FileLoad')" style="cursor: pointer">File Load</a>
+        </li>
+        <li [class.active]="contentTab === 'ISDA'">
+            <a (click)="onTabChange('ISDA')" style="cursor: pointer">ISDA</a>
+        </li>
+        <li [class.active]="contentTab === 'CSA'">
+            <a (click)="onTabChange('CSA')" style="cursor: pointer">CSA</a>
+        </li>
+        <li [class.active]="contentTab === 'MCA'">
+            <a (click)="onTabChange('MCA')" style="cursor: pointer">MCA</a>
+        </li>
+        <li [class.active]="contentTab === 'UserAccess'">
+            <a (click)="onTabChange('UserAccess')" style="cursor: pointer">User Access</a>
+        </li>
+        <li [class.active]="contentTab === 'UserRoles'">
+            <a (click)="onTabChange('UserRoles')" style="cursor: pointer">User Roles</a>
+        </li>
+        <li [class.active]="contentTab === 'Rules'">
+            <a (click)="onTabChange('Rules')" style="cursor: pointer">Rules</a>
+        </li>
+    </ul>
+</div>
+
+<div class="row">
+    <div [ngSwitch]="contentTab">
+        <app-dailymargingrid (gridReady)="handleGridReady($event)" *ngSwitchCase="'DailyMargin'" [auditData]="auditData"></app-dailymargingrid>
+        <app-monthlyinterestgrid (gridReady)="handleGridReady($event)" *ngSwitchCase="'MonthlyInterestSummary'" [auditData]="auditData"></app-monthlyinterestgrid>
+        <app-collateralmovementgrid (gridReady)="handleGridReady($event)" *ngSwitchCase="'CollateralMovements'"
+            [auditData]="auditData"></app-collateralmovementgrid>
+        <app-collateralbalancegrid (gridReady)="handleGridReady($event)" *ngSwitchCase="'CollateralBalance'"
+            [auditData]="auditData"></app-collateralbalancegrid>
+        <app-referencedatagrid (gridReady)="handleGridReady($event)" *ngSwitchCase="'ReferenceData'" [auditData]="auditData"></app-referencedatagrid>
+        <app-counterpartygrid (gridReady)="handleGridReady($event)" *ngSwitchCase="'Counterparty'" [auditData]="auditData"></app-counterpartygrid>
+        <app-entitygrid (gridReady)="handleGridReady($event)" *ngSwitchCase="'Entity'" [auditData]="auditData"></app-entitygrid>
+        <app-fileloadgrid (gridReady)="handleGridReady($event)" *ngSwitchCase="'FileLoad'" [auditData]="auditData"></app-fileloadgrid>
+        <app-isdagrid (gridReady)="handleGridReady($event)" *ngSwitchCase="'ISDA'" [auditData]="auditData"></app-isdagrid>
+        <app-csagrid (gridReady)="handleGridReady($event)" *ngSwitchCase="'CSA'" [auditData]="auditData"></app-csagrid>
+        <app-mcagrid (gridReady)="handleGridReady($event)" *ngSwitchCase="'MCA'" [auditData]="auditData"></app-mcagrid>
+        <app-useraccessgrid (gridReady)="handleGridReady($event)" *ngSwitchCase="'UserAccess'" [auditData]="auditData"></app-useraccessgrid>
+        <app-userrolesgrid (gridReady)="handleGridReady($event)" *ngSwitchCase="'UserRoles'" [auditData]="auditData"></app-userrolesgrid> -->
+        <app-rulesgrid (gridReady)="handleGridReady($event)" *ngSwitchCase="'Rules'" [auditData]="auditData"></app-rulesgrid>
+    </div>
+</div>

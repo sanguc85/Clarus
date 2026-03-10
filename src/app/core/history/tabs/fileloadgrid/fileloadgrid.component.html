@@ -1,0 +1,20 @@
+<igx-grid #grid [data]="auditData" [width]="'100%'" [height]="'700px'" [rowHeight]="'20px'" [autoGenerate]="false"
+    [allowFiltering]="true" [displayDensity]="'cosy'">
+    <igx-paginator [perPage]="25">
+        <igx-paginator-content>
+            <igx-page-size></igx-page-size>
+            <div>Total Items:<span class="spanTotalRecords"> {{ auditData.length }}</span></div>
+            <igx-page-nav></igx-page-nav>
+        </igx-paginator-content>
+    </igx-paginator>
+    <igx-column [field]="'Id'" [header]="'ID'"  [width]="'6%'"></igx-column>
+    <igx-column [field]="'DataDate'" [header]="'Date'"  [width]="'12%'" [dataType]="'date'" [pipeArgs]="dateTimePipeArgs"></igx-column>
+    <igx-column [field]="'Counterparty'" [header]="'Counterparty'" [sortable]="true"  [width]="'10%'" [dataType]="'string'"></igx-column>
+    <igx-column [field]="'Entity'" [header]="'Entity'" [sortable]="true"  [width]="'10%'" [dataType]="'string'"></igx-column>
+    <igx-column [field]="'ReportType'" [header]="'Report Type'"  [width]="'10%'" [dataType]="'string'"></igx-column>
+    <igx-column [field]="'Filename'" [header]="'File Name'"  [width]="'20%'" [dataType]="'string'"></igx-column>
+    <igx-column [field]="'LoadType'" [header]="'Load Type'"  [width]="'10%'" [dataType]="'string'"></igx-column>
+    <igx-column [field]="'UpdatedTime'" [header]="'Updated Time'" [sortable]="true" [width]="'10%'"  [dataType]="'date'" [pipeArgs]="dateTimePipeArgs"></igx-column>
+    
+    <igx-column [field]="'UpdatedUser'" [header]="'Updated User'"  [width]="'12%'" [dataType]="'string'"></igx-column>
+</igx-grid>

@@ -1,0 +1,35 @@
+<igx-grid #grid [data]="auditData" [width]="'100%'" [height]="'700px'" [rowHeight]="'20px'" [autoGenerate]="false"
+    [allowFiltering]="true" [displayDensity]="'cosy'">
+    <igx-paginator [perPage]="25">
+        <igx-paginator-content>
+            <igx-page-size></igx-page-size>
+            <div>Total Items:<span class="spanTotalRecords"> {{ auditData.length }}</span></div>
+            <igx-page-nav></igx-page-nav>
+        </igx-paginator-content>
+    </igx-paginator>
+    <igx-column [field]="'Id'" [header]="'ID'" [width]="'6%'"></igx-column>
+    <igx-column [field]="'Status'" [header]="'Status'" [dataType]="'string'"></igx-column>
+    <igx-column [field]="'SignedDate'" [header]="'Signed Date'" [dataType]="'date'" [resizable]="true" [sortable]="true"
+        [filterable]="true" [width]="'8%'" [pipeArgs]="datePipeArgs"></igx-column>
+    <igx-column [field]="'MatchToleranceDollar'" [header]="'Match Tolerance ($)'" [dataType]="'number'">
+        <ng-template igxCell let-cell="cell">
+            {{ cell.value | currency: 'USD' }}
+        </ng-template>
+    </igx-column>
+    <igx-column [field]="'MatchTolerancePercent'" [header]="'Match Tolerance (%)'" [dataType]="'number'">
+        <ng-template igxCell let-cell="cell">
+            {{ cell.value | percent }}
+        </ng-template>
+    </igx-column>
+    <igx-column [field]="'ResolutionTime'" [header]="'Resolution Time'" [dataType]="'datetime'" [resizable]="true"
+        [sortable]="true" [filterable]="true" [width]="'8%'">
+        
+    </igx-column>
+    <igx-column [field]="'DayCountConvention'" [header]="'Day Count Convention'" [dataType]="'string'"></igx-column>
+    <igx-column [field]="'InterestBenchmark'" [header]="'Interest Benchmark'" [dataType]="'string'"></igx-column>
+    <igx-column [field]="'BPS'" [header]="'BPS'" [dataType]="'number'"></igx-column>
+    <igx-column [field]="'Floor'" [header]="'Floor'" [dataType]="'number'"></igx-column>
+    <igx-column [field]="'InterestCalculationId'" [header]="'Interest Calc Method'" [dataType]="'string'"></igx-column>
+    <igx-column [field]="'UpdatedTime'" [header]="'Updated Time'"    dataType="date" [pipeArgs]="dateTimePipeArgs"></igx-column>
+    <igx-column [field]="'UpdatedUser'" [header]="'Updated User'" [dataType]="'string'"></igx-column>
+</igx-grid>

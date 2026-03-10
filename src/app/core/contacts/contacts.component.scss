@@ -1,0 +1,98 @@
+.frm-contact-addnew{
+    width:500px;
+     padding:30px;
+}
+.icon-save-delete{
+    height: 20px;
+    cursor: pointer;
+}
+
+.div-gradient{
+    display: flex;
+    justify-content: end;
+    background-image: linear-gradient(white, lightgrey);  
+    min-height: 2.5rem;
+    margin-top: -1%;
+}
+.no-top-border {
+    border-top: none;
+}
+.title-bar {
+    background-color: #337ab7;
+    color: white;
+    border-radius: 6px;
+    padding: 10px;
+    display: flex;
+  }
+  .title {
+    font-size: larger;
+    padding-left: 10px;
+    margin-top: -25px;
+    margin-bottom: -25px;
+}
+.table-new-contact tr td{
+   width: 124px;
+    padding-left: 8px;
+}
+.div-dialog-contact-addnew{
+    width: 35rem;
+    display: flex;
+    justify-content: center;
+}
+.div-dialog-contact-addnew-actions{
+    display: flex;
+    justify-content: center;
+   }
+.table tr {
+    font-size: 13px;
+    line-height: 35px;
+}
+.td-input{
+width: 250px;
+font-size: 13px;
+height: 28px;
+}
+.frm-contacts-addnew{
+    margin-top: 3%;
+    width: 30rem;
+}
+.dialog-textarea{
+    height: 6rem;
+    width: 25rem;
+    background-color: #f8f8f8;
+    font-size: 13px;
+  }
+  .div-contact{
+    background-image: linear-gradient(#fff0, #d3d3d382);
+    margin-top: 1%;
+  }
+  .btn-add-contacts{
+    height: 25px;
+    margin-top: 0.5%;
+    margin-bottom: 0.5%;
+  }
+  .inputDiv {
+    display: flex;
+    width: 30rem;
+    padding: 0;
+}
+.div-validation-error {
+    padding-left: 2%;
+}
+.errorvalidator {
+    color: red;
+    display: flex;
+    align-items: center;
+}
+::ng-deep{
+    .igx-grid__tr--odd {
+        background: #f2f2f2 !important;
+      }
+}
+.disabled-icon {
+    color: grey;
+    pointer-events: none;
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+

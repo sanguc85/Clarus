@@ -1,0 +1,66 @@
+<!-- ADD this wrapper -->
+<div class="email-panel">
+    <div class="title-bar">
+        <h2 class="title">{{ title }}</h2>
+        <a class="close-button" (click)="onCancel()" title="Close" aria-label="Close">&#10006;</a>
+    </div>
+
+    <div *ngIf="noEmailMessage!=''" class="div-no-data-msg">{{noEmailMessage}}</div>
+    <div *ngIf="noEmailMessage==''" class="email-dialog-content">
+        <!-- existing form exactly as you had it -->
+        <form [formGroup]="emailDialogForm" class="frm-send-mi">
+            <div class="div-mi-email">
+                <ng-container formArrayName="emailList">
+                    <ng-container *ngFor="let control of emailListControls.controls; let i = index;">
+                        <igx-input-group [formGroupName]="i" class="send-mi-email-input">
+                            <label igxLabel for="email{{ i }}">Email</label>
+                            <input igxInput name="email{{ i }}" type="email" formControlName="email"
+                                [ngClass]="notRecipientCondition(i) ? 'notRecipient' : 'isRecipient'"
+                                (input)="onEmailChanged()" />
+
+                            <igx-suffix>
+                                <span igxButton="icon" (click)="hideRecipient(i)">
+                                    <igx-icon>cancel</igx-icon>
+                                </span>
+                            </igx-suffix>
+                        </igx-input-group>
+                    </ng-container>
+                </ng-container>
+            </div>
+
+            <div class="div-button">
+                <span></span>
+                <button type="button" mat-raised-button class="custombtn usa-button" (click)="addRecipient()">
+                    Add Recipient
+                </button>
+
+            </div>
+
+            <div class="div-comments">
+                <textarea class="dialog-textarea usa-textarea" placeholder="Comments" formControlName="comments"></textarea>
+                <div *ngIf="emailDialogForm.get('comments')?.invalid && (emailDialogForm.get('comments')?.dirty || (emailDialogForm.get('comments')?.touched && emailDialogForm.get('comments')?.value!==null))"
+                    class="errorvalidator">
+                    <small *ngIf="emailDialogForm.get('comments')?.errors?.['minlength']"
+                        class="small-error small-minlength">
+                        Minimum length is {{ commentsMinLength }} characters.
+                    </small>
+                    <small *ngIf="emailDialogForm.get('comments')?.errors?.['noLeadingTrailingSpaces']"
+                        class="small-error small-dot-check">
+                        No leading or trailing spaces allowed.
+                    </small>
+                    <small *ngIf="emailDialogForm.get('comments')?.errors?.['pattern']" class="small-error">
+                        Only alphanumeric characters, spaces, and dots are allowed.
+                    </small>
+                </div>
+            </div>
+
+            <div class="div-send-mi-dialog-actions">
+                <button mat-raised-button class="custombtn usa-button" (click)="onCancel()">Cancel</button>
+                <button mat-raised-button class="custombtn usa-button"
+                    [disabled]="emailDialogForm.invalid || isEmailListEmpty() || loading" (click)="onSubmit()">Send
+                    Mail</button>
+
+            </div>
+        </form>
+    </div>
+</div>

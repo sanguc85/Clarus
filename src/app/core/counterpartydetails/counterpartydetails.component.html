@@ -1,0 +1,2145 @@
+<div class="row firstDiv">
+  <div class="col-lg-6 col-md-6 col-sm-6">
+    <select class="usa-select" [(ngModel)]="currentData.Counterparty" name="Counterparty" style="width: 150px"
+      (ngModelChange)="getCounterpartySummary(currentData.Counterparty)" required>
+      <option *ngFor="let cp of MetaDataNames['Counterparty']" [value]="cp.Name">
+        {{ cp.Name }}
+      </option>
+    </select> &nbsp; &nbsp;
+    <button mat-raised-button class="custombtn usa-button" id="btnsaveCP" aria-label="New Counterparty"
+      (click)="createCounterparty()"> New Counterparty</button> &nbsp; &nbsp;
+    <button mat-raised-button class="custombtn usa-button" id="btnsaveDocument" aria-label="New Document"
+      (click)="createDocument()"> New Document</button> &nbsp; &nbsp;
+  </div>
+  <div class="col-lg-6 col-md-6 col-sm-6" style="text-align: right;">
+    <button mat-raised-button class="custombtn usa-button" aria-label="Export Top Grid" title=""
+      (click)="exportToExcel(currentData.Counterparty, currentData.Entity)" id="btnExport">
+      Export To Excel
+    </button>
+  </div>
+</div>
+<!-- Your Angular template -->
+<igx-dialog #addNewCounterPartyDialog [closeOnOutsideSelect]="false">
+  <div>
+    <div class="title-bar">
+      <h2 class="title">New Counterparty</h2>
+      <a class="close-button" (click)="closeCPDialog()" title="Close" aria-label="Close">&#10006;</a>
+    </div>
+    <div class="container" style="width: 500px">
+      <div class="formbox" [formGroup]="newCPForm">
+        <table class="table table-striped table-hover">
+          <tr>
+            <th colspan="2">
+              <div align="center"><b>New Counterparty</b></div>
+            </th>
+          </tr>
+          <tr>
+            <td>Counterparty</td>
+            <td>
+              <input type="text" class="form-control usa-input"  id="Counterparty"
+                formControlName="Counterparty" required />
+              <div *ngIf="
+                  newCPForm?.get('Counterparty')?.hasError('required') &&
+                  newCPForm?.get('Counterparty')?.touched
+                " class="error-message">
+                Counterparty is required
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>Counterparty Name</td>
+            <td>
+              <input type="text" class="form-control usa-input"  id="Description"
+                formControlName="Description" />
+            </td>
+          </tr>
+          <tr>
+            <td>Guarantor</td>
+            <td><input type="text" class="form-control usa-input"  id="Guarantor"
+                formControlName="Guarantor" />
+            </td>
+          </tr>
+          <tr>
+            <td>Entity</td>
+            <td>
+              <select class="usa-select" #select formControlName="Entity" required
+                [ngClass]="'custom-igx-select'">
+                <option *ngFor="let entity of MetaDataTables['Entity']" [value]="entity.Name">
+                  {{ entity.Name }}
+                </option>
+              </select>
+              <div *ngIf="
+                  newCPForm?.get('Entity')?.hasError('required') &&
+                  newCPForm?.get('Entity')?.touched
+                " class="error-message">
+                Entity is required
+              </div>
+
+            </td>
+          </tr>
+          <tr>
+            <td>Party</td>
+            <td>
+              <select class="usa-select" #selectParty  formControlName="Party" required
+                [ngClass]="'custom-igx-select'">
+                <option *ngFor="let party of MetaDataTables['Party']" [value]="party.Name">
+                  {{ party.Name }}
+                </option>
+              </select>
+              <div *ngIf="
+                  newCPForm?.get('Party')?.hasError('required') &&
+                  newCPForm?.get('Party')?.touched
+                " class="error-message">
+                Party is required
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>Country Code</td>
+            <td>
+              <select class="usa-select" #selectCountry  formControlName="CountryCode"
+                [ngClass]="'custom-igx-select'">
+                <option *ngFor="let country of MetaDataTables['Country']" [value]="country.Name">
+                  {{ country.Name }}
+                </option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>Custodian</td>
+            <td><input type="text" class="form-control usa-input"  id="Custodian"
+                formControlName="Custodian" /></td>
+          </tr>
+          <tr>
+            <td>
+              <div align="center">
+                <label class="checkbox-inline">
+                  <input type="checkbox"   formControlName="Cleared" />
+                  Cleared
+                </label>
+              </div>
+            </td>
+            <td>
+              <div align="center">
+                <label class="checkbox-inline">
+                  <input type="checkbox"   formControlName="Repo" />
+                  Repo
+                </label>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>LEI</td>
+            <td>
+              <input type="text" class="form-control usa-input" id="LEI" formControlName="LEI" />
+
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <div class="button-row">
+      <button mat-raised-button class="custombtn usa-button" aria-label="SaveNewCounterparty" title="Save New Counterparty"
+        id="btnSave" [disabled]="newCPForm.invalid" (click)="saveNewCounterparty()">
+        Save New Counterparty
+      </button>
+      <button mat-raised-button class="custombtn usa-button" (click)="closeCPDialog()">
+        Cancel
+      </button>
+      &nbsp; &nbsp;
+    </div>
+  </div>
+</igx-dialog>
+<igx-dialog #addNewDocumentDialog [closeOnOutsideSelect]="false">
+  <div>
+    <div class="title-bar">
+      <h2 class="title">New Document</h2>
+      <a class="close-button" (click)="closeDocDialog('All')" title="Close" aria-label="Close">&#10006;</a>
+    </div>
+    <div class="row">
+      <ul class="nav nav-tabs">
+        <li *ngIf="documentFocus == 'ISDA' || documentFocus =='All'" [class.active]="CurrentDocumentTab === 'ISDA'">
+          <a (click)="setDocumentTab('ISDA')" style="cursor: pointer">ISDA</a>
+        </li>
+        <li *ngIf="documentFocus == 'CSA' || documentFocus =='All'" [class.active]="CurrentDocumentTab === 'CSA'">
+          <a (click)="setDocumentTab('CSA')" style="cursor: pointer">CSA</a>
+        </li>
+        <li *ngIf="documentFocus == 'MCA' || documentFocus =='All'" [class.active]="CurrentDocumentTab === 'MCA'">
+          <a (click)="setDocumentTab('MCA')" style="cursor: pointer">MCA</a>
+        </li>
+      </ul>
+
+    </div>
+    <div class="container dialog-content" *ngIf="CurrentDocumentTab === 'ISDA'" style="width: 100%">
+      <div class="formbox" [formGroup]="newISDAForm">
+        <table class="table table-striped table-hover">
+          <th colspan="2">
+            <div align="center"><b>ISDA</b></div>
+          </th>
+          <tr>
+            <td>Counterparty</td>
+            <td>
+              <select class="usa-select" [(ngModel)]="NewISDA.Counterparty" formControlName="Counterparty" style="width: 150px" required>
+                <option *ngFor="let cp of MetaDataNames['Counterparty']" [value]="cp.Name">
+                  {{ cp.Name }}
+                </option>
+              </select>
+              <div *ngIf="
+                  newISDAForm?.get('Counterparty')?.hasError('required') &&
+                  newISDAForm?.get('Counterparty')?.touched" class="error-message">
+                Counterparty is required
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>Entity</td>
+            <td>
+              <select class="usa-select" [(ngModel)]="NewISDA.Entity" formControlName="Entity" style="width: 150px" required>
+                <option *ngFor="let cp of MetaDataTables['Entity']" [value]="cp.Name">
+                  {{ cp.Name }}
+                </option>
+              </select>
+              <div *ngIf="newISDAForm?.get('Entity')?.hasError('required') &&
+                  newISDAForm?.get('Entity')?.touched" class="error-message">
+                Entity is required
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>Status</td>
+            <td>
+              <select class="usa-select" [(ngModel)]="NewISDA.Status" formControlName="Status" style="width: 150px" required>
+                <option *ngFor="let cp of MetaDataTables['Status']" [value]="cp.Name">
+                  {{ cp.Name }}
+                </option>
+              </select>
+              <div *ngIf="
+                  newISDAForm?.get('Status')?.hasError('required') &&
+                  newISDAForm?.get('Status')?.touched" class="error-message">
+                Status is required
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>Agreement Type</td>
+            <td>
+              <select class="usa-select" [(ngModel)]="NewISDA.AgreementType" formControlName="AgreementType" style="width: 150px" required>
+                <option *ngFor="let cp of MetaDataTables['AgreementType']" [value]="cp.Name">
+                  {{ cp.Name }}
+                </option>
+              </select>
+              <div *ngIf="
+                  newISDAForm?.get('AgreementType')?.hasError('required') &&
+                  newISDAForm?.get('AgreementType')?.touched" class="error-message">
+                Agreement Type is required
+              </div>
+
+            </td>
+          </tr>
+          <tr>
+            <td>Signed Date</td>
+            <td>
+
+              <!-- <input type="date" id="newISDASignedDate" [ngModel]="NewISDA.SignedDate" name="SignedDate"  class="fc-select form-control date usa-input usa-select"
+               (ngModelChange)="onDateChange($event,'newISDAForm','SignedDate')" /> -->
+
+              <igx-date-picker class="datePicker" [(ngModel)]="NewISDA.SignedDate" name="SignedDate" mode="dropdown"
+                formControlName="SignedDate"   inputFormat="yyyy-MM-dd">
+              </igx-date-picker>
+
+              <div *ngIf="newISDAForm?.get('SignedDate')?.hasError('required') &&
+              newISDAForm?.get('SignedDate')?.touched" class="error-message">
+                Signed Date is required
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>Documentation Law</td>
+            <td>
+              <select class="usa-select" [(ngModel)]="NewISDA.DocumentationLaw" formControlName="DocumentationLaw" style="width: 150px">
+                <option *ngFor="let cp of MetaDataTables['DocumentationLaw']" [value]="cp.Name">
+                  {{ cp.Name }}
+                </option>
+              </select>
+
+            </td>
+          </tr>
+          <tr>
+            <td>Currency</td>
+            <td>
+              <select class="usa-select" [(ngModel)]="NewISDA.Currency" formControlName="Currency" style="width: 150px" required>
+                <option *ngFor="let cp of MetaDataTables['Currency']" [value]="cp.Name">
+                  {{ cp.Name }}
+                </option>
+              </select>
+              <div *ngIf="newISDAForm?.get('Currency')?.hasError('required') &&
+              newISDAForm?.get('Currency')?.touched" class="error-message">
+                Currency is required
+              </div>
+            </td>
+          </tr>
+        </table>
+        &nbsp; &nbsp;
+        <button mat-raised-button class="custombtn usa-button" aria-label="SaveNewDocument" title="Save New ISDA" id="btnSave"
+          [disabled]="newISDAForm.invalid" (click)="saveNewDocument('ISDA')">
+          Save New ISDA
+        </button>
+        <button mat-raised-button class="custombtn usa-button" (click)="closeDocDialog('ISDA')">
+          Cancel
+        </button>
+
+      </div>
+
+
+
+    </div>
+    <div class="container dialog-content" *ngIf="CurrentDocumentTab === 'CSA'" style="width: 100%">
+      <div class="formbox" [formGroup]="newCSAForm">
+        <table class="table table-striped table-hover">
+          <th colspan="2">
+            <div align="center"><b>CSA</b></div>
+          </th>
+          <tr>
+            <td>Counterparty</td>
+            <td>
+              <select class="usa-select" [(ngModel)]="NewCSA.Counterparty" formControlName="Counterparty" style="width: 150px" required>
+                <option *ngFor="let cp of MetaDataNames['Counterparty']" [value]="cp.Name">
+                  {{ cp.Name }}
+                </option>
+              </select>
+              <div *ngIf="
+                  newCSAForm?.get('Counterparty')?.hasError('required') &&
+                  newCSAForm?.get('Counterparty')?.touched" class="error-message">
+                Counterparty is required
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>Entity</td>
+            <td>
+              <select class="usa-select" [(ngModel)]="NewCSA.Entity" formControlName="Entity" style="width: 150px" required>
+                <option *ngFor="let cp of MetaDataTables['Entity']" [value]="cp.Name">
+                  {{ cp.Name }}
+                </option>
+              </select>
+              <div *ngIf="newCSAForm?.get('Entity')?.hasError('required') &&
+                  newCSAForm?.get('Entity')?.touched" class="error-message">
+                Entity is required
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>Status</td>
+            <td>
+              <select class="usa-select" [(ngModel)]="NewCSA.Status" formControlName="Status" style="width: 150px" required>
+                <option *ngFor="let cp of MetaDataTables['Status']" [value]="cp.Name">
+                  {{ cp.Name }}
+                </option>
+              </select>
+              <div *ngIf="
+                  newCSAForm?.get('Status')?.hasError('required') &&
+                  newCSAForm?.get('Status')?.touched" class="error-message">
+                Status is required
+              </div>
+            </td>
+          </tr>
+
+          <tr>
+            <td>Signed Date</td>
+            <td>
+              <!-- <input type="date" id="newCSASignedDate"  [ngModel]="NewCSA.SignedDate" name="SignedDate"  class="fc-select form-control date usa-input usa-select"
+               formControlName="SignedDate" (ngModelChange)="onDateChange($event,'newCSAForm','SignedDate')" /> -->
+              <igx-date-picker class="datePicker" [(ngModel)]="NewCSA.SignedDate"  name="SignedDate" mode="dropdown"
+                formControlName="SignedDate" inputFormat="yyyy-MM-dd">
+              </igx-date-picker>
+              <div *ngIf="newCSAForm?.get('SignedDate')?.hasError('required') &&
+              newCSAForm?.get('SignedDate')?.touched" class="error-message">
+                Signed Date is required
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>Match Tolerance ($)</td>
+            <td>
+              <input type="text" class="form-control usa-input" [(ngModel)]="NewCSA.MatchToleranceDollar"
+                id="MatchToleranceDollar" formControlName="MatchToleranceDollar" format-currency />
+            </td>
+          </tr>
+          <tr>
+            <td>Match Tolerance (%)</td>
+            <td>
+              <input type="text" class="form-control usa-input" [(ngModel)]="NewCSA.MatchTolerancePercent"
+                id="MatchTolerancePercent" formControlName="MatchTolerancePercent" format-currency />
+            </td>
+          </tr>
+          <tr>
+            <td>Resolution Time</td>
+            <td>
+              <input type="time" class="form-control usa-input" [(ngModel)]="NewCSA.ResolutionTime" id="ResolutionTime"
+                formControlName="ResolutionTime" format-time-date />
+              <div
+                *ngIf="newCSAForm.controls['ResolutionTime']?.invalid && (newCSAForm.controls['ResolutionTime']?.dirty || newCSAForm.controls['ResolutionTime']?.touched)"
+                class="error-message">
+                <div *ngIf="newCSAForm.controls['ResolutionTime']?.hasError('time')">Invalid time format</div>
+              </div>
+
+            </td>
+          </tr>
+          <tr>
+            <td>Day Count Convention</td>
+            <td>
+              <select class="usa-select" [(ngModel)]="NewCSA.DayCountConvention" formControlName="DayCountConvention" style="width: 150px">
+                <option *ngFor="let cp of MetaDataTables['DayCountConvention']" [value]="cp.Name">
+                  {{ cp.Name }}
+                </option>
+              </select>
+
+            </td>
+          </tr>
+          <tr>
+            <td>Interest Benchmark</td>
+            <td>
+              <select class="usa-select" [(ngModel)]="NewCSA.InterestBenchmark" formControlName="InterestBenchmark" style="width: 150px">
+                <option *ngFor="let cp of MetaDataTables['InterestBenchmark']" [value]="cp.Name">
+                  {{ cp.Name }}
+                </option>
+              </select>
+
+            </td>
+          </tr>
+          <tr>
+            <td>BPS</td>
+            <td>
+              <input type="text" class="form-control usa-input" [(ngModel)]="NewCSA.BPS" id="BPS" formControlName="BPS" />
+
+            </td>
+          </tr>
+          <tr>
+            <td>Floor</td>
+            <td>
+              <input type="text" class="form-control usa-input" [(ngModel)]="NewCSA.Floor" id="Floor" formControlName="Floor" />
+            </td>
+          </tr>
+          <tr>
+            <td>Interest Calculation Method</td>
+            <td>
+              <select class="usa-select" [(ngModel)]="NewCSA.InterestCalculationMethod" formControlName="InterestCalculationMethod"
+                style="width: 150px">
+                <option *ngFor="let cp of MetaDataTables['InterestCalculationMethod']" [value]="cp.Name">
+                  {{ cp.Name }}
+                </option>
+              </select>
+
+            </td>
+          </tr>
+          <tr>
+            <td>Independent Amount</td>
+            <td>
+              <input type="text" class="form-control usa-input" [(ngModel)]="NewCSA.IndependentAmount" id="IndependentAmount"
+                formControlName="IndependentAmount" />
+            </td>
+          </tr>
+          <tr>
+            <td>Threshold Amount</td>
+            <td>
+              <input type="text" class="form-control usa-input" [(ngModel)]="NewCSA.ThresholdAmount" id="ThresholdAmount"
+                formControlName="ThresholdAmount" />
+            </td>
+          </tr>
+          <tr>
+            <td>Rounding Amount</td>
+            <td>
+              <input type="text" class="form-control usa-input" [(ngModel)]="NewCSA.RoundingAmount" id="RoundingAmount"
+                formControlName="RoundingAmount" />
+            </td>
+          </tr>
+          <tr>
+            <td>Minimum Transfer Amount</td>
+            <td>
+              <input type="text" class="form-control usa-input" [(ngModel)]="NewCSA.MinTransfer" id="MinTransfer"
+                formControlName="MinTransfer" />
+            </td>
+          </tr>
+          <tr>
+            <td>Dispute Resolution Threshold (Days)</td>
+            <td><input type="number" class="form-control usa-input" [(ngModel)]="NewCSA.ResolutionThresholdDays"
+                id="ResolutionThresholdDays" formControlName="ResolutionThresholdDays" /></td>
+          </tr>
+          <tr>
+            <td>Dispute Resolution Threshold ($)</td>
+            <td><input type="text" class="form-control usa-input" [(ngModel)]="NewCSA.ResolutionThresholdAmount"
+                id="ResolutionThresholdAmount" formControlName="ResolutionThresholdAmount" /></td>
+          </tr>
+        </table>
+        &nbsp; &nbsp;
+        <button mat-raised-button class="custombtn usa-button" aria-label="SaveNewDocument" title="Save New CSA" id="btnSave"
+          [disabled]="newCSAForm.invalid" (click)="saveNewDocument('CSA')">
+          Save New CSA
+        </button>
+        <button mat-raised-button class="custombtn usa-button" (click)="closeDocDialog('CSA')">
+          Cancel
+        </button>
+
+      </div>
+
+
+
+    </div>
+    <div class="container dialog-content" *ngIf="CurrentDocumentTab === 'MCA'" style="width: 100%">
+      <div class="formbox" [formGroup]="newMCAForm">
+        <table class="table table-striped table-hover">
+          <th colspan="2">
+            <div align="center"><b>MCA</b></div>
+          </th>
+          <tr>
+            <td>Counterparty</td>
+            <td>
+              <select class="usa-select" [(ngModel)]="NewMCA.Counterparty" formControlName="Counterparty" style="width: 150px" required>
+                <option *ngFor="let cp of MetaDataNames['Counterparty']" [value]="cp.Name">
+                  {{ cp.Name }}
+                </option>
+              </select>
+              <div *ngIf="newMCAForm?.get('Counterparty')?.hasError('required') &&
+                 newMCAForm?.get('Counterparty')?.touched" class="error-message">
+                Counterparty is required
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>Entity</td>
+            <td>
+              <select class="usa-select" [(ngModel)]="NewMCA.Entity" formControlName="Entity" style="width: 150px" required>
+                <option *ngFor="let cp of MetaDataTables['Entity']" [value]="cp.Name">
+                  {{ cp.Name }}
+                </option>
+              </select>
+              <div *ngIf="newMCAForm?.get('Entity')?.hasError('required') &&
+                  newMCAForm?.get('Entity')?.touched" class="error-message">
+                Entity is required
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>Agreement Type</td>
+            <td>
+              <select class="usa-select" [(ngModel)]="NewMCA.AgreementType" formControlName="AgreementType" style="width: 150px" required>
+                <option *ngFor="let cp of MetaDataTables['MasterAgreementType']" [value]="cp.Name">
+                  {{ cp.Name }}
+                </option>
+              </select>
+
+            </td>
+          </tr>
+          <tr>
+            <td>Status</td>
+            <td>
+              <select class="usa-select" [(ngModel)]="NewMCA.Status" formControlName="Status" style="width: 150px" required>
+                <option *ngFor="let cp of MetaDataTables['Status']" [value]="cp.Name">
+                  {{ cp.Name }}
+                </option>
+              </select>
+              <div *ngIf="
+                  newMCAForm?.get('Status')?.hasError('required') &&
+                  newMCAForm?.get('Status')?.touched" class="error-message">
+                Status is required
+              </div>
+            </td>
+          </tr>
+
+          <tr>
+            <td>Signed Date</td>
+            <td>
+              <!-- <input type="date" id="newMCASignedDate" [ngModel]="NewMCA.SignedDate" name="SignedDate"  class="fc-select form-control date usa-input usa-select"
+              formControlName="SignedDate" (ngModelChange)="onDateChange($event,'newMCAForm','SignedDate')" /> -->
+              <igx-date-picker class="datePicker" [(ngModel)]="NewMCA.SignedDate" name="SignedDate" mode="dropdown"
+                formControlName="SignedDate" inputFormat="yyyy-MM-dd">
+              </igx-date-picker>
+              <div *ngIf="newMCAForm?.get('SignedDate')?.hasError('required') &&
+              newMCAForm?.get('SignedDate')?.touched" class="error-message">
+                Signed Date is required
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>Settlement Currency</td>
+            <td>
+              <select class="usa-select" [(ngModel)]="NewMCA.SettlementCurrency" formControlName="SettlementCurrency" style="width: 150px"
+                required>
+                <option *ngFor="let cp of MetaDataTables['Currency']" [value]="cp.Name">
+                  {{ cp.Name }}
+                </option>
+              </select>
+              <div *ngIf="newMCAForm?.get('SettlementCurrency')?.hasError('required') &&
+              newMCAForm?.get('SettlementCurrency')?.touched" class="error-message">
+                Currency is required
+              </div>
+
+            </td>
+          </tr>
+          <tr>
+            <td>Settlement Type</td>
+            <td>
+              <select class="usa-select" [(ngModel)]="NewMCA.SettlementType" formControlName="SettlementType">
+                <option *ngFor="let cp of MetaDataTables['SettlementType']" [value]="cp.Name">
+                  {{ cp.Name }}
+                </option>
+              </select>
+
+            </td>
+          </tr>
+          <tr>
+            <td>Futures Price Valuation</td>
+            <td>
+              <select class="usa-select" [(ngModel)]="NewMCA.FuturesPriceValuation" formControlName="FuturesPriceValuation">
+                <option *ngFor="let cp of MetaDataTables['ApplicableType']" [value]="cp.Name" [text]="cp.Name">
+                  {{ cp.Name }}
+                </option>
+              </select>
+
+            </td>
+          </tr>
+          <tr>
+            <td>Exchange Traded Contract</td>
+            <td>
+              <select class="usa-select" [(ngModel)]="NewMCA.ExchangeTradedContract" formControlName="ExchangeTradedContract">
+                <option *ngFor="let cp of MetaDataTables['ApplicableType']" [value]="cp.Name" [text]="cp.Name">
+                  {{ cp.Name }}
+                </option>
+              </select>
+
+            </td>
+          </tr>
+          <tr>
+            <td>Averaging Date Disruption</td>
+            <td>
+              <select class="usa-select" [(ngModel)]="NewMCA.AveragingDateDisruption" formControlName="AveragingDateDisruption">
+                <option *ngFor="let cp of MetaDataTables['ApplicableType']" [value]="cp.Name" [text]="cp.Name">
+                  {{ cp.Name }}
+                </option>
+              </select>
+
+            </td>
+          </tr>
+          <tr>
+            <td>Automatic Exercise</td>
+            <td>
+              <select class="usa-select" [(ngModel)]="NewMCA.AutomaticExercise" formControlName="AutomaticExercise">
+                <option *ngFor="let cp of MetaDataTables['ApplicableType']" [value]="cp.Name" [text]="cp.Name">
+                  {{ cp.Name }}
+                </option>
+              </select>
+
+            </td>
+          </tr>
+          <tr>
+            <td>Index Cancellation</td>
+            <td>
+              <select class="usa-select" [(ngModel)]="NewMCA.IndexCancellation" formControlName="IndexCancellation">
+                <option *ngFor="let cp of MetaDataTables['IndexChangeType']" [value]="cp.Name" [text]="cp.Name">
+                  {{ cp.Name }}
+                </option>
+              </select>
+
+            </td>
+          </tr>
+          <tr>
+            <td>Index Modification</td>
+            <td>
+              <select class="usa-select" [(ngModel)]="NewMCA.IndexModification" formControlName="IndexModification">
+                <option *ngFor="let cp of MetaDataTables['IndexChangeType']" [value]="cp.Name" [text]="cp.Name">
+                  {{ cp.Name }}
+                </option>
+              </select>
+
+            </td>
+          </tr>
+          <tr>
+            <td>Index Disruption</td>
+            <td>
+              <select class="usa-select" [(ngModel)]="NewMCA.IndexDisruption" formControlName="IndexDisruption">
+                <option *ngFor="let cp of MetaDataTables['IndexChangeType']" [value]="cp.Name" [text]="cp.Name">
+                  {{ cp.Name }}
+                </option>
+              </select>
+
+            </td>
+          </tr>
+          <tr>
+            <td>Determining Party</td>
+            <td>
+              <select class="usa-select" [(ngModel)]="NewMCA.DeterminingParty" formControlName="DeterminingParty">
+                <option *ngFor="let cp of MetaDataTables['DeterminingParty']" [value]="cp.Name" [text]="cp.Name">
+                  {{ cp.Name }}
+                </option>
+              </select>
+
+            </td>
+          </tr>
+          <tr>
+            <td>Change In Law</td>
+            <td>
+              <select class="usa-select" [(ngModel)]="NewMCA.ChangeInLaw" formControlName="ChangeInLaw">
+                <option *ngFor="let cp of MetaDataTables['ApplicableType']" [value]="cp.Name" [text]="cp.Name">
+                  {{ cp.Name }}
+                </option>
+              </select>
+
+            </td>
+          </tr>
+
+          <td>Index Sponsor Disruption</td>
+          <td>
+            <select class="usa-select" [(ngModel)]="NewMCA.IndexSponsorDisruption" formControlName="IndexSponsorDisruption">
+              <option *ngFor="let cp of MetaDataTables['ApplicableType']" [value]="cp.Name" [text]="cp.Name">
+                {{ cp.Name }}
+              </option>
+            </select>
+
+          </td>
+          <tr>
+            <td>Hedging Disruption</td>
+            <td>
+              <select class="usa-select" [(ngModel)]="NewMCA.HedgingDisruption" formControlName="HedgingDisruption">
+                <option *ngFor="let cp of MetaDataTables['ApplicableType']" [value]="cp.Name" [text]="cp.Name">
+                  {{ cp.Name }}
+                </option>
+              </select>
+
+            </td>
+          </tr>
+          <tr>
+            <td>Increased Cost Of Hedging</td>
+            <td>
+              <select class="usa-select" [(ngModel)]="NewMCA.IncreasedCostOfHedging" formControlName="IncreasedCostOfHedging">
+                <option *ngFor="let cp of MetaDataTables['ApplicableType']" [value]="cp.Name" [text]="cp.Name">
+                  {{ cp.Name }}
+                </option>
+              </select>
+
+            </td>
+          </tr>
+          <tr>
+            <td>Loss Of Stock Borrow</td>
+            <td>
+              <select class="usa-select" [(ngModel)]="NewMCA.LossOfStockBorrow" formControlName="LossOfStockBorrow">
+                <option *ngFor="let cp of MetaDataTables['ApplicableType']" [value]="cp.Name" [text]="cp.Name">
+                  {{ cp.Name }}
+                </option>
+              </select>
+
+            </td>
+          </tr>
+          <tr>
+            <td>Increased Cost Of Stock Borrow</td>
+            <td>
+              <select class="usa-select" [(ngModel)]="NewMCA.IncreasedCostOfStockBorrow" formControlName="IncreasedCostOfStockBorrow">
+                <option *ngFor="let cp of MetaDataTables['ApplicableType']" [value]="cp.Name" [text]="cp.Name">
+                  {{ cp.Name }}
+                </option>
+              </select>
+
+            </td>
+          </tr>
+          <tr>
+            <td>Non-Reliance</td>
+            <td>
+              <select class="usa-select" [(ngModel)]="NewMCA.NonReliance" formControlName="NonReliance">
+                <option *ngFor="let cp of MetaDataTables['ApplicableType']" [value]="cp.Name" [text]="cp.Name">
+                  {{ cp.Name }}
+                </option>
+              </select>
+
+            </td>
+          </tr>
+          <tr>
+            <td>MCA Name</td>
+            <td>
+              <input type="text" class="form-control usa-input" [(ngModel)]="NewMCA.Name" id="Name" formControlName="Name" />
+
+            </td>
+          </tr>
+          <tr>
+            <td>Index</td>
+            <td>
+              <input type="text" class="form-control usa-input" [(ngModel)]="NewMCA.Index" id="Index" formControlName="Index" />
+            </td>
+          </tr>
+          <tr>
+            <td>Nat., Insolvent, Delist.</td>
+            <td>
+              <select class="usa-select" [(ngModel)]="NewMCA.NID" formControlName="NID">
+                <option *ngFor="let cp of MetaDataTables['IndexChangeType']" [value]="cp.Id" [text]="cp.Name">
+                  {{ cp.Name }}
+                </option>
+              </select>
+
+            </td>
+          </tr>
+          <tr>
+            <td>Index Disclaimer</td>
+            <td>
+              <select class="usa-select" [(ngModel)]="NewMCA.IndexDisclaimer" formControlName="IndexDisclaimer">
+                <option *ngFor="let cp of MetaDataTables['ApplicableType']" [value]="cp.Id" [text]="cp.Name">
+                  {{ cp.Name }}
+                </option>
+              </select>
+
+            </td>
+          </tr>
+          <tr>
+            <td>DMO Score</td>
+            <td>
+              <input type="text" class="form-control usa-input" [(ngModel)]="NewMCA.Score" id="Score" formControlName="Score" />
+            </td>
+          </tr>
+        </table>
+        &nbsp; &nbsp;
+        <button mat-raised-button class="custombtn usa-button" aria-label="SaveNewDocument" title="Save New MCA" id="btnSave"
+          [disabled]="newMCAForm.invalid" (click)="saveNewDocument('MCA')">
+          Save New MCA
+        </button>
+        <button mat-raised-button class="custombtn usa-button" (click)="closeDocDialog('MCA')">
+          Cancel
+        </button>
+
+      </div>
+
+
+
+    </div>
+  </div>
+</igx-dialog>
+<div>
+    <div id="layout">
+      <div class="firstBox">
+        <igx-grid #grid [data]="gridData" [width]="'100%'" [paging]="false"  [rowHeight]="'20px'" [autoGenerate]="false"
+          [displayDensity]="'cosy'" [hideRowSelectors]="true"  [rowSelection]="'single'" (rowSelectionChanging)="onRowClick($event)" [rowClasses]="rowClasses">          
+          <igx-column field="Counterparty" [width]="'9%'" header="Counterparty"></igx-column>
+          <igx-column field="Entity" [width]="'5%'" header="Entity"></igx-column>
+          <igx-column field="Guarantor" [width]="'16%'" header="Guarantor"></igx-column>
+          <igx-column field="Description" [width]="'16%'" header="Counterparty Name"></igx-column>
+          <igx-column field="ISDAStatus" [width]="'7%'" header="ISDA Status"></igx-column>
+          <igx-column field="DocumentationType" [width]="'12%'" header="Documentation Type"></igx-column>
+          <igx-column field="LEI" [width]="'10%'" header="LEI"></igx-column>
+          <igx-column field="SignedDate" [width]="'10%'" header="Signed Date"  dataType="date" [pipeArgs]="datePipeArgs"></igx-column>
+          
+          <igx-column field="CSAStatus" [width]="'7%'" header="CSA Status"></igx-column>
+          <igx-column field="Party" [width]="'8%'" header="Party"></igx-column>
+        </igx-grid>
+      </div>
+      <div class="firstBox">
+            <div class="col-lg-7 col-md-6 col-sm-6" style="background-image: linear-gradient(white, lightgrey);">
+              <span class="entityHeading">{{ currentCounterparty }}</span>
+              <button mat-raised-button class="custombtn usa-button" style="float:right" (click)="saveData()">
+                Save
+              </button>
+          </div>
+        
+        <div class="grid-container">
+            <!-- Focus Data -->
+            <igx-grid [data]="focusData" [width]="'58.2%'" [height]="'150px'" [rowHeight]="'20px'"
+              [autoGenerate]="false" [displayDensity]="'cosy'">
+             
+                <igx-column field="Counterparty" [width]="'13%'" header="Counterparty"></igx-column>
+                <igx-column field="Guarantor" [width]="'12%'" header="Guarantor" [cellClasses]="wrapTextClass"
+                  [editable]="true"></igx-column>
+                <igx-column field="Description" [width]="'14%'" header="Counterparty Name" [cellClasses]="wrapTextClass"
+                  [editable]="true"></igx-column>
+                <igx-column field="CountryCode" [width]="'8%'" header="Country" [editable]="true">
+                
+                  <!-- Specify the igx-select editor for editing -->
+                  <ng-template igxCellEditor let-cell="cell" let-value="value">
+                    <igx-select class="custom-select" [(ngModel)]="cell.editValue">
+                      <igx-select-item *ngFor="let country of MetaDataTables['Country']" [value]="country.Name">
+                        {{ country.Name }}
+                      </igx-select-item>
+                    </igx-select>
+                  </ng-template>
+                </igx-column>
+                <igx-column field="Party" [width]="'8%'" header="Party" [editable]="true">
+                
+                  <!-- Specify the igx-select editor for editing -->
+                  <ng-template igxCellEditor let-cell="cell" let-value="value">
+                    <igx-select class="custom-select" [(ngModel)]="cell.editValue">
+                      <igx-select-item *ngFor="let party of MetaDataTables['Party']" [value]="party.Name">
+                        {{ party.Name }}
+                      </igx-select-item>
+                    </igx-select>
+                  </ng-template>
+                </igx-column>
+                <igx-column field="Cleared" [width]="'8%'" header="Cleared" [dataType]="'boolean'" [editable]="true">
+                  <ng-template igxCell let-cell="cell">
+                    <input type="checkbox" [checked]="cell.value" [(ngModel)]="cell.value" />
+                  </ng-template>
+                </igx-column>
+                <igx-column field="Repo" [width]="'6%'" header="Repo" [dataType]="'boolean'" [editable]="true">
+                  <ng-template igxCell let-cell="cell">
+                    <input type="checkbox" [checked]="cell.value" [(ngModel)]="cell.value" />
+                  </ng-template>
+                </igx-column>
+                <igx-column field="Custodian" [width]="'13%'" [cellClasses]="wrapTextClass" header="Custodian"
+                  [editable]="true"></igx-column>
+                <igx-column field="LEI" [width]="'18%'" header="LEI" [editable]="true"></igx-column>
+             
+            </igx-grid>
+            <!-- RatingData -->
+            <igx-grid  [data]="ratingData" [width]="'41%'" [height]="'170px'" [rowHeight]="'20px'"
+              [autoGenerate]="false" [displayDensity]="'cosy'" style="margin-top:-20px">
+             
+              <igx-column-group header="Rating">
+                <igx-column-group>
+                  <igx-column field="Guarantor" [width]="'18%'" header="Guarantor" [cellClasses]="wrapTextClass"></igx-column>
+                  <igx-column field="Counterparty" [width]="'19%'" header="Counterparty"></igx-column>
+                </igx-column-group>
+                <igx-column-group header="S&P">
+                  <igx-column field="SnPRating" [width]="'10%'" header="Rating"></igx-column>
+                  <igx-column field="SnPOutlook" [width]="'11%'" header="OutLook"></igx-column>
+                </igx-column-group>
+
+            <igx-column-group header="Moody's">
+              <igx-column field="MoodysRating" [width]="'10%'" header="Rating"></igx-column>
+              <igx-column field="MoodysOutlook" [width]="'11%'" header="OutLook"></igx-column>
+
+            </igx-column-group>
+
+            <igx-column-group header="Fitch">
+              <igx-column field="FitchRating" [width]="'10%'" header="Rating"></igx-column>
+              <igx-column field="FitchOutlook" [width]="'11%'" header="OutLook"></igx-column>
+            </igx-column-group>
+          </igx-column-group>
+        </igx-grid>
+      </div>
+    </div>
+    <div class="box">
+
+      <div class="row">
+        <ul class="nav nav-tabs">
+          <li [class.active]="contentTab === 'ISDA'">
+            <a (click)="onTabChange('ISDA')" style="cursor: pointer">ISDA</a>
+          </li>
+          <li [class.active]="contentTab === 'CSA'">
+            <a (click)="onTabChange('CSA')" style="cursor: pointer">CSA</a>
+          </li>
+          <li [class.active]="contentTab === 'MCA'">
+            <a (click)="onTabChange('MCA')" style="cursor: pointer">MCA</a>
+          </li>
+          <li [class.active]="contentTab === 'RepoDetails'">
+            <a (click)="onTabChange('RepoDetails')" style="cursor: pointer">Repo Details</a>
+          </li>
+          <li [class.active]="contentTab === 'Contacts'">
+            <a (click)="onTabChange('Contacts')" style="cursor: pointer">Contacts</a>
+          </li>
+          <li [class.active]="contentTab === 'NotificationTimes'">
+            <a (click)="onTabChange('NotificationTimes')" style="cursor: pointer">Notification Times</a>
+          </li>
+          <li [class.active]="contentTab === 'EligibleAssets'">
+            <a (click)="onTabChange('EligibleAssets')" style="cursor: pointer">Eligible Assets</a>
+          </li>
+          <li [class.active]="contentTab === 'AuthorizedProducts'">
+            <a (click)="onTabChange('AuthorizedProducts')" style="cursor: pointer">Authorized Products</a>
+          </li>
+          <li [class.active]="contentTab === 'deliveryInstructions'">
+            <a (click)="onTabChange('deliveryInstructions')" style="cursor: pointer">Delivery Instructions</a>
+          </li>
+        </ul>
+      </div>
+      <div class="row" *ngIf="contentTab === 'ISDA'">
+        <form name="ISDAForm" #ISDAForm="ngForm">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th class="subHeader" colspan="6">
+                  <b>ISDA</b>
+                  <button mat-raised-button class="custombtn usa-button" style="margin-right: 10px; float: right;"
+                    [disabled]="!ISDAForm.valid" (click)="saveDocument('ISDA')">
+                    Save
+                  </button>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Status</td>
+                <td>
+                  <select class="usa-select" [(ngModel)]="ISDAData.Status" name="Status" style="width: 220px"
+                    (ngModelChange)="setCurrentEdit()">
+                    <option *ngFor="let cp of MetaDataTables['Status']" [value]="cp.Name">
+                      {{ cp.Name }}
+                    </option>
+                  </select>
+
+                </td>
+                <td>Signed Date</td>
+                <td>
+                  <div class="datePickerCp">
+                    <igx-date-picker (keydown.enter)="$event.preventDefault()" [(ngModel)]="ISDAData.SignedDate"
+                      name="SignedDate"        
+                      mode="dropdown" (closed)="setCurrentEdit()"  inputFormat="yyyy-MM-dd" required>
+                    </igx-date-picker>
+                    <div *ngIf="ISDAForm.controls['SignedDate']?.hasError('required') &&
+                            ISDAForm.controls['SignedDate']?.touched" class="error-message">
+                      Signed Date is required
+                    </div>
+                  </div>
+
+                </td>
+              </tr>
+              <tr>
+                <td>Agreement Type</td>
+                <td>
+                  <select class="usa-select" [(ngModel)]="ISDAData.AgreementType" name="AgreementType" style="width: 220px"
+                    (ngModelChange)="setCurrentEdit()">
+                    <option *ngFor="let cp of MetaDataTables['AgreementType']" [value]="cp.Name">
+                      {{ cp.Name }}
+                    </option>
+                  </select>
+                </td>
+                <td>Documentation Law</td>
+                <td>
+                  <select class="usa-select" [(ngModel)]="ISDAData.DocumentationLaw" name="DocumentationLaw" style="width: 220px"
+                    (ngModelChange)="setCurrentEdit()">
+                    <option *ngFor="let cp of MetaDataTables['DocumentationLaw']" [value]="cp.Name">
+                      {{ cp.Name }}
+                    </option>
+                  </select>
+
+                </td>
+              </tr>
+              <tr>
+                <td>Counterparty</td>
+                <td>
+
+                  <select class="usa-select" [(ngModel)]="ISDAData.Counterparty" name="Counterparty" style="width: 220px"
+                    (ngModelChange)="setCurrentEdit()" disabled>
+                    <option *ngFor="let cp of MetaDataNames['Counterparty']" [value]="cp.Name">
+                      {{ cp.Name }}
+                    </option>
+                  </select>
+                </td>
+                <td>Currency</td>
+                <td>
+                  <select class="usa-select" [(ngModel)]="ISDAData.Currency" name="Currency" style="width: 220px"
+                    (ngModelChange)="setCurrentEdit()">
+                    <option *ngFor="let cp of MetaDataTables['Currency']" [value]="cp.Name">
+                      {{ cp.Name }}
+                    </option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <td>Guarantor</td>
+                <td>
+                  <input type="text" class="form-control usa-input" name="Guarantor" (keydown.enter)="$event.preventDefault()"
+                    [value]="ISDAData.Guarantor" style="width:220px;font-size:11px" readonly="true" />
+                </td>
+                <td></td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+        </form>
+      </div>
+      <div class="row" *ngIf="contentTab === 'CSA'">
+        <ul class="nav nav-tabs">
+          <li [class.active]="csaTab === 'Main'">
+            <a (click)="setCSATab('Main')" style="cursor: pointer">CSA Details</a>
+          </li>
+          <li [class.active]="csaTab === 'Haircut'">
+            <a (click)="setCSATab('Haircut')" style="cursor: pointer">Haircut</a>
+          </li>
+          <li [class.active]="csaTab === 'RatingsEvent'">
+            <a (click)="setCSATab('RatingsEvent')" style="cursor: pointer">Ratings Event</a>
+          </li>
+        </ul>
+
+        <div *ngIf="csaTab === 'Main'">
+          <form name="CSAForm" #CSAForm="ngForm">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th class="subHeader" colspan="6">
+                    <b>CSA</b>
+                    <button mat-raised-button class="custombtn usa-button" style="margin-right: 10px; float: right;"
+                      [disabled]="!CSAForm.valid" (click)="saveDocument('CSA')">
+                      Save
+                    </button>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Status</td>
+                  <td>
+                    <select class="usa-select" [(ngModel)]="CSAData.Status" name="Status" style="width: 150px"
+                      (ngModelChange)="setCurrentEdit()" required>
+                      <option *ngFor="let cp of MetaDataTables['Status']" [value]="cp.Name">
+                        {{ cp.Name }}
+                      </option>
+                    </select>
+                    <div *ngIf="CSAForm.controls['Status']?.hasError('required') &&
+                            CSAForm.controls['Status']?.touched" class="error-message">
+                      Status is required
+                    </div>
+                  </td>
+                  <td>Signed Date</td>
+                  <td>
+                    <div class="datePickerCp">
+                      <igx-date-picker (keydown.enter)="$event.preventDefault()"
+                        [(ngModel)]="CSAData.SignedDate" name="SignedDate" mode="dropdown"  (closed)="setCurrentEdit()"
+                        inputFormat="yyyy-MM-dd" required>
+                      </igx-date-picker>
+                      <div *ngIf="CSAForm.controls['SignedDate']?.hasError('required') &&
+                              CSAForm.controls['SignedDate']?.touched" class="error-message">
+                        Signed Date is required
+                      </div>
+                    </div>
+                  </td>
+                  <td>Independent Amount</td>
+                  <td>
+                    <input type="text" class="form-control usa-input" (keydown.enter)="$event.preventDefault()"
+                      [(ngModel)]="CSAData.IndependentAmount" id="IndependentAmount" name="IndependentAmount"
+                      (ngModelChange)="setCurrentEdit()" format-currency />
+
+                  </td>
+                </tr>
+                <tr>
+                  <td>Match Tolerance ($)</td>
+                  <td>
+                    <input type="text" class="form-control usa-input" (keydown.enter)="$event.preventDefault()"
+                      [(ngModel)]="CSAData.MatchToleranceDollar" id="MatchToleranceDollar" name="MatchToleranceDollar"
+                      (ngModelChange)="setCurrentEdit()" format-currency />
+
+                  </td>
+                  <td>Interest Benchmark</td>
+                  <td>
+                    <select class="usa-select" [(ngModel)]="CSAData.InterestBenchmark" name="InterestBenchmark" style="width: 150px"
+                      (ngModelChange)="setCurrentEdit()">
+                      <option *ngFor="let cp of MetaDataTables['InterestBenchmark']" [value]="cp.Name">
+                        {{ cp.Name }}
+                      </option>
+                    </select>
+
+                  </td>
+                  <td>Threshold Amount</td>
+                  <td>
+                    <input type="text" class="form-control usa-input" (keydown.enter)="$event.preventDefault()"
+                      [(ngModel)]="CSAData.ThresholdAmount" id="ThresholdAmount" name="ThresholdAmount"
+                      (ngModelChange)="setCurrentEdit()" format-currency />
+
+                  </td>
+                </tr>
+                <tr>
+                  <td>Match Tolerance (%)</td>
+                  <td>
+                    <input type="text" class="form-control usa-input" (keydown.enter)="$event.preventDefault()"
+                      [(ngModel)]="CSAData.MatchTolerancePercent" id="MatchTolerancePercent"
+                      name="MatchTolerancePercent" (ngModelChange)="setCurrentEdit()" format-percent />
+
+                  </td>
+                  <td>BPS</td>
+                  <td>
+                    <input type="number" class="form-control usa-input" (keydown.enter)="$event.preventDefault()"
+                      [(ngModel)]="CSAData.BPS" id="BPS" name="BPS" (ngModelChange)="setCurrentEdit()" />
+
+                  </td>
+                  <td>Rounding Amount</td>
+                  <td>
+                    <input type="text" class="form-control usa-input" (keydown.enter)="$event.preventDefault()"
+                      [(ngModel)]="CSAData.RoundingAmount" id="RoundingAmount" name="RoundingAmount"
+                       (ngModelChange)="setCurrentEdit()"
+                      format-currency />
+
+                  </td>
+                </tr>
+                <tr>
+                  <td>Resolution Time</td>
+                  <td>
+                    <input type="time" class="form-control usa-input" (keydown.enter)="$event.preventDefault()"
+                      [(ngModel)]="CSAData.ResolutionTime" id="ResolutionTime" name="ResolutionTime"
+                      (ngModelChange)="setCurrentEdit()" format-time-date />
+                    <div
+                      *ngIf="CSAForm.controls['ResolutionTime']?.invalid && (CSAForm.controls['ResolutionTime']?.dirty || CSAForm.controls['ResolutionTime']?.touched)"
+                      class="error-message">
+                      <div *ngIf="CSAForm.controls['ResolutionTime']?.hasError('time')">Invalid time format</div>
+                    </div>
+                  </td>
+                  <td>Floor</td>
+                  <td>
+                    <input type="number" (keydown.enter)="$event.preventDefault()" class="form-control usa-input"
+                      [(ngModel)]="CSAData.Floor" id="Floor" name="Floor" (ngModelChange)="setCurrentEdit()" />
+
+                  </td>
+                  <td>Dispute Resolution Threshold ($)</td>
+                  <td>
+                    <input type="text" (keydown.enter)="$event.preventDefault()" class="form-control usa-input"
+                      [(ngModel)]="CSAData.ResolutionThresholdAmount" id="ResolutionThresholdAmount"
+                      name="ResolutionThresholdAmount" (ngModelChange)="setCurrentEdit()" format-currency />
+
+                  </td>
+                </tr>
+                <tr>
+                  <td>DayCountConvention</td>
+                  <td>
+                    <select class="usa-select" [(ngModel)]="CSAData.DayCountConvention" name="DayCountConvention" style="width: 150px"
+                      (ngModelChange)="setCurrentEdit()">
+                      <option *ngFor="let cp of MetaDataTables['DayCountConvention']" [value]="cp.Name">
+                        {{ cp.Name }}
+                      </option>
+                    </select>
+                  </td>
+                  <td>Interest Calculation Method</td>
+                  <td>
+                    <select class="usa-select" [(ngModel)]="CSAData.InterestCalculation" name="InterestCalculationMethod"
+                      style="width: 150px" (ngModelChange)="setCurrentEdit()">
+                      <option *ngFor="let cp of MetaDataTables['InterestCalculationMethod']" [value]="cp.Name">
+                        {{ cp.Name }}
+                      </option>
+                    </select>
+
+
+                  </td>
+                  <td>Dispute Resolution Threshold (Days)</td>
+                  <td>
+                    <input type="number" class="form-control usa-input" (keydown.enter)="$event.preventDefault()"
+                      [(ngModel)]="CSAData.ResolutionThresholdDays" id="ResolutionThresholdDays"
+                      name="ResolutionThresholdDays" (ngModelChange)="setCurrentEdit()" />
+
+                  </td>
+                </tr>
+                <tr>
+                  <td>Minimum Transfer Amount</td>
+                  <td>
+                    <input type="text" class="form-control usa-input" (keydown.enter)="$event.preventDefault()"
+                      [(ngModel)]="CSAData.MinTransfer" id="MinTransfer" name="MinTransfer"
+                      (ngModelChange)="setCurrentEdit()" format-currency />
+
+                  </td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+          </form>
+        </div>
+        <div *ngIf="csaTab === 'Haircut'">
+          <form name="HaircutForm" #HaircutForm="ngForm">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th class="subHeader" colspan="10">
+                    <b>Haircut</b>
+                    <button mat-raised-button class="custombtn right-action-btn usa-button"
+                      (click)="saveHaircut('CSA')">
+                      Save
+                    </button>
+                    <button mat-raised-button class="custombtn right-action-btn usa-button"
+                      (click)="addHaircutRow()">
+                      Add Row
+                    </button>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th>Collateral Type</th>
+                  <th>0-1</th>
+                  <th>1-2 </th>
+                  <th>2- 5 </th>
+                  <th>5-10 </th>
+                  <th>10-15</th>
+                  <th>15-20 </th>
+                  <th>20-30 </th>
+                  <th>30+</th>
+                  <th></th>
+                </tr>
+                <tr *ngFor="let item of rawHaircut; let i = index">
+                  <td>
+                    <span *ngIf="item.Id !== 0">{{item.CollateralType}}</span>
+                    <select *ngIf="item.Id === 0" [(ngModel)]="item.CollateralType" [name]="'CollateralType'+i" 
+                      (ngModelChange)="setCurrentEdit()" class="collateral-type-select usa-select" required>
+                      <option value="">Select Collateral Type</option>
+                      <option *ngFor="let rule of securityNameMapRules" [value]="rule.Value">
+                        {{ rule.Value }}
+                      </option>
+                    </select>
+                  </td>
+                  <td style="padding:6px">
+                    <input type="text" class="form-control usa-input" [(ngModel)]="item.C1" [name]="'C1'+i"
+                      (keydown.enter)="$event.preventDefault()" style="width:100px;font-size:11px;height:auto"
+                      (ngModelChange)="setCurrentEdit()" />
+                  </td>
+                  <td style="padding:6px">
+                    <input type="text" class="form-control usa-input" style="width:100px;font-size:11px;height:auto"
+                      [name]="'C2'+i" (keydown.enter)="$event.preventDefault()" (ngModelChange)="setCurrentEdit()"
+                      [(ngModel)]="item.C2" />
+                  </td>
+                  <td style="padding:6px">
+                    <input type="text" class="form-control usa-input" style="width:100px;font-size:11px;height:auto"
+                      (ngModelChange)="setCurrentEdit()" (keydown.enter)="$event.preventDefault()" [name]="'C5'+i"
+                      [(ngModel)]="item.C5" format-haircut-percent />
+                  </td>
+                  <td style="padding:6px">
+                    <input type="text" class="form-control usa-input" style="width:100px;font-size:11px;height:auto"
+                      (ngModelChange)="setCurrentEdit()" (keydown.enter)="$event.preventDefault()" [name]="'C10'+i"
+                      [(ngModel)]="item.C10" format-haircut-percent />
+                  </td>
+                  <td style="padding:6px">
+                    <input type="text" class="form-control usa-input" style="width:100px;font-size:11px;height:auto"
+                      (ngModelChange)="setCurrentEdit()" (keydown.enter)="$event.preventDefault()" [name]="'C15'+i"
+                      [(ngModel)]="item.C15" format-haircut-percent />
+                  </td>
+                  <td style="padding:6px">
+                    <input type="text" class="form-control usa-input" style="width:100px;font-size:11px;height:auto"
+                      (ngModelChange)="setCurrentEdit()" (keydown.enter)="$event.preventDefault()" [name]="'C20'+i"
+                      [(ngModel)]="item.C20" format-haircut-percent />
+                  </td>
+                  <td style="padding:6px">
+                    <input type="text" class="form-control usa-input" style="width:100px;font-size:11px;height:auto"
+                      (keydown.enter)="$event.preventDefault()" [name]="'C30'+i" (ngModelChange)="setCurrentEdit()"
+                      [(ngModel)]="item.C30" format-haircut-percent />
+                  </td>
+                  <td style="padding:6px">
+                    <input type="text" class="form-control usa-input" [name]="'C31'+i"
+                      style="width:100px;font-size:11px;height:auto" (keydown.enter)="$event.preventDefault()"
+                      (ngModelChange)="setCurrentEdit()" [(ngModel)]="item.C31" format-haircut-percent />
+                  </td>
+                  <td class="action-cell">
+                    <div align="center">
+                      <igx-icon 
+                        class="delete-icon"
+                        (click)="deleteHaircutRow(i)" 
+                        title="Delete Row">
+                        delete
+                      </igx-icon>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </form>
+        </div>
+        <div *ngIf="csaTab === 'RatingsEvent'">
+          <form name="RatingsEventForm" #RatingsEventForm="ngForm">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th class="subHeader" colspan="5">
+                    <b>Ratings Event</b>
+                    <button mat-raised-button class="custombtn usa-button" style="margin-right: 10px; float: right;"
+                      [disabled]="!RatingsEventForm.valid" (click)="saveRatingsEvent()">
+                      Save
+                    </button>
+                  </th>
+                </tr>
+              </thead>
+
+              <tr>
+                <th></th>
+                <th>S&P</th>
+                <th>Moody's</th>
+                <th>Fitch</th>
+                <th>A.M. Best</th>
+              </tr>
+              <tr>
+                <td>Counterparty</td>
+                <td>
+                  <input type="text" class="form-control usa-input" name="SnP" (ngModelChange)="setCurrentEdit()"
+                    (keydown.enter)="$event.preventDefault()" [(ngModel)]="RatingsEvent.Counterparty.SnP" required />
+                  <div *ngIf="RatingsEventForm?.controls['SnP']?.hasError('required') &&
+                          RatingsEventForm?.controls['SnP']?.touched" class="error-message">
+                    S&P is required
+                  </div>
+                </td>
+                <td>
+                  <input type="text" class="form-control usa-input" name="Moodys" (keydown.enter)="$event.preventDefault()"
+                    (ngModelChange)="setCurrentEdit()" [(ngModel)]="RatingsEvent.Counterparty.Moodys" required />
+                  <div *ngIf="RatingsEventForm?.controls['Moodys']?.hasError('required') &&
+                          RatingsEventForm?.controls['Moodys']?.touched" class="error-message">
+                    Moody's is required
+                  </div>
+                </td>
+                <td>
+                  <input type="text" class="form-control usa-input" name="Fitch" (ngModelChange)="setCurrentEdit()"
+                    (keydown.enter)="$event.preventDefault()" [(ngModel)]="RatingsEvent.Counterparty.Fitch" required />
+                  <div *ngIf="RatingsEventForm?.controls['Fitch']?.hasError('required') &&
+                        RatingsEventForm?.controls['Fitch']?.touched" class="error-message">
+                    Fitch is required
+                  </div>
+                </td>
+                <td>
+                  <input type="text" class="form-control usa-input" name="AMBest" (ngModelChange)="setCurrentEdit()"
+                    (keydown.enter)="$event.preventDefault()" [(ngModel)]="RatingsEvent.Counterparty.AMBest" required />
+                  <div *ngIf="RatingsEventForm?.controls['AMBest']?.hasError('required') &&
+                        RatingsEventForm?.controls['AMBest']?.touched" class="error-message">
+                    A.M. Best is required
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>Entity</td>
+                <td>
+                  <input type="text" class="form-control usa-input" name="enSnp" (ngModelChange)="setCurrentEdit()"
+                    (keydown.enter)="$event.preventDefault()" [(ngModel)]="RatingsEvent.Entity.SnP" required />
+                  <div *ngIf="RatingsEventForm?.controls['enSnp']?.hasError('required') &&
+                        RatingsEventForm?.controls['enSnp']?.touched" class="error-message">
+                    Entity S&P is required
+                  </div>
+                </td>
+                <td>
+                  <input type="text" class="form-control usa-input" name="enMoodys" (ngModelChange)="setCurrentEdit()"
+                    (keydown.enter)="$event.preventDefault()" [(ngModel)]="RatingsEvent.Entity.Moodys" required />
+                  <div *ngIf="RatingsEventForm?.controls['enMoodys']?.hasError('required') &&
+                        RatingsEventForm?.controls['enMoodys']?.touched" class="error-message">
+                    Entity Moody's is required
+                  </div>
+                </td>
+                <td>
+                  <input type="text" class="form-control usa-input" name="enFitch" (ngModelChange)="setCurrentEdit()"
+                    (keydown.enter)="$event.preventDefault()" [(ngModel)]="RatingsEvent.Entity.Fitch" required />
+                  <div *ngIf="RatingsEventForm?.controls['enFitch']?.hasError('required') &&
+                        RatingsEventForm?.controls['enFitch']?.touched" class="error-message">
+                    Entity Fitch is required
+                  </div>
+                </td>
+                <td>
+                  <input type="text" class="form-control usa-input" name="enAMBest" (ngModelChange)="setCurrentEdit()"
+                    (keydown.enter)="$event.preventDefault()" [(ngModel)]="RatingsEvent.Entity.AMBest" required />
+                  <div *ngIf="RatingsEventForm?.controls['enAMBest']?.hasError('required') &&
+                        RatingsEventForm?.controls['enAMBest']?.touched" class="error-message">
+                    Entity A.M. Best is required
+                  </div>
+                </td>
+              </tr>
+
+            </table>
+          </form>
+        </div>
+      </div>
+      <div class="row" *ngIf="contentTab === 'MCA'">
+        <ul class="nav nav-tabs">
+          <li [class.active]="mcaTab == -1">
+            <a (click)="setMCATab({Id:-1})" style="cursor: pointer">Authorized Products</a>
+          </li>
+          <ng-container *ngIf="MCAData.length > 0">
+            <li *ngFor="let mca of MCAData" [class.active]="mcaTab === mca.Id">
+              <a (click)="setMCATab(mca)" style="cursor: pointer">MCA {{mca.Name}}</a>
+            </li>
+          </ng-container>
+            
+        </ul>
+
+        <div *ngIf="mcaTab === -1">
+          <table class="table table-striped" style="width:49%;float:left">
+            <thead>
+              <tr>
+                <th colspan="4" style="padding:2px;font-size:10px">Derivative Products</th>
+              </tr>
+              <tr>
+                <th style="padding:2px;font-size:10px">Asset</th>
+                <th style="padding:2px;font-size:10px">Instrument Type</th>
+                <th style="padding:2px;font-size:10px;text-align: center;">Authorized</th>
+              </tr>
+            </thead>
+            <tbody *ngIf="filterMCA().length>0">
+              <tr *ngFor="let item of filterMCA()" (click)="setCurrentProduct(item)"
+                [ngStyle]="{'background-color': (item.Product === currentProduct.Product && item.Name === currentProduct.Name ? 'rgba(52, 124, 183, 0.25)' : '')}">
+                <td style="padding:2px; font-size:9px">{{ item.Product }}</td>
+                <td style="padding:2px; font-size:9px">{{ item.Description }}</td>
+                <td style="padding:2px; font-size:9px">
+                  <div align="center">
+                    <input type="checkbox" style="margin:1px 0 0;" [(ngModel)]="item.Authorized" disabled="true" />
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <table class="table table-striped" style="width:49%;float:right">
+            <thead>
+              <tr>
+                <th style="padding:3px;font-size:11px">Asset Class</th>
+                <th style="padding:3px;font-size:11px">Underlying</th>
+                <th style="padding:3px;font-size:11px">Description</th>
+                <th style="padding:3px;font-size:11px;text-align: center;">Authorized</th>
+                <th style="padding:3px;font-size:11px;text-align: center;">MCA</th>
+              </tr>
+            </thead>
+            <tbody *ngIf="filterMCAProd(currentProduct)">
+              <tr *ngFor="let item of currentProduct.Underlyings">
+                <td style="padding:3px;font-size:11px">{{(item.Name != 'FX' ? 'Equity' : 'FX')}}</td>
+                <td style="padding:3px;font-size:11px">{{item.Name}}</td>
+                <td style="padding:3px;font-size:11px">{{item.Description}}</td>
+                <td style="padding:3px;font-size:11px">
+                  <div align="center">
+                    <input type="checkbox" style="margin:1px 0 0;" (keydown.enter)="$event.preventDefault()"
+                      name="Authorized" [(ngModel)]="item.Authorized" disabled="true" />
+                  </div>
+                </td>
+                <td style="padding:3px;font-size:11px">
+                  <div align="center">
+                    <input type="checkbox" style="margin:1px 0 0;" name="MCA" (keydown.enter)="$event.preventDefault()"
+                      [(ngModel)]="item.MCA" disabled="true" />
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div *ngIf="hasMCA && mcaTab !== -1">
+          <form name="MCAForm" #MCAForm="ngForm">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th class="subHeader" colspan="8">
+                    <b>MCA {{CurrentMCA.Name}}</b>
+                    <button mat-raised-button class="custombtn usa-button" style="margin-right: 10px; float: right;"
+                      (click)="openDocument('MCA')"> New</button>
+                    <button mat-raised-button class="custombtn usa-button" style="margin-right: 10px; float: right;"
+                      [disabled]="!MCAForm.valid" (click)="saveDocument('MCA')"> Save</button>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Agreement Type</td>
+                  <td>
+                    <select class="usa-select" [id]="CurrentMCA.Id" name="AgreementType" [(ngModel)]="CurrentMCA.AgreementType"
+                      name="Counterparty" (ngModelChange)="setCurrentEdit()">
+                      <option *ngFor="let cp of MetaDataTables['MasterAgreementType']" [value]="cp.Name">
+                        {{ cp.Name }}
+                      </option>
+                    </select> &nbsp; &nbsp;
+
+                  </td>
+                  <td>Automatic Exercise</td>
+                  <td>
+                    <select class="usa-select" [(ngModel)]="CurrentMCA.AutomaticExercise" name="AutomaticExercise"
+                      (ngModelChange)="setCurrentEdit()">
+                      <option *ngFor="let cp of MetaDataTables['ApplicableType']" [value]="cp.Id" [text]="cp.Name">
+                        {{ cp.Name }}
+                      </option>
+                    </select> &nbsp; &nbsp;
+
+                  </td>
+                  <td>Index Sponsor Disruption</td>
+                  <td>
+                    <select class="usa-select" [(ngModel)]="CurrentMCA.IndexSponsorDisruption" name="IndexSponsorDisruption"
+                      (ngModelChange)="setCurrentEdit()">
+                      <option *ngFor="let cp of MetaDataTables['ApplicableType']" [value]="cp.Id" [text]="cp.Name">
+                        {{ cp.Name }}
+                      </option>
+                    </select> &nbsp; &nbsp;
+
+                  </td>
+                  <td>Averaging Date Disruption</td>
+                  <td>
+                    <select class="usa-select" [(ngModel)]="CurrentMCA.AveragingDateDisruption" name="AveragingDateDisruption"
+                      (ngModelChange)="setCurrentEdit()">
+                      <option *ngFor="let cp of MetaDataTables['ApplicableType']" [value]="cp.Id" [text]="cp.Name">
+                        {{ cp.Name }}
+                      </option>
+                    </select> &nbsp; &nbsp;
+
+                  </td>
+                </tr>
+                <tr>
+                  <td>Status</td>
+                  <td>
+                    <select class="usa-select" [(ngModel)]="CurrentMCA.Status" name="Status" (ngModelChange)="setCurrentEdit()" required>
+                      <option *ngFor="let cp of MetaDataTables['Status']" [value]="cp.Name">
+                        {{ cp.Name }}
+                      </option>
+                    </select>
+                    <div *ngIf="MCAForm.controls['Status']?.hasError('required') &&
+                            MCAForm.controls['Status']?.touched" class="error-message">
+                      Status is required
+                    </div>
+                  </td>
+                  <td>Index Cancellation</td>
+                  <td>
+                    <select class="usa-select" [(ngModel)]="CurrentMCA.IndexCancellation" name="IndexCancellation"
+                      (ngModelChange)="setCurrentEdit()">
+                      <option *ngFor="let cp of MetaDataTables['IndexChangeType']" [value]="cp.Name">
+                        {{ cp.Name }}
+                      </option>
+                    </select>
+
+                  <td>Hedging Disruption</td>
+                  <td>
+                    <select class="usa-select" [(ngModel)]="CurrentMCA.HedgingDisruption" name="HedgingDisruption"
+                      (ngModelChange)="setCurrentEdit()">
+                      <option *ngFor="let cp of MetaDataTables['ApplicableType']" [value]="cp.Id" [text]="cp.Name">
+                        {{ cp.Name }}
+                      </option>
+                    </select>
+
+                  <td>Non Reliance</td>
+                  <td>
+                    <select class="usa-select" [(ngModel)]="CurrentMCA.NonReliance" name="NonReliance" (ngModelChange)="setCurrentEdit()">
+                      <option *ngFor="let cp of MetaDataTables['ApplicableType']" [value]="cp.Id" [text]="cp.Name">
+                        {{ cp.Name }}
+                      </option>
+                    </select>
+
+                  </td>
+                </tr>
+                <tr>
+                  <td>Signed Date</td>
+                  <td>
+                    <igx-date-picker  class="datePickerCp" (keydown.enter)="$event.preventDefault()"
+                      [(ngModel)]="CurrentMCA.SignedDate"  name="SignedDate" mode="dropdown" (closed)="setCurrentEdit()"
+                      inputFormat="yyyy-MM-dd" required>
+                    </igx-date-picker>
+                    <div *ngIf="MCAForm.controls['SignedDate']?.hasError('required') &&
+                            MCAForm.controls['SignedDate']?.touched" class="error-message">
+                      Signed Date is required
+                    </div>
+                  </td>
+                  <td>Index Modification</td>
+                  <td>
+                    <select class="usa-select" [(ngModel)]="CurrentMCA.IndexModification" name="IndexModification"
+                      (ngModelChange)="setCurrentEdit()">
+                      <option *ngFor="let cp of MetaDataTables['IndexChangeType']" [value]="cp.Name">
+                        {{ cp.Name }}
+                      </option>
+                    </select>
+
+                  </td>
+                  <td>Increased Cost Of Hedging</td>
+                  <td>
+                    <select class="usa-select" [(ngModel)]="CurrentMCA.IncreasedCostOfHedging" name="IncreasedCostOfHedging"
+                      (ngModelChange)="setCurrentEdit()">
+                      <option *ngFor="let cp of MetaDataTables['ApplicableType']" [value]="cp.Id" [text]="cp.Name">
+                        {{ cp.Name }}
+                      </option>
+                    </select>
+
+                  </td>
+                  <td>Change In Law</td>
+                  <td>
+                    <select class="usa-select" [(ngModel)]="CurrentMCA.ChangeInLaw" name="ChangeInLaw" (ngModelChange)="setCurrentEdit()">
+                      <option *ngFor="let cp of MetaDataTables['ApplicableType']" [value]="cp.Id" [text]="cp.Name">
+                        {{ cp.Name }}
+                      </option>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Settlement Currency</td>
+                  <td>
+                    <select class="usa-select" [(ngModel)]="CurrentMCA.SettlementCurrency" name="SettlementCurrency"
+                      (ngModelChange)="setCurrentEdit()" required>
+                      <option *ngFor="let cp of MetaDataTables['Currency']" [value]="cp.Name">
+                        {{ cp.Name }}
+                      </option>
+                    </select>
+                    <div *ngIf="MCAForm.controls['SettlementCurrency']?.hasError('required') &&
+                            MCAForm.controls['SettlementCurrency']?.touched" class="error-message">
+                      Settlement Currency is required
+                    </div>
+                  </td>
+                  <td>Index Disruption</td>
+                  <td>
+                    <select class="usa-select" [(ngModel)]="CurrentMCA.IndexDisruption" name="IndexDisruption"
+                      (ngModelChange)="setCurrentEdit()">
+                      <option *ngFor="let cp of MetaDataTables['IndexChangeType']" [value]="cp.Name">
+                        {{ cp.Name }}
+                      </option>
+                    </select>
+
+                  </td>
+                  <td>Loss Of Stock Borrow</td>
+                  <td>
+                    <select class="usa-select" [(ngModel)]="CurrentMCA.LossOfStockBorrow" name="LossOfStockBorrow"
+                      (ngModelChange)="setCurrentEdit()">
+                      <option *ngFor="let cp of MetaDataTables['ApplicableType']" [value]="cp.Id" [text]="cp.Name">
+                        {{ cp.Name }}
+                      </option>
+                    </select>
+
+                  </td>
+                  <td>Exchange Traded Contract</td>
+                  <td>
+                    <select class="usa-select" [(ngModel)]="CurrentMCA.ExchangeTradedContract" name="ExchangeTradedContract"
+                      (ngModelChange)="setCurrentEdit()">
+                      <option *ngFor="let cp of MetaDataTables['ApplicableType']" [value]="cp.Id" [text]="cp.Name">
+                        {{ cp.Name }}
+                      </option>
+                    </select>
+
+                  </td>
+                </tr>
+                <tr>
+                  <td>Futures Price Valuation</td>
+                  <td>
+                    <select class="usa-select" [(ngModel)]="CurrentMCA.FuturesPriceValuation" name="FuturesPriceValuation"
+                      (ngModelChange)="setCurrentEdit()">
+                      <option *ngFor="let cp of MetaDataTables['ApplicableType']" [value]="cp.Id" [text]="cp.Name">
+                        {{ cp.Name }}
+                      </option>
+                    </select>
+
+                  </td>
+                  <td>Determining Party</td>
+                  <td>
+                    <select class="usa-select" [(ngModel)]="CurrentMCA.DeterminingParty" name="DeterminingParty"
+                      (ngModelChange)="setCurrentEdit()">
+                      <option *ngFor="let cp of MetaDataTables['DeterminingParty']" [value]="cp.Name">
+                        {{ cp.Name }}
+                      </option>
+                    </select>
+
+                  </td>
+                  <td>Increased Cost Of Stock Borrow</td>
+                  <td>
+                    <select class="usa-select" [(ngModel)]="CurrentMCA.IncreasedCostOfStockBorrow" name="IncreasedCostOfStockBorrow"
+                      (ngModelChange)="setCurrentEdit()">
+                      <option *ngFor="let cp of MetaDataTables['ApplicableType']" [value]="cp.Id" [text]="cp.Name">
+                        {{ cp.Name }}
+                      </option>
+                    </select>
+
+                  </td>
+                  <td>Settlement Type</td>
+                  <td>
+                    <select class="usa-select" [(ngModel)]="CurrentMCA.SettlementType" name="SettlementType"
+                      (ngModelChange)="setCurrentEdit()">
+                      <option *ngFor="let cp of MetaDataTables['SettlementType']" [value]="cp.Name">
+                        {{ cp.Name }}
+                      </option>
+                    </select>
+
+                  </td>
+                </tr>
+                <tr>
+                  <td>MCA Name</td>
+                  <td>
+                    <input type="text" class="form-control usa-input" style="width:200px" name="Name"
+                      (keydown.enter)="$event.preventDefault()" (ngModelChange)="setCurrentEdit()"
+                      [(ngModel)]="CurrentMCA.Name" required />
+                    <div *ngIf="MCAForm.controls['Name']?.hasError('required') &&
+                            MCAForm.controls['Name']?.touched" class="error-message">
+                      Name is required
+                    </div>
+                  </td>
+                  <td>Index</td>
+                  <td>
+                    <input type="text" class="form-control usa-input" style="width:200px" name="Index"
+                      (keydown.enter)="$event.preventDefault()" (ngModelChange)="setCurrentEdit()"
+                      [(ngModel)]="CurrentMCA.Index" />
+
+                  </td>
+                  <td>Nat., Insolvent, Delist.</td>
+                  <td>
+                    <select class="usa-select" [(ngModel)]="CurrentMCA.NID" name="NID" (ngModelChange)="setCurrentEdit()">
+                      <option *ngFor="let cp of MetaDataTables['IndexChangeType']" [value]="cp.Id" [text]="cp.Name">
+                        {{ cp.Name }}
+                      </option>
+                    </select>
+
+                  </td>
+                  <td>Index Disclaimer</td>
+                  <td>
+                    <select class="usa-select" [(ngModel)]="CurrentMCA.IndexDisclaimer" name="IndexDisclaimer"
+                      (ngModelChange)="setCurrentEdit()">
+                      <option *ngFor="let cp of MetaDataTables['ApplicableType']" [value]="cp.Id" [text]="cp.Name">
+                        {{ cp.Name }}
+                      </option>
+                    </select>
+
+                  </td>
+                </tr>
+                <tr>
+                  <td>DMO Score</td>
+                  <td>
+                    <input type="text" class="form-control usa-input" style="width:200px" name="Score"
+                      (keydown.enter)="$event.preventDefault()" (ngModelChange)="setCurrentEdit()"
+                      [(ngModel)]="CurrentMCA.Score" />
+
+                  </td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+          </form>
+        </div>
+      </div>
+      <div class="row" *ngIf="contentTab === 'RepoDetails'">
+        <ul class="nav nav-tabs">
+
+          <li [class.active]="repoTab === 'RepoDetails'">
+            <a (click)="setRepoTab('RepoDetails')" style="cursor: pointer">Repo Details</a>
+          </li>
+          <li [class.active]="repoTab === 'Haircut'">
+            <a (click)="setRepoTab('Haircut')" style="cursor: pointer">Haircut</a>
+          </li>
+        </ul>
+
+        <div *ngIf="repoTab === 'RepoDetails'">
+          <form name="repoForm" #repoForm="ngForm">
+            <table class="table table-striped">
+              <thead (keydown.enter)="$event.preventDefault()">
+                <tr>
+
+                  <th class="subHeader" colspan="7">
+                    <b>Repo Details</b>
+                    <button mat-raised-button class="custombtn usa-button" style="margin-right: 10px; float: right;"
+                      (click)="saveRepoDetails(currentData.Counterparty, currentData.Entity)"> Save</button>
+                    <button mat-raised-button class="custombtn usa-button" style="margin-right: 10px; float: right;"
+                      (click)="addRepoDetails()"> Add</button>
+                  </th>
+                </tr>
+              </thead>
+              <tr>
+                <th>Repo Type</th>
+                <th>Repo Status</th>
+                <th>Threshold Amount</th>
+                <th>Independent Amount</th>
+                <th>Minimum Transfer Amount</th>
+                <th>Rounding Amount</th>
+                <th>Signed Date</th>
+              </tr>
+              <tr *ngFor="let repo of RepoDetails; let i = index">
+                <td>
+                  <select class="usa-select" [(ngModel)]="repo.RepoType" [name]="'RepoType'+i" (ngModelChange)="setCurrentEdit()" required>
+                    <option *ngFor="let cp of MetaDataTables['RepoType']" [value]="cp.Name" [text]="cp.Name">
+                      {{ cp.Name }}
+                    </option>
+                  </select>
+
+                </td>
+                <td>
+                  <select class="usa-select" [(ngModel)]="repo.Status" [name]="'Status'+i" (ngModelChange)="setCurrentEdit()">
+                    <option *ngFor="let cp of MetaDataTables['Status']" [value]="cp.Name" [text]="cp.Name">
+                      {{ cp.Name }}
+                    </option>
+                  </select>
+
+                </td>
+                <td>
+                  <input type="text" class="form-control usa-input" style="width:200px" (keydown.enter)="$event.preventDefault()"
+                    [name]="'RepoThresholdDollar'+i" (ngModelChange)="setCurrentEdit()"
+                    [(ngModel)]="repo.ThresholdAmount" format-currency />
+
+                </td>
+                <td>
+                  <input type="text" class="form-control usa-input" style="width:200px" (keydown.enter)="$event.preventDefault()"
+                    [name]="'IndependentAmount'+i" (ngModelChange)="setCurrentEdit()"
+                    [(ngModel)]="repo.IndependentAmount" format-currency />
+
+                </td>
+                <td>
+                  <input type="text" class="form-control usa-input" style="width:200px" [name]="'MinTransferAmount'+i"
+                    (keydown.enter)="$event.preventDefault()" (ngModelChange)="setCurrentEdit()"
+                    [(ngModel)]="repo.MinTransferAmount" format-currency />
+
+                </td>
+                <td>
+                  <input type="text" class="form-control usa-input" style="width:200px" [name]="'RoundingAmount'+i"
+                    (ngModelChange)="setCurrentEdit()" (keydown.enter)="$event.preventDefault()"
+                    [(ngModel)]="repo.RoundingAmount" format-currency />
+                </td>
+                <td>
+                  <!-- <input type="date" [ngModel]="repo.SignedDate" [name]="'SignedDate'+i"  class="fc-select form-control date usa-input usa-select"
+                    (ngModelChange)="onDateChange($event,'repoForm','SignedDate')"  /> -->
+
+                  <igx-date-picker class="datePicker" [(ngModel)]="repo.SignedDate"  [name]="'SignedDate'+i"
+                    mode="dropdown" (closed)="setCurrentEdit()" inputFormat="yyyy-MM-dd">
+                  </igx-date-picker>
+
+                </td>
+              </tr>
+            </table>
+          </form>
+        </div>
+        <div *ngIf="repoTab === 'Haircut'">
+          <form name="repoHaircutForm" #repoHaircutForm="ngForm">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th class="subHeader" colspan="9">
+                    <b>Haircut</b>
+                    <button mat-raised-button class="custombtn usa-button" style="margin-right: 10px; float: right;"
+                      (click)="saveHaircut('Repo')">
+                      Save
+                    </button>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th>Collateral Type</th>
+                  <th>0-1</th>
+                  <th>1-2 </th>
+                  <th>2- 5 </th>
+                  <th>5-10 </th>
+                  <th>10-15</th>
+                  <th>15-20 </th>
+                  <th>20-30 </th>
+                  <th>30+</th>
+                </tr>
+                <tr *ngFor="let item of rawHaircut; let i = index">
+                  <td>{{item.CollateralType}}</td>
+                  <td style="padding:6px">
+                    <input type="text" class="form-control usa-input" [(ngModel)]="item.C1"
+                      (keydown.enter)="$event.preventDefault()" [name]="'repoC1'+i"
+                      style="width:100px;font-size:11px;height:auto" (ngModelChange)="setCurrentEdit()" />
+                  </td>
+                  <td style="padding:6px">
+                    <input type="text" class="form-control usa-input" style="width:100px;font-size:11px;height:auto"
+                      [name]="'repoC2'+i" (ngModelChange)="setCurrentEdit()" (keydown.enter)="$event.preventDefault()"
+                      [(ngModel)]="item.C2" />
+                  </td>
+                  <td style="padding:6px">
+                    <input type="text" class="form-control usa-input" style="width:100px;font-size:11px;height:auto"
+                      (ngModelChange)="setCurrentEdit()" (keydown.enter)="$event.preventDefault()" [name]="'repoC5'+i"
+                      [(ngModel)]="item.C5" format-haircut-percent />
+                  </td>
+                  <td style="padding:6px">
+                    <input type="text" class="form-control usa-input" style="width:100px;font-size:11px;height:auto"
+                      (ngModelChange)="setCurrentEdit()" (keydown.enter)="$event.preventDefault()" [name]="'repoC10'+i"
+                      [(ngModel)]="item.C10" format-haircut-percent />
+                  </td>
+                  <td style="padding:6px">
+                    <input type="text" class="form-control usa-input" style="width:100px;font-size:11px;height:auto"
+                      (ngModelChange)="setCurrentEdit()" (keydown.enter)="$event.preventDefault()" [name]="'repoC15'+i"
+                      [(ngModel)]="item.C15" format-haircut-percent />
+                  </td>
+                  <td style="padding:6px">
+                    <input type="text" class="form-control usa-input" style="width:100px;font-size:11px;height:auto"
+                      (ngModelChange)="setCurrentEdit()" (keydown.enter)="$event.preventDefault()" [name]="'repoC20'+i"
+                      [(ngModel)]="item.C20" format-haircut-percent />
+                  </td>
+                  <td style="padding:6px">
+                    <input type="text" class="form-control usa-input" style="width:100px;font-size:11px;height:auto"
+                      [name]="'repoC30'+i" (ngModelChange)="setCurrentEdit()" (keydown.enter)="$event.preventDefault()"
+                      [(ngModel)]="item.C30" format-haircut-percent />
+                  </td>
+                  <td style="padding:6px">
+                    <input type="text" class="form-control usa-input" [name]="'repoC31'+i"
+                      style="width:100px;font-size:11px;height:auto" (ngModelChange)="setCurrentEdit()"
+                      (keydown.enter)="$event.preventDefault()" [(ngModel)]="item.C31" format-haircut-percent />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </form>
+        </div>
+      </div>
+      <app-contacts *ngIf="contentTab === 'Contacts'" [contacts]="contactObj" (refreshContacts)="handleRefreshContacts()"></app-contacts> 
+      
+      
+      <div class="row" style="padding:5px;" *ngIf="contentTab === 'NotificationTimes'">
+        <form name="notificationForm" #notificationForm="ngForm">
+          <table class="table table-striped">
+            <thead (keydown.enter)="$event.preventDefault()">
+              <tr>
+                <th class="subHeader" colspan="5">
+                  <b>Notification Times</b>
+                  <button mat-raised-button class="custombtn usa-button" style="margin-right: 10px; float: right;"
+                    (click)="addNotificationTimes()"> Add</button>
+                  <button mat-raised-button class="custombtn usa-button" style="margin-right: 10px; float: right;"
+                    [disabled]="!notificationForm.valid" (click)="saveNotificationTimes()"> Save</button>
+                </th>
+              </tr>
+            </thead>
+            <tr>
+              <th>Event Type</th>
+              <th>Time (CT)</th>
+              <th>Time (ET)</th>
+              <th>Date
+              </th>
+              <th></th>
+            </tr>
+            <tr>
+              <td colspan="3"></td>
+              <td colspan="2">
+                <div class="error-message" style="color:red">{{notificationError}} </div>
+
+              </td>
+            </tr>
+            <tr *ngFor="let item of NotificationTimes; let i = index">
+              <td>
+                <input type="text" class="form-control usa-input" [name]="'EventType'+i" [(ngModel)]="item.EventType"
+                  (keydown.enter)="$event.preventDefault()" (ngModelChange)="setCurrentEdit()" required />
+                <div *ngIf="notificationForm.controls['EventType' + i].touched">
+                  <div class="error-message" style="color:red"
+                    *ngIf="notificationForm.controls['EventType' + i]?.hasError('required')">Event Type is required
+                  </div>
+                </div>
+
+              </td>
+              <td>
+                <input type="time" class="form-control usa-input" [name]="'CentralTime'+i" [(ngModel)]="item.CentralTime"
+                  (keydown.enter)="$event.preventDefault()"
+                  (ngModelChange)="notificationForm.controls['CentralTime'+i].dirty && setnotificationTimeEdit('Central', i)"
+                  time format-time-date />
+                <div *ngIf="notificationForm.controls['CentralTime' + i].touched">
+                  <div class="error-message" style="color:red"
+                    *ngIf="notificationForm.controls['CentralTime' + i]?.hasError('time')">Invalid time format</div>
+                </div>
+
+              </td>
+              <td>
+                <input type="time" class="form-control usa-input" [name]="'EasternTime'+i" [(ngModel)]="item.EasternTime"
+                  (keydown.enter)="$event.preventDefault()"
+                  (ngModelChange)="notificationForm.controls['EasternTime'+i].dirty &&  setnotificationTimeEdit('Eastern', i)"
+                  time format-time-date />
+                <div *ngIf="notificationForm.controls['EasternTime' + i].touched">
+                  <div class="error-message" style="color:red"
+                    *ngIf="notificationForm.controls['EasternTime' + i]?.hasError('time')">Invalid time format</div>
+                </div>
+
+              </td>
+
+              <td>
+                <input type="text" (keydown.enter)="$event.preventDefault()" class="form-control usa-input"
+                  [name]="'DaysFromToday'+i" (ngModelChange)="setCurrentEdit()" [(ngModel)]="item.DaysFromToday" />
+
+              </td>
+              <td>
+                <div align="center">
+                  <button mat-raised-button class="custombtn usa-button" style="margin-right: 10px; float: right;"
+                    (click)="deleteItem('NotificationTimes',NotificationTimes,item)">
+                    Remove
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </form>
+      </div>
+      <div class="row" style="padding:5px;" *ngIf="contentTab === 'EligibleAssets'">
+        <form name="eligibleAsetForm" #eligibleAsetForm="ngForm">
+          <table class="table table-striped">
+            <thead (keydown.enter)="$event.preventDefault()">
+              <tr>
+                <th class="subHeader" colspan="4">
+                  <b>Eligible Assets</b>
+                  <button mat-raised-button class="custombtn usa-button" style="margin-right: 10px; float: right;"
+                    (click)="addEligibleAssets()"> Add</button>
+                  <button mat-raised-button class="custombtn usa-button" style="margin-right: 10px; float: right;"
+                    [disabled]="!eligibleAsetForm.valid" (click)="saveEligibleAssets()"> Save</button>
+                </th>
+              </tr>
+            </thead>
+            <tr>
+              <th>Collateral Type</th>
+              <th>CUSIP</th>
+              <th>Par Value</th>
+              <th></th>
+            </tr>
+            <tr *ngFor="let item of EligibleAssets; let i = index">
+              <td>
+                <select class="usa-select" [(ngModel)]="item.CollateralType" [name]="'CollateralType'+i" (ngModelChange)="setCurrentEdit()"
+                  required>
+                  <option *ngFor="let cp of MetaDataTables['CollateralType']" [value]="cp.Name" [text]="cp.Name">
+                    {{ cp.Name }}
+                  </option>
+                </select>
+                <div *ngIf="eligibleAsetForm.controls['CollateralType' + i].touched">
+                  <div class="error-message"
+                    *ngIf="eligibleAsetForm.controls['CollateralType' + i]?.hasError('required')">
+                    Collateral Type is required</div>
+                </div>
+              </td>
+              <td>
+                <input type="text" (keydown.enter)="$event.preventDefault()" class="form-control usa-input" [name]="'Cusip'+i"
+                  (ngModelChange)="setCurrentEdit()" [(ngModel)]="item.CUSIP" />
+              </td>
+              <td>
+                <input type="text" (keydown.enter)="$event.preventDefault()" class="form-control usa-input" [name]="'ParValue'+i"
+                  (ngModelChange)="setCurrentEdit()" [(ngModel)]="item.ParValue" format-currency />
+              </td>
+              <td>
+                <div align="center">
+                  <button mat-raised-button class="custombtn usa-button" style="margin-right: 10px; float: right;"
+                    (click)="deleteItem('EligibleAssets',EligibleAssets,item)">
+                    Remove
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </form>
+      </div>
+      <div class="row" style="padding:5px;overflow: auto;height: 447px;" *ngIf="contentTab === 'AuthorizedProducts'">
+        <table class="table table-striped" style="width:49%;margin-left:12px">
+          <thead>
+            <tr style="height:35.5px">
+              <th class="subHeader" colspan="4" style="padding:2px;font-size:10px">Derivative Products</th>
+            </tr>
+            <tr>
+              <th style="padding:2px;font-size:10px">Asset</th>
+              <th style="padding:2px;font-size:10px">Instrument Type</th>
+              <th style="padding:2px;font-size:10px;text-align: center;">Authorized</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of AuthorizedProducts" (click)="setCurrentProduct(item)" [ngStyle]="{'background-color': (item.Product === currentProduct.Product && item.Name === currentProduct.Name 
+                ? 'rgba(52, 124, 183, 0.25)' : '')}">
+              <td *ngIf="productsCounted[item.Product + ', ' + item.Name] === true"
+                [attr.rowspan]="counts[item.Product]" style="padding:3px;font-size:11px;background-color:#f9f9f9">
+                {{item.Product}}</td>
+              <td style="padding:3px;font-size:11px">{{item.Description}}</td>
+              <td style="padding:3px;font-size:11px">
+                <div align="center">
+                  <input type="checkbox" style="margin:1px 0 0;" (ngModelChange)="setProduct(item, 'Product')"
+                    [(ngModel)]="item.Authorized" />
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <table class="table table-striped" style="width:49%;margin-left:11px">
+          <thead>
+            <tr>
+              <th class="subHeader" colspan="5">
+                <button mat-raised-button class="custombtn usa-button" style="margin-right: 10px; float: right;"
+                  (click)="checkAll(false)"> Uncheck All</button>
+                <button mat-raised-button class="custombtn usa-button" style="margin-right: 10px; float: right;"
+                  (click)="checkAll(true)"> Check All</button>
+                <button mat-raised-button class="custombtn usa-button" style="margin-right: 10px; float: right;"
+                  (click)="saveAuthorizedProducts()"> Save</button>
+              </th>
+            </tr>
+            <tr>
+              <th style="padding:3px;font-size:11px">Asset Class</th>
+              <th style="padding:3px;font-size:11px">Underlying</th>
+              <th style="padding:3px;font-size:11px">Description</th>
+              <th style="padding:3px;font-size:11px;text-align: center;">Authorized</th>
+              <th style="padding:3px;font-size:11px;text-align: center;">MCA</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of currentProduct.Underlyings" style="height:34px">
+              <td style="padding:3px;font-size:11px">{{(item.Name != 'FX' ? 'Equity' : 'FX')}}</td>
+              <td style="padding:3px;font-size:11px">{{item.Name}}</td>
+              <td style="padding:3px;font-size:11px">{{item.Description}}</td>
+              <td style="padding:3px;font-size:11px">
+                <div align="center">
+                  <input type="checkbox" style="margin:1px 0 0;" [(ngModel)]="item.Authorized"
+                    (ngModelChange)="setProduct(item, 'Underlying')" />
+                </div>
+              </td>
+              <td style="padding:3px;font-size:11px">
+                <div align="center">
+                  <input type="checkbox" style="margin:1px 0 0;" [(ngModel)]="item.MCA"
+                    (ngModelChange)="setProduct(item, 'MCA')" />
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <app-deliveryinstructions *ngIf="contentTab === 'deliveryInstructions'"
+        [selectedCounterparty]="currentData.Counterparty"></app-deliveryinstructions>
+    </div>
+  </div>
+</div>

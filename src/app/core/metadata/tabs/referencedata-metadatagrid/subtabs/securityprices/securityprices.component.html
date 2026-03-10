@@ -1,0 +1,143 @@
+<button mat-raised-button class="custombtn btnExportData usa-button" id="Export Data" aria-label="Export Data"
+    (click)="exportToExcel()">Export To Excel</button>
+
+    <div class="row">
+        <div class="col-lg-2 col-md-2 col-sm-2 firstDiv">
+            <label>Start Date</label>
+            <igx-date-picker class="datePicker" [(ngModel)]="startDate" [maxValue]="todayDate" mode="dropdown"
+            inputFormat="yyyy-MM-dd">
+            </igx-date-picker>
+        </div>
+        <div class="col-lg-2 col-md-2 col-sm-2 firstDiv">
+            <label>End Date</label>
+            <igx-date-picker class="datePicker" [(ngModel)]="endDate" mode="dropdown"
+                inputFormat="yyyy-MM-dd">
+            </igx-date-picker>
+        </div>
+        <div class="col-lg-4 col-md-3 col-sm-3">
+            <button mat-raised-button class="custombtn usa-button" id="btnPullData" aria-label="Pull Data"
+                (click)="getSecurityPrices()">
+                Pull Data
+            </button>
+            &nbsp; &nbsp;
+            <button mat-raised-button class="custombtn usa-button" id="btnSaveData" aria-label="Save Data"
+                (click)="openSecurityPriceDialog()" [disabled]="!metaDataService.isAdmin && !metaDataService.isMO">Add Security Price</button>
+        </div>
+    </div>
+
+    <div class="grid-container">
+        <igx-grid #securityPrices [data]="securityPricesData" [width]="'100%'" [height]="'700px'" [rowHeight]="'20px'">
+            <igx-paginator [perPage]="25">
+                <igx-paginator-content>
+                    <igx-page-size></igx-page-size>
+                    <div>Total Items:<span class="spanTotalRecords"> {{ securityPricesData.length }}</span></div>
+                    <igx-page-nav></igx-page-nav>
+                </igx-paginator-content>
+            </igx-paginator>
+
+            <igx-column field="ObservationDate" header="PriceDate" width="10%" dataType="date" [pipeArgs]="datePipeArgs"></igx-column>
+            
+            <igx-column field="Cusip" header="CUSIP" width="7%"></igx-column>
+            <igx-column field="ISIN" header="ISIN" width="8%"></igx-column>
+            <igx-column field="SecurityName" header="Security" width="17%"></igx-column>
+            <igx-column field="SecutiyType" header="Type" width="10%"></igx-column>
+            <igx-column field="IssueDate" header="Issue Date" width="10%" dataType="date" [pipeArgs]="datePipeArgs"></igx-column>
+            
+            <igx-column field="MaturityDate" header="Maturity" width="10%" dataType="date" [pipeArgs]="datePipeArgs"></igx-column>
+            
+            <igx-column field="CouponRate" header="Coupon" width="7%"></igx-column>
+            <igx-column field="DirtyBID" header="Dirty BID" width="7%">
+                <ng-template igxCell let-cell="cell">
+                    ${{ cell.value | number: '1.2-2' }}
+                </ng-template>
+            </igx-column>
+            <igx-column field="DirtyMID" header="Dirty MID" width="7%">
+                <ng-template igxCell let-cell="cell">
+                    ${{ cell.value | number: '1.2-2' }}
+                </ng-template>
+            </igx-column>
+            <igx-column field="DirtyASK" header="Dirty ASK" width="7%">
+                <ng-template igxCell let-cell="cell">
+                    ${{ cell.value | number: '1.2-2' }}
+                </ng-template>
+            </igx-column>
+        </igx-grid>
+</div>
+
+<igx-dialog #addSecurityPricesDialog [closeOnOutsideSelect]="false">
+    <div>
+        <div class="title-bar">
+            <h2 class="title">Add Security Price</h2>
+            <a class="close-button" (click)="closeSecurityPriceDialog()" title="Close" aria-label="Close">&#10006;</a>
+        </div>
+        <div class="container" style="width: 500px">
+            <div class="formbox" [formGroup]="newSecurityPricesForm">
+                <table class="table table-striped table-hover" style="margin-top: 20px">
+                    <tr style="padding-top:3px">
+                        <td>Date</td>
+                        <td>
+                            <igx-date-picker class="datePickerDialog" formControlName="ObservationDate" required #defaultDate mode="dropdown"
+                                    inputFormat="yyyy-MM-dd">
+                            </igx-date-picker>
+                            <div *ngIf="newSecurityPricesForm.get('ObservationDate').errors?.['required'] && newSecurityPricesForm.get('ObservationDate').touched"
+                                class="error-message">
+                                Date is required
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Cusip</td>
+                        <td>
+                            <select formControlName="Cusip" class="form-control usa-input" required
+                                [ngClass]="'custom-igx-select'">
+                                <option *ngFor="let item of currentSecurities" [value]="item.Cusip">{{ item.Cusip }}
+                                </option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Bid</td>
+                        <td>
+                            <input type="number" class="form-control usa-input" formControlName="DirtyBID" required />
+                            <div *ngIf="newSecurityPricesForm.get('DirtyBID').hasError('required') && newSecurityPricesForm.get('DirtyBID').touched"
+                                class="error-message">
+                                Bid is required
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Mid</td>
+                        <td>
+                            <input type="number" class="form-control usa-input" formControlName="DirtyMID" required />
+                            <div *ngIf="newSecurityPricesForm.get('DirtyMID').hasError('required') && newSecurityPricesForm.get('DirtyMID').touched"
+                                class="error-message">
+                                Mid is required
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Ask</td>
+                        <td>
+                            <input type="number" class="form-control usa-input" formControlName="DirtyASK" required />
+                            <div *ngIf="newSecurityPricesForm.get('DirtyASK').hasError('required') && newSecurityPricesForm.get('DirtyASK').touched"
+                                class="error-message">
+                                Ask is required
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="button-row">
+            <button mat-raised-button class="custombtn usa-button" aria-label="SaveSecurityPrice" title="Save Security Price"
+                id="btnSave" [disabled]="newSecurityPricesForm.invalid" (click)="saveSecurityPrice()">
+                Save
+            </button>
+            <button mat-raised-button class="custombtn usa-button" (click)="closeSecurityPriceDialog()">
+                Cancel
+            </button>
+            &nbsp; &nbsp;
+        </div>
+    </div>
+</igx-dialog>

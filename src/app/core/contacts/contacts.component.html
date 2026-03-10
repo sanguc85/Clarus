@@ -1,0 +1,88 @@
+<div class="div-contact">
+  <div class="div-gradient">
+    <button mat-raised-button class="custombtn btn-add-contacts usa-button" (click)="addNewContacts()">
+      Add Contacts
+    </button>
+  </div>
+  <igx-grid #gridContacts [width]="'100%'" [height]="'370px'" [rowHeight]="'20px'" [data]="contacts.contacts"
+    [autoGenerate]="false" [allowFiltering]="true" [displayDensity]="'cosy'" [paging]="true"
+    (cellClick)="onCellClick($event)" (cellEdit)="onCellEdit($event)" (cellEditExit)="onCellEditExit($event)"
+    [selectRowOnClick]="false">
+    <igx-paginator [perPage]="10">
+      <igx-paginator-content>
+        <igx-page-size></igx-page-size>
+        <igx-page-nav></igx-page-nav>
+      </igx-paginator-content>
+    </igx-paginator>
+    <igx-column field="Position" header="Position" width="16%" [sortable]="true" [resizable]="true"
+      [editable]="true"></igx-column>
+    <igx-column field="Name" header="Name" width="16%" [sortable]="true" [resizable]="true" [editable]="true">
+    </igx-column>
+    <igx-column field="PhoneNumber" header="Phone Number" width="16%" [sortable]="true" [resizable]="true"
+      [editable]="true"></igx-column>
+    <igx-column field="Email" header="Email" width="16%" [sortable]="true" [resizable]="true"
+      [editable]="true"></igx-column>
+    <igx-column field="Comment" header="Comment" width="16%" [sortable]="true" [resizable]="true"
+      [editable]="true"></igx-column>
+    <igx-column width="10%" [editable]="false" header="Save" [filterable]="false">
+      <ng-template igxCell let-cell="cell">
+        <igx-icon class="icon-save-delete" (click)="saveContacts(cell.row.data,true)">save</igx-icon>
+      </ng-template>
+    </igx-column>
+    <igx-column width="10%" [editable]="false" header="Delete" [filterable]="false">
+      <ng-template igxCell let-cell="cell">
+        <igx-icon class="icon-save-delete" 
+        [ngClass]="{ 'disabled-icon': getContactCountByPosition(cell.row.data.Position) === 1 }"
+        (click)="DeleteContacts(cell.row.data)">delete</igx-icon>
+      </ng-template>
+    </igx-column>
+  </igx-grid>
+</div>
+
+<igx-dialog #dialogAdd [closeOnOutsideSelect]="false">
+  <div class="title-bar">
+    <h2 class="title">New Contact</h2>
+    <a class="close-button" (click)="dialogAdd.close()" title="Close" aria-label="Close">&#10006;</a>
+  </div>
+  <div class="div-dialog-contact-addnew">
+    <form [formGroup]="contactForm" class="frm-contacts-addnew">
+      <table class="table table-new-contact">
+        <tr *ngFor="let key of contactKeys">
+          <td>{{ key }}
+          </td>
+          <td>
+            <div class="inputDiv">
+              <ng-container [ngSwitch]="key">
+                <textarea *ngSwitchCase="'Comment'" id="{{key}}" class="dialog-textarea form-control usa-input usa-textarea"
+                  formControlName="{{key}}">
+                      </textarea>
+                <input *ngSwitchDefault type="text" id="{{key}}" class="td-input form-control usa-input"
+                  formControlName="{{key}}">
+              </ng-container>
+              <div *ngIf="contactForm?.get(key)?.invalid && contactForm?.get(key)?.touched"
+                class="div-validation-error ">
+                <span *ngIf="contactForm?.get(key)?.hasError('required')" class="errorvalidator">Email is
+                  required</span>
+                  <span *ngIf="!contactForm?.get(key)?.hasError('required') && contactForm?.get(key)?.hasError('invalidEmail')" class="errorvalidator">Invalid
+                  email</span>
+              </div>
+            </div>
+
+          </td>
+        </tr>
+      </table>
+    </form>
+  </div>
+
+  <div igxDialogActions class="div-dialog-contact-addnew-actions">
+    <button button mat-raised-button class="custombtn usa-button" aria-label="Save" title="Save" [disabled]="!contactForm?.valid"
+      id="btnSave" (click)="saveContacts(contactForm,false)">
+      Save
+    </button>
+  </div>
+</igx-dialog>
+
+<igx-dialog #confirmSaveDialog title="Do you want to save the changes?" leftButtonLabel="Yes"
+  (leftButtonSelect)="onSaveConfirm();" rightButtonLabel="No" (rightButtonSelect)="discardChanges()"
+  [closeOnOutsideSelect]="false" [closeOnEscape]="false">
+</igx-dialog>

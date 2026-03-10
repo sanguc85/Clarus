@@ -1,0 +1,83 @@
+<button mat-raised-button class="custombtn btnExportData usa-button" id="Export Data" aria-label="Export Data"
+    (click)="exportToExcel()">Export To Excel</button>
+
+<div class="row">
+    <ul class="nav nav-tabs">
+        <li [class.active]="contentTab === 'CSA'">
+            <a (click)="onTabChange('CSA')">CSA</a>
+        </li>
+        <li [class.active]="contentTab === 'Repo'">
+            <a (click)="onTabChange('Repo')">Repo</a>
+        </li>
+    </ul>
+</div>
+
+<div class="row">
+    <div *ngIf="contentTab === 'CSA' || contentTab === 'Repo'" class="haircut">
+        <igx-grid #Haircut [data]="haircutData" [width]="'100%'" [height]="'700px'" [rowHeight]="'20px'" [autoGenerate]="false"
+            [groupingExpressions]="groupingExpressions">
+            <igx-paginator [perPage]="15">
+                <igx-paginator-content>
+                    <igx-page-size></igx-page-size>
+                    <div>Total Items:<span class="spanTotalRecords"> {{ haircutData.length }}</span></div>
+                    <igx-page-nav></igx-page-nav>
+                </igx-paginator-content>
+            </igx-paginator>
+            <igx-column field="Entity" header="Entity" dataType="string" width="10%"></igx-column>
+            <igx-column field="Counterparty" header="Counterparty" dataType="string" width="14%"></igx-column>
+            <igx-column field="CollateralType" header="Collateral Type" dataType="string" width="15%"
+                [sortable]="true"></igx-column>
+            <igx-column-group header="Maturity Cut">
+                <!-- Define sub-columns -->
+                <igx-column field="C1" header="0-1" dataType="number" width="7%">
+                    <ng-template igxCell let-cell="cell">
+                        {{ cell.value !== null ? (cell.value === 1 ? '100%' : (cell.value * 100).toFixed(1) + '%') :
+                        'NA' }}
+                    </ng-template>
+                </igx-column>
+                <igx-column field="C2" header="1-2" dataType="number" width="7%">
+                    <ng-template igxCell let-cell="cell">
+                        {{ cell.value !== null ? (cell.value === 1 ? '100%' : (cell.value * 100).toFixed(1) + '%') :
+                        'NA' }}
+                    </ng-template>
+                </igx-column>
+                <igx-column field="C5" header="2-5" dataType="number" width="7%">
+                    <ng-template igxCell let-cell="cell">
+                        {{ cell.value !== null ? (cell.value === 1 ? '100%' : (cell.value * 100).toFixed(1) + '%') :
+                        'NA' }}
+                    </ng-template>
+                </igx-column>
+                <igx-column field="C10" header="5-10" dataType="number" width="7%">
+                    <ng-template igxCell let-cell="cell">
+                        {{ cell.value !== null ? (cell.value === 1 ? '100%' : (cell.value * 100).toFixed(1) + '%') :
+                        'NA' }}
+                    </ng-template>
+                </igx-column>
+                <igx-column field="C15" header="10-15" dataType="number" width="7%">
+                    <ng-template igxCell let-cell="cell">
+                        {{ cell.value !== null ? (cell.value === 1 ? '100%' : (cell.value * 100).toFixed(1) + '%') :
+                        'NA' }}
+                    </ng-template>
+                </igx-column>
+                <igx-column field="C20" header="15-20" dataType="number" width="7%">
+                    <ng-template igxCell let-cell="cell">
+                        {{ cell.value !== null ? (cell.value === 1 ? '100%' : (cell.value * 100).toFixed(1) + '%') :
+                        'NA' }}
+                    </ng-template>
+                </igx-column>
+                <igx-column field="C30" header="20-30" dataType="number" width="7%">
+                    <ng-template igxCell let-cell="cell">
+                        {{ cell.value !== null ? (cell.value === 1 ? '100%' : (cell.value * 100).toFixed(1) + '%') :
+                        'NA' }}
+                    </ng-template>
+                </igx-column>
+                <igx-column field="C31" header="30+" dataType="number" width="7%">
+                    <ng-template igxCell let-cell="cell">
+                        {{ cell.value !== null ? (cell.value === 1 ? '100%' : (cell.value * 100).toFixed(1) + '%') :
+                        'NA' }}
+                    </ng-template>
+                </igx-column>
+            </igx-column-group>
+        </igx-grid>
+    </div>
+</div>

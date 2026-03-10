@@ -1,0 +1,147 @@
+
+<button mat-raised-button class="custombtn emailbtn usa-button" id="btnExportData" aria-label="Email"
+    (click)="sendEmail()" [disabled]="!metaDataService.isMO">Email Reminder</button>
+<button mat-raised-button class="custombtn savebtn usa-button" id="saveRatings" aria-label="Export Data"
+    (click)="saveRatings()" [disabled]="!metaDataService.isMO">Save Data</button>
+   
+<div class="subHeader">Counterparty</div>
+<igx-grid [data]="counterpartiesData" igxPreventDocumentScroll [displayDensity]="'compact'" [width]="'100%'" [height]="'750px'"
+    [rowHeight]="'30px'">
+    <igx-paginator [perPage]="20">
+        <igx-paginator-content>
+            <igx-page-size></igx-page-size>
+            <div>Total Items:<span class="spanTotalRecords"> {{ counterpartiesData.length }}</span></div>
+            <igx-page-nav></igx-page-nav>
+        </igx-paginator-content>
+    </igx-paginator>
+    <igx-column field="Counterparty" header="Counterparty"></igx-column>
+    <igx-column field="SnPRating" header="S&P Rating" [editable]="true" class="custom-focused">
+        <ng-template igxCell let-cell="cell">
+            <input type="texts" [(ngModel)]="cell.value" class="fc-select form-control usa-input usa-select" />
+        </ng-template>
+    </igx-column>
+
+    <igx-column field="SnPOutlook" header="S&P Outlook" class="custom-focused">
+        <ng-template igxCell let-cell="cell">
+            <select [(ngModel)]="cell.value" class="fc-select form-control usa-input usa-select">
+                <option *ngFor="let outlook of MetaDataTables['Outlook']" [value]="outlook.Name">{{ outlook.Name }}
+                </option>
+            </select>
+        </ng-template>
+    </igx-column>
+    <igx-column field="SnPAsOfDate" header="S&P As Of Date">
+        <ng-template igxCell let-cell="cell">
+                <igx-date-picker class="datePicker" [(ngModel)]="cell.value" #defaultDate mode="dropdown">
+                </igx-date-picker>
+        </ng-template>
+    </igx-column>
+    <igx-column field="MoodysRating" header="Moody's Rating" [editable]="true">
+        <ng-template igxCell let-cell="cell">
+            <input type="texts" [(ngModel)]="cell.value" class="fc-select form-control usa-input usa-select" />
+        </ng-template>
+    </igx-column>
+    <igx-column field="MoodysOutlook" header="Moody's Outlook" [editable]="true">
+        <ng-template igxCell let-cell="cell">
+            <select [(ngModel)]="cell.value" class="fc-select form-control usa-input usa-select">
+                <option *ngFor="let outlook of MetaDataTables['Outlook']" [value]="outlook.Name">{{ outlook.Name }}
+                </option>
+            </select>
+        </ng-template>
+    </igx-column>
+    <igx-column field="MoodysAsOfDate" header="Moody's As Of Date" [editable]="true">
+        <ng-template igxCell let-cell="cell">
+                <igx-date-picker class="datePicker" [(ngModel)]="cell.value" #defaultDate mode="dropdown">
+                </igx-date-picker>
+        </ng-template>
+    </igx-column>
+    <igx-column field="FitchRating" header="Fitch Rating" [editable]="true">
+        <ng-template igxCell let-cell="cell">
+            <input type="texts" [(ngModel)]="cell.value" class="fc-select form-control usa-input usa-select" />
+        </ng-template>
+    </igx-column>
+    <igx-column field="FitchOutlook" header="Fitch Outlook" [editable]="true">
+        <ng-template igxCell let-cell="cell">
+            <select [(ngModel)]="cell.value" class="fc-select form-control usa-input usa-select">
+                <option *ngFor="let outlook of MetaDataTables['Outlook']" [value]="outlook.Name">{{ outlook.Name }}
+                </option>
+            </select>
+        </ng-template>
+    </igx-column>
+    <igx-column field="FitchAsOfDate" header="Fitch As Of Date" [editable]="true">
+        <ng-template igxCell let-cell="cell">
+                <igx-date-picker class="datePicker" [(ngModel)]="cell.value" #defaultDate mode="dropdown">
+                </igx-date-picker>
+        </ng-template>
+    </igx-column>
+</igx-grid>
+
+<div class="subHeader">Entity</div>
+<igx-grid [data]="entitiesData" igxPreventDocumentScroll [displayDensity]="'compact'" 
+    [rowHeight]="'30px'" [height]="'280px'">
+    <igx-paginator [perPage]="5">
+        <igx-paginator-content>
+            <igx-page-size></igx-page-size>
+            <div>Total Items:<span class="spanTotalRecords"> {{ entitiesData.length }}</span></div>
+            <igx-page-nav></igx-page-nav>
+        </igx-paginator-content>
+    </igx-paginator>
+    <igx-column field="Entity" header="Entity"></igx-column>
+    <igx-column field="SnPRating" header="S&P Rating" [editable]="true" class="custom-focused">
+        <ng-template igxCell let-cell="cell">
+            <input type="texts" [(ngModel)]="cell.value" class="fc-select form-control usa-input usa-select" />
+        </ng-template>
+    </igx-column>
+
+    <igx-column field="SnPOutlook" header="S&P Outlook" class="custom-focused">
+        <ng-template igxCell let-cell="cell">
+            <select [(ngModel)]="cell.value" class="fc-select form-control usa-input usa-select">
+                <option *ngFor="let outlook of MetaDataTables['Outlook']" [value]="outlook.Name">{{ outlook.Name }}
+                </option>
+            </select>
+        </ng-template>
+    </igx-column>
+    <igx-column field="SnPAsOfDate" header="S&P As Of Date">
+        <ng-template igxCell let-cell="cell">
+            <igx-date-picker class="datePicker" [(ngModel)]="cell.value" #defaultDate mode="dropdown">
+            </igx-date-picker>
+        </ng-template>
+    </igx-column>
+    <igx-column field="MoodysRating" header="Moody's Rating" [editable]="true">
+        <ng-template igxCell let-cell="cell">
+            <input type="texts" [(ngModel)]="cell.value" class="fc-select form-control usa-input usa-select" />
+        </ng-template>
+    </igx-column>
+    <igx-column field="MoodysOutlook" header="Moody's Outlook" [editable]="true">
+        <ng-template igxCell let-cell="cell">
+            <select [(ngModel)]="cell.value" class="fc-select form-control usa-input usa-select">
+                <option *ngFor="let outlook of MetaDataTables['Outlook']" [value]="outlook.Name">{{ outlook.Name }}
+                </option>
+            </select>
+        </ng-template>
+    </igx-column>
+    <igx-column field="MoodysAsOfDate" header="Moody's As Of Date" [editable]="true">
+        <ng-template igxCell let-cell="cell">
+            <igx-date-picker class="datePicker" [(ngModel)]="cell.value" #defaultDate mode="dropdown">
+            </igx-date-picker>
+        </ng-template>
+    </igx-column>
+    <igx-column field="FitchRating" header="Fitch Rating" [editable]="true">
+        <ng-template igxCell let-cell="cell">
+            <input type="texts" [(ngModel)]="cell.value" class="fc-select form-control usa-input usa-select" />
+        </ng-template>
+    </igx-column>
+    <igx-column field="FitchOutlook" header="Fitch Outlook" [editable]="true">
+        <ng-template igxCell let-cell="cell">
+            <select [(ngModel)]="cell.value" class="fc-select form-control usa-input usa-select">
+                <option *ngFor="let outlook of MetaDataTables['Outlook']" [value]="outlook.Name">{{ outlook.Name }}
+                </option>
+            </select>
+        </ng-template>
+    </igx-column>
+    <igx-column field="FitchAsOfDate" header="Fitch As Of Date" [editable]="true">
+        <ng-template igxCell let-cell="cell">
+            <igx-date-picker class="datePicker" [(ngModel)]="cell.value" #defaultDate mode="dropdown">
+            </igx-date-picker>
+        </ng-template>
+    </igx-column>
+</igx-grid>
