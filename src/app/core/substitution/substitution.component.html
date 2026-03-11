@@ -129,6 +129,9 @@
                          (input)="onSecurityInput($event, i)"
                          (focus)="showSecurityDropdowns[i] = true"
                          [name]="'CusipSearch' + i" 
+                        [attr.aria-controls]="'security-dropdown-' + i"
+                        aria-haspopup="listbox"
+                        [attr.aria-expanded]="showSecurityDropdowns[i] ? 'true' : 'false'"
                          
                          style="font-size: 11px; height: 24px; padding: 4px 8px;"
                          autocomplete="off" />
@@ -137,7 +140,10 @@
                   </igx-suffix>
                 </igx-input-group>
                 <div *ngIf="showSecurityDropdowns[i] && (getFilteredSecurityItems(i).length > 0 || shouldShowCashOption(i))" 
+                   [id]="'security-dropdown-' + i"
                      class="security-dropdown"
+                   role="listbox"
+                   aria-label="Security CUSIP options"
                      [style.position]="'absolute'"
                      [style.z-index]="'1000'"
                      [style.background]="'white'"
@@ -148,12 +154,14 @@
                      [style.box-shadow]="'0 2px 4px rgba(0,0,0,0.1)'">
                   <div *ngIf="shouldShowCashOption(i)"
                        class="security-item-hover"
+                       role="option"
                        style="padding: 8px; cursor: pointer; border-bottom: 1px solid #eee; transition: background-color 0.2s; font-size: 14px;"
                        (click)="selectSecurity('Cash', i)">
                       Cash
                   </div>
                   <div *ngFor="let item of getFilteredSecurityItems(i)" 
                        class="security-item-hover"
+                       role="option"
                        style="padding: 8px; cursor: pointer; border-bottom: 1px solid #eee; transition: background-color 0.2s; font-size: 14px;"
                        (click)="selectSecurity(item.Cusip, i)">
                     {{ item.Cusip }}
@@ -305,6 +313,9 @@
                          (input)="onSubstitutionInput($event, i)"
                          (focus)="showSubstitutionDropdowns[i] = true"
                          [name]="'SubstitutionCusipSearch' + i" 
+                        [attr.aria-controls]="'substitution-dropdown-' + i"
+                        aria-haspopup="listbox"
+                        [attr.aria-expanded]="showSubstitutionDropdowns[i] ? 'true' : 'false'"
                          style="font-size: 14px; height: 24px; padding: 4px 8px;"
                          autocomplete="off" />
                   <igx-suffix>
@@ -312,7 +323,10 @@
                   </igx-suffix>
                 </igx-input-group>
                 <div *ngIf="showSubstitutionDropdowns[i] && getFilteredSubstitutionItems(i).length > 0" 
+                   [id]="'substitution-dropdown-' + i"
                      class="security-dropdown"
+                   role="listbox"
+                   aria-label="Substitution CUSIP options"
                      [style.position]="'absolute'"
                      [style.z-index]="'1000'"
                      [style.background]="'white'"
@@ -323,6 +337,7 @@
                      [style.box-shadow]="'0 2px 4px rgba(0,0,0,0.1)'">
                   <div *ngFor="let item of getFilteredSubstitutionItems(i)" 
                        class="security-item-hover"
+                       role="option"
                        style="padding: 8px; cursor: pointer; border-bottom: 1px solid #eee; transition: background-color 0.2s; font-size: 14px;"
                        (click)="selectSubstitutionSecurity(item.Cusip, i)">
                     {{ item.Cusip }}
